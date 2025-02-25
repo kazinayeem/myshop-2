@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import path from "path";
 import logger from "morgan";
 import "dotenv/config";
 import connectDB from "./config/db.js";
@@ -12,10 +13,15 @@ app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "public")));
+
+
+// app.get("/", (req, res) => {
+//   res.sendFile("index.html", { root: "public" });
+// });
 
 app.get("/", (req, res) => {
-  res.sendFile("index.html", { root: "public" });
+  res.sendFile("index.html", { root: path.join(__dirname, "public") });
 });
 
 // health check
