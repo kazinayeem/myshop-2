@@ -38,7 +38,7 @@
                 <div class="mt-2 bg-gray-300 h-6 rounded"></div>
             </div>
 
-            
+
         </div>
 
         <!-- Product Grid -->
@@ -46,6 +46,15 @@
             <!-- Products will be inserted here dynamically -->
         </div>
     </div>
+
+    <!-- footer  -->
+
+    <footer class="bg-gray-800 text-white py-4">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2023 Your Company. All rights reserved.</p>
+        </div>
+    </footer>
+    <!-- JavaScript to fetch and display products -->
 
     <script>
         async function fetchProducts() {
@@ -62,11 +71,11 @@
                 products.forEach(product => {
                     const productCard = `
                         <div class="bg-white p-4 rounded-lg shadow-md">
-                            <img src="${product.image[0]}" alt="${product.name}" class="w-full h-48 object-cover rounded-lg">
+                            <img loading="lazy" src="${product.image[0]}" alt="${product.name}" class="w-full h-48 object-cover rounded-lg">
                             <h2 class="text-lg font-semibold mt-2">${product.name}</h2>
                             <p class="text-gray-600">${product.description.substring(0, 60)}...</p>
                             <p class="text-green-600 font-bold">$${product.price}</p>
-                            <a href="#" class="block mt-2 text-blue-500 hover:underline">View Details</a>
+                            <a href="/${product._id}" class="block mt-2 text-blue-500 hover:underline">View Details</a>
                         </div>
                     `;
                     productContainer.innerHTML += productCard;
