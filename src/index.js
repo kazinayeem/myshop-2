@@ -1,31 +1,21 @@
-import express from "express";
 import cors from "cors";
-import path from "path";
-import logger from "morgan";
 import "dotenv/config";
+import express from "express";
+import logger from "morgan";
 import connectDB from "./config/db.js";
-import productRoutes from "./routes/product.routes.js";
 import CategoryRoutes from "./routes/category.routes.js";
+import productRoutes from "./routes/product.routes.js";
 import SubCategoryRoutes from "./routes/subcategory.routes.js";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 const PORT = process.env.PORT || 4000;
 const app = express();
 app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "public")));
-
-
-// app.get("/", (req, res) => {
-//   res.sendFile("index.html", { root: "public" });
-// });
+app.use(express.static("public"));
 
 app.get("/", (req, res) => {
-  res.sendFile("index.html", { root: path.join(__dirname, "public") });
+  res.sendFile("index.html", { root: "public" });
 });
 
 // health check
