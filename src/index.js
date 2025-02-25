@@ -7,6 +7,10 @@ import connectDB from "./config/db.js";
 import productRoutes from "./routes/product.routes.js";
 import CategoryRoutes from "./routes/category.routes.js";
 import SubCategoryRoutes from "./routes/subcategory.routes.js";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const PORT = process.env.PORT || 4000;
 const app = express();
 app.use(cors());
