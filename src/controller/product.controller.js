@@ -150,14 +150,29 @@ export const GetAllProducts = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 30;
   const skip = (page - 1) * limit;
+  const category = req.query.category;
+  const search = req.query.search || "";
+  
   try {
     const productcount = await Product.countDocuments();
     const totalPages = Math.ceil(productcount / limit);
-    const products = await Product.find()
+    const products = await Product.find(
+      search
+        ? {
+            $or: [
+              { name: { $regex: search, $options: "i" } },
+              { brand: { $regex: search, $options: "i" } },
+            ],
+          }
+        : category
+        ? { category }
+        : {}
+    )
       .populate("priceByVariant")
-      .populate("category" , "name")
+      .populate("category", "name")
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .sort({ createdAt: -1 });
 
     if (page > totalPages) {
       return res.status(404).json({ message: "No more products" });
