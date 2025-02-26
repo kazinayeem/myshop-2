@@ -155,7 +155,7 @@ export const GetAllProducts = async (req, res) => {
     const totalPages = Math.ceil(productcount / limit);
     const products = await Product.find()
       .populate("priceByVariant")
-      .populate("category")
+      .populate("category" , "name")
       .skip(skip)
       .limit(limit);
 
