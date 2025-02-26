@@ -158,10 +158,23 @@ export const GetAllProducts = async (req, res) => {
       .populate("category")
       .skip(skip)
       .limit(limit);
+
+    if (page > totalPages) {
+      return res.status(404).json({ message: "No more products" });
+    }
+
     return res.status(200).json({
       products,
       currentPage: page,
       totalPages,
+      nextpage: page + 1,
+      prevpage: page - 1,
+      totalProducts: productcount,
+      nextpageurl: `/api/products?page=${page + 1}&limit=${limit}`,
+      prevpageurl: `/api/products?page=${page - 1}&limit=${limit}`,
+      allproductsurl: `/api/products`,
+      limit,
+      skip,
     });
   } catch (error) {
     return res.status(500).json({ message: "Server Error" });
