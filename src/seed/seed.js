@@ -78,7 +78,7 @@ const seedProducts = async (categoryInstances) => {
 
   let products = [];
 
-  for (let i = 0; i < 200; i++) {
+  for (let i = 0; i < 100; i++) {
     // Loop for 100 products
     const hasVariants = Math.random() > 0.5;
     const price = Math.floor(Math.random() * 500) + 100; // Random price
