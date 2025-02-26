@@ -1,6 +1,6 @@
 // address controller
 
-import Address from "../model/address.model";
+import Address from "../model/address.model.js";
 
 // add address
 
