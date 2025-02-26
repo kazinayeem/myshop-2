@@ -22,6 +22,10 @@ const createCategoryAndSubCategories = async () => {
       name: "Clothing",
       image: "https://picsum.photos/200/300?category=clothing",
     },
+    {
+      name: "Books",
+      image: "https://picsum.photos/200/300?category=books",
+    },
   ];
 
   const categoryInstances = [];
@@ -48,6 +52,11 @@ const createCategoryAndSubCategories = async () => {
         image: "https://picsum.photos/200/300?subcategory=2",
         category: category._id,
       },
+      {
+        name: `${categoryData.name} - Sub 3`,
+        image: "https://picsum.photos/200/300?subcategory=3",
+        category: category._id,
+      },
     ];
 
     for (let subcategoryData of subcategories) {
@@ -69,7 +78,7 @@ const seedProducts = async (categoryInstances) => {
 
   let products = [];
 
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 200; i++) {
     // Loop for 100 products
     const hasVariants = Math.random() > 0.5;
     const price = Math.floor(Math.random() * 500) + 100; // Random price
@@ -96,8 +105,8 @@ const seedProducts = async (categoryInstances) => {
       category: category._id,
       subcategory: subcategory,
       bulkOrder: {
-        minQuantity: 10,
-        discount: 10,
+        minQuantity: Math.floor(Math.random() * 10) + 1,
+        discount: Math.floor(Math.random() * 20) + 5,
       },
       stock: Math.floor(Math.random() * 100) + 1, // Random stock
       brand: "Brand " + (i % 5),
@@ -107,7 +116,7 @@ const seedProducts = async (categoryInstances) => {
       slug: `product-${i + 1}`,
       isDeleted: false,
       isBlocked: false,
-      warranty: "1 Year Warranty",
+      warranty: `${Math.floor(Math.random() * 5) + 1} years`,
       returnable: Math.random() > 0.7,
       returnableDays: 7,
       cod: Math.random() > 0.5,
@@ -151,7 +160,7 @@ const seedProducts = async (categoryInstances) => {
     products.push(newProduct);
   }
 
-  console.log("✅ 100 Products Seeded Successfully!");
+  console.log("✅ 5000 Products Seeded Successfully!");
   process.exit();
 };
 

@@ -146,9 +146,23 @@ export const UpdateProduct = async (req, res) => {
 };
 
 export const GetAllProducts = async (req, res) => {
+  // pagination
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 30;
+  const skip = (page - 1) * limit;
   try {
-    const products = await Product.find().populate("priceByVariant");
-    return res.status(200).json(products);
+    const productcount = await Product.countDocuments();
+    const totalPages = Math.ceil(productcount / limit);
+    const products = await Product.find()
+      .populate("priceByVariant")
+      .populate("category")
+      .skip(skip)
+      .limit(limit);
+    return res.status(200).json({
+      products,
+      currentPage: page,
+      totalPages,
+    });
   } catch (error) {
     return res.status(500).json({ message: "Server Error" });
   }
