@@ -60,7 +60,7 @@
         async function fetchProducts() {
             try {
                 const response = await fetch("/api/products");
-                const products = await response.json();
+                const {products} = await response.json();
                 const productContainer = document.getElementById("product-container");
                 const loadingSkeleton = document.getElementById("loading-skeleton");
 
