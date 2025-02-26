@@ -8,6 +8,7 @@ import productRoutes from "./routes/product.routes.js";
 import addressRoutes from "./routes/address.routes.js";
 import SubCategoryRoutes from "./routes/subcategory.routes.js";
 import orderRoutes from "./routes/order.routes.js";
+import userRoutes from "./routes/user.routes.js";
 const PORT = process.env.PORT || 4000;
 const app = express();
 app.use(cors());
@@ -35,6 +36,8 @@ app.use("/api/subcategories", SubCategoryRoutes);
 app.use("/api/addresses", addressRoutes);
 // orders
 app.use("/api/orders", orderRoutes);
+// users
+ app.use("/api/users", userRoutes);
 // not found
 app.use((req, res, next) => {
   res.status(404).send("Sorry can't find that!");

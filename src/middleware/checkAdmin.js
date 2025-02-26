@@ -1,6 +1,6 @@
 // check admin mdidleware
-const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+import jwt from "jsonwebtoken";
+import User from "../model/user.model.js";
 
 const checkAdmin = async (req, res, next) => {
   try {
@@ -22,4 +22,4 @@ const checkAdmin = async (req, res, next) => {
     return res.status(401).json({ message: "Unauthorized" });
   }
 };
-module.exports = checkAdmin;
+export default checkAdmin;
