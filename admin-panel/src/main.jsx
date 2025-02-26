@@ -8,6 +8,7 @@ import store from "./redux/store/store";
 import Dashboard from "./pages/Dashboard";
 import ShowPage from "./pages/ShowPage";
 import AddProduct from "./pages/AddProduct";
+import EditProduct from "./pages/EditProduct";
 const root = document.getElementById("root");
 
 ReactDOM.createRoot(root).render(
@@ -17,8 +18,9 @@ ReactDOM.createRoot(root).render(
         <Route path="/" element={<App />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />}>
-          <Route path="show" element={<ShowPage />} />
+          <Route path="show-product" element={<ShowPage />} />
           <Route path="add-product" element={<AddProduct />} />
+          <Route path="edit-product/:id" element={<EditProduct />} />
         </Route>
       </Routes>
     </BrowserRouter>
