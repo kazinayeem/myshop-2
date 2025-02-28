@@ -1,6 +1,6 @@
 import React from "react";
-
-export default function AddVariants({ recived }) {
+import PropTypes from "prop-types";
+function AddVariants({ recived }) {
   const [variant, setVariant] = React.useState({
     name: "",
     price: 0,
@@ -80,3 +80,11 @@ export default function AddVariants({ recived }) {
     </div>
   );
 }
+
+// props type recived: (variant: { name: string; price: number; stock: number; image: string }) => void
+// props type recived: (variant: { name: string; price: number; stock: number; image: string }) => void
+
+AddVariants.propTypes = {
+  recived: PropTypes.func.isRequired,
+};
+export default AddVariants;

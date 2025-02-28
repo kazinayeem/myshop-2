@@ -18,6 +18,7 @@ import SubCategoryRoutes from "./routes/subcategory.routes.js";
 import orderRoutes from "./routes/order.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import logger from "./lib/logger.js";
+
 const PORT = process.env.PORT || 4000;
 
 // initialize express
