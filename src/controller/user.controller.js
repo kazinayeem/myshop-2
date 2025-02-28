@@ -2,7 +2,6 @@
 
 // register user
 
-
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import User from "../model/user.model.js";
@@ -50,7 +49,20 @@ export const login = async (req, res) => {
         expiresIn: "30d",
       }
     );
-    res.status(200).json({ token });
+    // set cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      sameSite: "strict",
+    });
+    res.status(200).json({
+      message: "Login successful",
+      user: {
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+      token,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -63,8 +75,8 @@ export const getUsers = async (req, res) => {
       .select("-password")
       .populate("address")
       .populate("orderhistory");
-  return  res.status(200).json(users);
+    return res.status(200).json(users);
   } catch (error) {
-   return res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };

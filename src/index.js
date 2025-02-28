@@ -1,5 +1,7 @@
 import cors from "cors";
-import "dotenv/config";
+import dotenv from "dotenv";
+dotenv.config();
+import cookieParser from "cookie-parser";
 import express from "express";
 import logger from "morgan";
 import connectDB from "./config/db.js";
@@ -10,7 +12,12 @@ import SubCategoryRoutes from "./routes/subcategory.routes.js";
 import orderRoutes from "./routes/order.routes.js";
 import userRoutes from "./routes/user.routes.js";
 const PORT = process.env.PORT || 4000;
+
+
+// initialize express
 const app = express();
+// middlewares
+app.use(cookieParser());
 app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());
