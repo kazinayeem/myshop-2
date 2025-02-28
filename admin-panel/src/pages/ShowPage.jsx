@@ -1,6 +1,5 @@
 import { AgGridReact } from "ag-grid-react";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useState } from "react";
 
 import { useNavigate } from "react-router";
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
@@ -8,7 +7,8 @@ import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 // Register all Community features
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
+import { useGetProductsQuery } from "../redux/Api/porductApi";
 
 function ImageRenderer(props) {
   const imageUrl = props.value;
@@ -21,7 +21,6 @@ ImageRenderer.propTypes = {
   value: PropTypes.string,
 };
 
-
 ActionRenderer.propTypes = {
   context: PropTypes.shape({
     handleEdit: PropTypes.func.isRequired,
@@ -29,7 +28,6 @@ ActionRenderer.propTypes = {
   }).isRequired,
   data: PropTypes.object.isRequired,
 };
-
 
 function ActionRenderer(props) {
   return (
@@ -52,31 +50,37 @@ function ActionRenderer(props) {
 
 export default function ProductTable() {
   const navigate = useNavigate();
-  const [rowData, setRowData] = useState([]);
+  // const [rowData, setRowData] = useState([]);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(30);
-  const [totalPages, setTotalPages] = useState(1);
+  // const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("asc");
-  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    setLoading(true);
-    axios
-      .get(
-        `http://localhost:4000/api/products?page=${page}&limit=${limit}&search=${search}&sort=${sort}`
-      )
-      .then((res) => {
-        setRowData(res.data.products);
-        setTotalPages(res.data.totalPages);
-        setLoading(false);
-      })
-      .catch(() => {
-        setRowData([]);
-        setTotalPages(1);
-        setLoading(false);
-      });
-  }, [page, limit, search, sort]);
+  // use rtk query
+  const { data, isLoading } = useGetProductsQuery({ limit, page, search });
+  // if (data) {
+  //   setRowData(data.products);
+  //   setTotalPages(data.totalPages);
+  // }
+
+  // useEffect(() => {
+  //   setLoading(true);
+  //   axios
+  //     .get(
+  //       `http://localhost:4000/api/products?page=${page}&limit=${limit}&search=${search}&sort=${sort}`
+  //     )
+  //     .then((res) => {
+  //       setRowData(res.data.products);
+  //       setTotalPages(res.data.totalPages);
+  //       setLoading(false);
+  //     })
+  //     .catch(() => {
+  //       setRowData([]);
+  //       setTotalPages(1);
+  //       setLoading(false);
+  //     });
+  // }, [page, limit, search, sort]);
 
   const handleEdit = (product) => {
     navigate(`/dashboard/edit-product/${product._id}`);
@@ -128,17 +132,20 @@ export default function ProductTable() {
           <option value={10}>10</option>
           <option value={30}>30</option>
           <option value={50}>50</option>
+          <option value={100}>100</option>
+          <option value={data?.totalProducts || 0}>All</option>
         </select>
       </div>
 
-      {loading ? (
+      {isLoading ? (
         <div>Loading...</div>
       ) : (
         <div className="ag-theme-alpine w-full max-w-full flex-1">
           <AgGridReact
-            rowData={rowData}
+            rowData={data?.products || []}
             columnDefs={colDefs}
-            pagination={false}
+           
+            pagination={true}
             context={{ handleEdit, handleDelete }}
           />
         </div>
@@ -153,10 +160,10 @@ export default function ProductTable() {
           Previous
         </button>
         <span className="text-lg font-semibold">
-          Page {page} of {totalPages}
+          Page {page} of {data?.totalPages || 1}
         </span>
         <button
-          disabled={page >= totalPages}
+          disabled={page >= data?.totalPages}
           onClick={() => setPage(page + 1)}
           className="bg-gray-300 px-4 py-2 rounded disabled:opacity-50 hover:bg-gray-400"
         >

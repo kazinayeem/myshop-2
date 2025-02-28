@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import ShowPage from "./pages/ShowPage";
 import AddProduct from "./pages/AddProduct";
 import EditProduct from "./pages/EditProduct";
+import ShowCategory from "./pages/ShowCategory";
 const root = document.getElementById("root");
 
 ReactDOM.createRoot(root).render(
@@ -21,6 +22,7 @@ ReactDOM.createRoot(root).render(
           <Route path="show-product" element={<ShowPage />} />
           <Route path="add-product" element={<AddProduct />} />
           <Route path="edit-product/:id" element={<EditProduct />} />
+          <Route path="show-category" element={<ShowCategory />} />
         </Route>
       </Routes>
     </BrowserRouter>

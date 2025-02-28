@@ -9,26 +9,29 @@ import {
   Plus,
   Edit,
   Eye,
+  Users,
+  List,
+  UserPlus,
+  Image,
+  Tag,
+  PackageCheck,
 } from "lucide-react";
 
 export default function Dashboard() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
 
-  // Function to toggle dropdown
   const toggleDropdown = (menu) => {
     setOpenDropdown(openDropdown === menu ? null : menu);
   };
 
   return (
     <div className="flex">
-      {/* Sidebar */}
       <div
         className={`${
           isCollapsed ? "w-16" : "w-64"
         } min-h-screen bg-gray-800 text-white p-4 transition-all duration-300`}
       >
-        {/* Toggle Button */}
         <button
           className="text-white mb-4 focus:outline-none"
           onClick={() => setIsCollapsed(!isCollapsed)}
@@ -36,10 +39,8 @@ export default function Dashboard() {
           {isCollapsed ? <Menu size={24} /> : <X size={24} />}
         </button>
 
-        {/* Dashboard Title */}
         {!isCollapsed && <h2 className="text-2xl font-bold mb-4">Dashboard</h2>}
 
-        {/* Navigation Links */}
         <ul>
           <li className="mb-2">
             <Link
@@ -50,7 +51,6 @@ export default function Dashboard() {
             </Link>
           </li>
 
-          {/* Product Dropdown */}
           <li className="mb-2">
             <button
               className="w-full flex justify-between items-center hover:text-gray-400"
@@ -67,8 +67,6 @@ export default function Dashboard() {
                   <ChevronDown size={18} />
                 ))}
             </button>
-
-            {/* Product Sub-menu */}
             {!isCollapsed && openDropdown === "product" && (
               <ul className="ml-4 mt-2">
                 <li className="mb-2">
@@ -76,8 +74,7 @@ export default function Dashboard() {
                     to="/dashboard/show-product"
                     className="hover:text-gray-400 flex items-center"
                   >
-                    <Eye size={18} className="mr-2" />
-                    Show Product
+                    <Eye size={18} className="mr-2" /> Show Product
                   </Link>
                 </li>
                 <li className="mb-2">
@@ -85,8 +82,7 @@ export default function Dashboard() {
                     to="/dashboard/add-product"
                     className="hover:text-gray-400 flex items-center"
                   >
-                    <Plus size={18} className="mr-2" />
-                    Add Product
+                    <Plus size={18} className="mr-2" /> Add Product
                   </Link>
                 </li>
                 <li className="mb-2">
@@ -94,56 +90,121 @@ export default function Dashboard() {
                     to="/dashboard/edit-product"
                     className="hover:text-gray-400 flex items-center"
                   >
-                    <Edit size={18} className="mr-2" />
-                    Edit Product
+                    <Edit size={18} className="mr-2" /> Edit Product
                   </Link>
                 </li>
               </ul>
             )}
           </li>
 
-          {/* Product Under Dropdown */}
           <li className="mb-2">
             <button
               className="w-full flex justify-between items-center hover:text-gray-400"
-              onClick={() => toggleDropdown("productUnder")}
+              onClick={() => toggleDropdown("category")}
             >
               <span className="flex items-center">
                 <Box size={18} className="mr-2" />
-                {!isCollapsed && "Product Under"}
+                {!isCollapsed && "Category"}
               </span>
               {!isCollapsed &&
-                (openDropdown === "productUnder" ? (
+                (openDropdown === "category" ? (
                   <ChevronUp size={18} />
                 ) : (
                   <ChevronDown size={18} />
                 ))}
             </button>
-
-            {/* Product Under Sub-menu */}
-            {!isCollapsed && openDropdown === "productUnder" && (
+            {!isCollapsed && openDropdown === "category" && (
               <ul className="ml-4 mt-2">
                 <li className="mb-2">
                   <Link
-                    to="/dashboard/product-category1"
+                    to="/dashboard/add-category"
                     className="hover:text-gray-400"
                   >
-                    Category 1
+                    {" "}
+                    Add Category{" "}
                   </Link>
                 </li>
                 <li className="mb-2">
                   <Link
-                    to="/dashboard/product-category2"
+                    to="/dashboard/show-category"
                     className="hover:text-gray-400"
                   >
-                    Category 2
+                    {" "}
+                    Show Category{" "}
+                  </Link>
+                </li>
+                <li className="mb-2">
+                  <Link
+                    to="/dashboard/subcategory"
+                    className="hover:text-gray-400"
+                  >
+                    {" "}
+                    Subcategory{" "}
                   </Link>
                 </li>
               </ul>
             )}
           </li>
 
-          {/* Logout */}
+          <li className="mb-2">
+            <Link
+              to="/dashboard/users"
+              className="hover:text-gray-400 flex items-center"
+            >
+              <Users size={18} className="mr-2" />{" "}
+              {!isCollapsed && "See All Users"}
+            </Link>
+          </li>
+
+          <li className="mb-2">
+            <Link
+              to="/dashboard/orders"
+              className="hover:text-gray-400 flex items-center"
+            >
+              <List size={18} className="mr-2" /> {!isCollapsed && "Order List"}
+            </Link>
+          </li>
+
+          <li className="mb-2">
+            <Link
+              to="/dashboard/add-user"
+              className="hover:text-gray-400 flex items-center"
+            >
+              <UserPlus size={18} className="mr-2" />{" "}
+              {!isCollapsed && "Add User"}
+            </Link>
+          </li>
+
+          <li className="mb-2">
+            <Link
+              to="/dashboard/slider"
+              className="hover:text-gray-400 flex items-center"
+            >
+              <Image size={18} className="mr-2" />{" "}
+              {!isCollapsed && "Add Slider"}
+            </Link>
+          </li>
+
+          <li className="mb-2">
+            <Link
+              to="/dashboard/discount"
+              className="hover:text-gray-400 flex items-center"
+            >
+              <Tag size={18} className="mr-2" />{" "}
+              {!isCollapsed && "Add Discount"}
+            </Link>
+          </li>
+
+          <li className="mb-2">
+            <Link
+              to="/dashboard/stock"
+              className="hover:text-gray-400 flex items-center"
+            >
+              <PackageCheck size={18} className="mr-2" />{" "}
+              {!isCollapsed && "Check Stock"}
+            </Link>
+          </li>
+
           <li className="mb-2">
             <Link to="/" className="hover:text-gray-400 flex items-center">
               🚪 {!isCollapsed && "Logout"}
@@ -151,8 +212,6 @@ export default function Dashboard() {
           </li>
         </ul>
       </div>
-
-      {/* Main Content */}
       <div className="flex-1 p-6">
         <Outlet />
       </div>
