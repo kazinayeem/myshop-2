@@ -13,10 +13,12 @@ import ShowCategory from "./pages/ShowCategory";
 import AddCategory from "./pages/AddCategory";
 import AddSubCategory from "./pages/AddSubcategory";
 import ShowAllOrders from "./pages/ShowAllOrder";
+import { Analytics } from "@vercel/analytics/react";
 const root = document.getElementById("root");
 
 ReactDOM.createRoot(root).render(
   <Provider store={store}>
+    <Analytics />
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} />
