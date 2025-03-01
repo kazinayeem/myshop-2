@@ -14,6 +14,9 @@ import AddCategory from "./pages/AddCategory";
 import AddSubCategory from "./pages/AddSubcategory";
 import ShowAllOrders from "./pages/ShowAllOrder";
 import { Analytics } from "@vercel/analytics/react";
+import ShowSubCategory from "./pages/ShowSubCategory";
+import Userlist from "./pages/Userlist";
+import ViewSingleUserDetails from "./pages/ViewSingleUserDetails";
 const root = document.getElementById("root");
 
 ReactDOM.createRoot(root).render(
@@ -30,8 +33,13 @@ ReactDOM.createRoot(root).render(
           <Route path="show-category" element={<ShowCategory />} />
           <Route path="add-category" element={<AddCategory />} />
           <Route path="add-subcategory" element={<AddSubCategory />} />
+          <Route path="show-subcategory" element={<ShowSubCategory />} />
+          <Route path="users" element={<Userlist />} />
+          <Route path="users/:userId" element={<ViewSingleUserDetails />} />
           <Route path="orders" element={<ShowAllOrders />} />
         </Route>
+        {/* not found */}
+        <Route path="*" element={<h1>404 Not Found</h1>} />
       </Routes>
     </BrowserRouter>
   </Provider>

@@ -143,11 +143,10 @@ export default function SideBar() {
               </li>
               <li className="mb-2">
                 <Link
-                  to="/dashboard/subcategory"
+                  to="/dashboard/show-subcategory"
                   className="hover:text-gray-400"
                 >
-                  {" "}
-                  Subcategory{" "}
+                  Subcategory
                 </Link>
               </li>
               <li className="mb-2">
