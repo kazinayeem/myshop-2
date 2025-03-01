@@ -8,8 +8,11 @@ import Category from "../model/category.model.js";
 
 export const createCategory = async (req, res) => {
   try {
-    const { name, image } = req.body;
-    const category = new Category({ name, image });
+    const { name, imageUrl } = req.body;
+    const category = new Category({
+      name: name,
+      image: imageUrl,
+    });
     await category.save();
     return res.status(201).json(category);
   } catch (error) {

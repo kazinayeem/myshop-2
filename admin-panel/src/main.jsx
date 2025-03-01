@@ -10,6 +10,9 @@ import ShowPage from "./pages/ShowPage";
 import AddProduct from "./pages/AddProduct";
 import EditProduct from "./pages/EditProduct";
 import ShowCategory from "./pages/ShowCategory";
+import AddCategory from "./pages/AddCategory";
+import AddSubCategory from "./pages/AddSubcategory";
+import ShowAllOrders from "./pages/ShowAllOrder";
 const root = document.getElementById("root");
 
 ReactDOM.createRoot(root).render(
@@ -23,6 +26,9 @@ ReactDOM.createRoot(root).render(
           <Route path="add-product" element={<AddProduct />} />
           <Route path="edit-product/:id" element={<EditProduct />} />
           <Route path="show-category" element={<ShowCategory />} />
+          <Route path="add-category" element={<AddCategory />} />
+          <Route path="add-subcategory" element={<AddSubCategory />} />
+          <Route path="orders" element={<ShowAllOrders />} />
         </Route>
       </Routes>
     </BrowserRouter>

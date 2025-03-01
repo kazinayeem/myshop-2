@@ -1,8 +1,9 @@
 import SubCategory from "../model/subcategory.model.js";
 // create subcategory
 export const createSubCategory = async (req, res) => {
+
   try {
-    const { name, category, image, categoryid } = req.body;
+    const { name, image, categoryid } = req.body;
     const subcategory = new SubCategory({ category: categoryid, image, name });
     await subcategory.save();
     return res.status(201).json(subcategory);
