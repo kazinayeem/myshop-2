@@ -7,9 +7,12 @@ export const ordersApi = createApi({
   endpoints: (builder) => ({
     getorders: builder.query({
       query: () => "orders",
+      invalidatesTags: ["orders"],
     }),
+
     getordersById: builder.query({
       query: (id) => `orders/${id}`,
+      invalidatesTags: ["orders"],
     }),
     addorders: builder.mutation({
       query: (neworders) => ({
@@ -17,6 +20,7 @@ export const ordersApi = createApi({
         method: "POST",
         body: neworders,
       }),
+      invalidatesTags: ["orders"],
     }),
     updateorders: builder.mutation({
       query: ({ id, ...updatedorders }) => ({
