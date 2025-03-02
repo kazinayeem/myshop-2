@@ -17,7 +17,7 @@ export default function ShowCategory() {
       headerName: "Category Name",
       sortable: true,
       filter: true,
-    },
+    }, 
     {
       headerName: "Actions",
       cellRenderer: (params) => (

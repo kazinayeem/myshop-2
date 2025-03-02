@@ -16,6 +16,7 @@ import {
   Tag,
   PackageCheck,
 } from "lucide-react";
+
 export default function SideBar() {
   const [isCollapsed, setIsCollapsed] = useState(
     () => localStorage.getItem("isCollapsed") === "true"
@@ -24,22 +25,19 @@ export default function SideBar() {
 
   useEffect(() => {
     localStorage.setItem("isCollapsed", isCollapsed);
-  }, [isCollapsed]); 
+  }, [isCollapsed]);
 
   const toggleDropdown = (menu) => {
-    setIsCollapsed((prev) => {
-      const newValue = !prev;
-      localStorage.setItem("isCollapsed", newValue);
-      return newValue;
-    });
-    setOpenDropdown((prev) => (prev === menu ? null : menu));
+    setOpenDropdown((prev) => (prev === menu ? null : menu)); // Close previous if new one is clicked
   };
+
   return (
     <div
       className={`${
         isCollapsed ? "w-16" : "w-64"
       } min-h-screen bg-gray-800 text-white p-4 transition-all duration-300`}
     >
+      {/* Sidebar Collapse Button */}
       <button
         className="text-white mb-4 focus:outline-none"
         onClick={() => setIsCollapsed(!isCollapsed)}
@@ -59,6 +57,7 @@ export default function SideBar() {
           </Link>
         </li>
 
+        {/* Product Dropdown */}
         <li className="mb-2">
           <button
             className="w-full flex justify-between items-center hover:text-gray-400"
@@ -105,6 +104,7 @@ export default function SideBar() {
           )}
         </li>
 
+        {/* Category Dropdown */}
         <li className="mb-2">
           <button
             className="w-full flex justify-between items-center hover:text-gray-400"
@@ -128,8 +128,7 @@ export default function SideBar() {
                   to="/dashboard/add-category"
                   className="hover:text-gray-400"
                 >
-                  {" "}
-                  Add Category{" "}
+                  Add Category
                 </Link>
               </li>
               <li className="mb-2">
@@ -137,8 +136,7 @@ export default function SideBar() {
                   to="/dashboard/show-category"
                   className="hover:text-gray-400"
                 >
-                  {" "}
-                  Show Category{" "}
+                  Show Category
                 </Link>
               </li>
               <li className="mb-2">

@@ -50,38 +50,11 @@ function ActionRenderer(props) {
 
 export default function ProductTable() {
   const navigate = useNavigate();
-  // const [rowData, setRowData] = useState([]);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(30);
-  // const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("asc");
-
-  // use rtk query
   const { data, isLoading } = useGetProductsQuery({ limit, page, search });
-  // if (data) {
-  //   setRowData(data.products);
-  //   setTotalPages(data.totalPages);
-  // }
-
-  // useEffect(() => {
-  //   setLoading(true);
-  //   axios
-  //     .get(
-  //       `http://localhost:4000/api/products?page=${page}&limit=${limit}&search=${search}&sort=${sort}`
-  //     )
-  //     .then((res) => {
-  //       setRowData(res.data.products);
-  //       setTotalPages(res.data.totalPages);
-  //       setLoading(false);
-  //     })
-  //     .catch(() => {
-  //       setRowData([]);
-  //       setTotalPages(1);
-  //       setLoading(false);
-  //     });
-  // }, [page, limit, search, sort]);
-
   const handleEdit = (product) => {
     navigate(`/dashboard/edit-product/${product._id}`);
   };
@@ -91,9 +64,46 @@ export default function ProductTable() {
   };
 
   const colDefs = [
-    { field: "name" },
-    { field: "price" },
-    { field: "category.name", headerName: "Category" },
+    {
+      field: "name",
+      headerName: "Product Name",
+      sortable: true,
+      filter: true,
+      floatingFilter: true,
+      floatingFilterComponentParams: {
+        suppressFilterButton: true,
+      },
+      filterParams: {
+        buttons: ["reset"],
+      },
+    },
+    {
+      field: "price",
+      headerName: "Price",
+      sortable: true,
+      filter: true,
+      floatingFilter: true,
+      floatingFilterComponentParams: {
+        suppressFilterButton: true,
+      },
+      filterParams: {
+        buttons: ["reset"],
+      },
+    },
+    {
+      field: "category.name",
+      headerName: "Category",
+
+      sortable: true,
+      filter: true,
+      floatingFilter: true,
+      floatingFilterComponentParams: {
+        suppressFilterButton: true,
+      },
+      filterParams: {
+        buttons: ["reset"],
+      },
+    },
     { field: "stock" },
     {
       headerName: "Image",
@@ -144,7 +154,6 @@ export default function ProductTable() {
           <AgGridReact
             rowData={data?.products || []}
             columnDefs={colDefs}
-           
             pagination={true}
             context={{ handleEdit, handleDelete }}
           />

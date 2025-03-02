@@ -37,9 +37,24 @@ ReactDOM.createRoot(root).render(
           <Route path="users" element={<Userlist />} />
           <Route path="users/:userId" element={<ViewSingleUserDetails />} />
           <Route path="orders" element={<ShowAllOrders />} />
+          <Route
+            path="*"
+            element={
+              <h1 className="flex flex-col justify-center items-center h-screen text-3xl">
+                404 Not Found || Page Not Found || Upcoming Page
+              </h1>
+            }
+          />
         </Route>
         {/* not found */}
-        <Route path="*" element={<h1>404 Not Found</h1>} />
+        <Route
+          path="*"
+          element={
+            <h1 className="flex flex-col justify-center items-center h-screen text-3xl">
+              404 Not Found || Page Not Found || Upcoming Page
+            </h1>
+          }
+        />
       </Routes>
     </BrowserRouter>
   </Provider>
