@@ -1,11 +1,11 @@
-import { useParams, useNavigate } from "react-router";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
+import { useNavigate, useParams } from "react-router";
 import {
   useGetProductByIdQuery,
   useUpdateProductMutation,
 } from "../redux/Api/porductApi";
-import ReactQuill from "react-quill-new";
-import "react-quill-new/dist/quill.snow.css";
 export default function EditProduct() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -62,7 +62,7 @@ export default function EditProduct() {
     try {
       await updateProduct({ id, ...formData }).unwrap();
       alert("Product updated successfully!");
-      navigate("/dashboard/products");
+      navigate("/dashboard/show-product");
     } catch {
       alert("Failed to update product!");
     }
