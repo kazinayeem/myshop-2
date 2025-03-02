@@ -24,7 +24,7 @@ export default function SideBar() {
 
   useEffect(() => {
     localStorage.setItem("isCollapsed", isCollapsed);
-  }, [isCollapsed]); // Sync localStorage when isCollapsed changes
+  }, [isCollapsed]); 
 
   const toggleDropdown = (menu) => {
     setIsCollapsed((prev) => {

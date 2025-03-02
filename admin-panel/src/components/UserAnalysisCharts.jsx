@@ -30,12 +30,53 @@ const UserAnalysisCharts = ({ userDetails }) => {
       userDetails.orderhistory?.filter((order) => order.status === "delivered")
         .length || 0,
     ],
+    [
+      "Cancelled",
+      userDetails.orderhistory?.filter((order) => order.status === "cancelled")
+        .length || 0,
+    ],
+    [
+      "Returned",
+      userDetails.orderhistory?.filter((order) => order.status === "returned")
+        .length || 0,
+    ],
+    [
+      "Refunded",
+      userDetails.orderhistory?.filter((order) => order.status === "refunded")
+        .length || 0,
+    ],
+    [
+      "Failed",
+      userDetails.orderhistory?.filter((order) => order.status === "failed")
+        .length || 0,
+    ],
+    [
+      "In Progress",
+      userDetails.orderhistory?.filter((order) => order.status === "in progress")
+        .length || 0,
+    ],
+    [
+      "Shipped",
+      userDetails.orderhistory?.filter((order) => order.status === "shipped")
+        .length || 0,
+    ],
+
   ];
 
   const salesChartData = [
     ["Month", "Sales ($)"],
-    ["Jan", totalSales], // You can adjust this based on the real months
+    ["Jan", totalSales],
     ["Feb", totalSales],
+    ["Mar", totalSales],
+    ["Apr", totalSales],
+    ["May", totalSales],
+    ["Jun", totalSales],
+    ["Jul", totalSales],
+    ["Aug", totalSales],
+    ["Sep", totalSales],
+    ["Oct", totalSales],
+    ["Nov", totalSales],
+    ["Dec", totalSales],
   ];
 
   const productChartData = [
@@ -43,6 +84,7 @@ const UserAnalysisCharts = ({ userDetails }) => {
     ...(productQuantities || []).map((product) => [
       product.productId,
       product.quantity,
+      
     ]),
   ];
 
