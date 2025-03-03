@@ -10,7 +10,6 @@ dotenv.config();
 import cookieParser from "cookie-parser";
 import express from "express";
 import morgan from "morgan";
-import connectDB from "./config/db.js";
 import CategoryRoutes from "./routes/category.routes.js";
 import productRoutes from "./routes/product.routes.js";
 import addressRoutes from "./routes/address.routes.js";
@@ -20,7 +19,7 @@ import userRoutes from "./routes/user.routes.js";
 import SliderRoutes from "./routes/slider.routes.js";
 import logger from "./lib/logger.js";
 
-const PORT = process.env.PORT || 4000;
+
 
 // initialize express
 const app = express();
@@ -38,7 +37,7 @@ app.use(hpp());
 
 // middlewares
 app.use(cookieParser());
-app.use(cors());
+app.use(cors()); 
 app.use(
   morgan("combined", {
     stream: {
@@ -89,12 +88,4 @@ app.use((err, req, res, next) => {
 });
 
 // start server
-app.listen(PORT, () => {
-  connectDB().then(() => {
-    console.log(`Server is running on port ${PORT}`);
-    //   url
-    console.log(`http://localhost:${PORT}`);
-  });
-
-  console.log(`http://localhost:${PORT}/health`);
-});
+export default app;
