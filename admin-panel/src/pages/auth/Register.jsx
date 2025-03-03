@@ -13,6 +13,9 @@ const RegisterPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // current user registration not working 
+    alert("current user registration not working");
+   
     try {
       const response = await register({ name, email, password }).unwrap();
       const { token, user } = response;
@@ -78,8 +81,9 @@ const RegisterPage = () => {
             />
           </div>
           <button
+
             type="submit"
-            disabled={isLoading}
+            disabled={true}
             className="w-full py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition-colors"
           >
             {isLoading ? "Registering..." : "Register"}
