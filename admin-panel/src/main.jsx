@@ -17,6 +17,7 @@ import { Analytics } from "@vercel/analytics/react";
 import ShowSubCategory from "./pages/ShowSubCategory";
 import Userlist from "./pages/Userlist";
 import ViewSingleUserDetails from "./pages/ViewSingleUserDetails";
+import SliderManager from "./pages/SliderManager";
 const root = document.getElementById("root");
 
 ReactDOM.createRoot(root).render(
@@ -37,6 +38,8 @@ ReactDOM.createRoot(root).render(
           <Route path="users" element={<Userlist />} />
           <Route path="users/:userId" element={<ViewSingleUserDetails />} />
           <Route path="orders" element={<ShowAllOrders />} />
+          <Route path="slider" element={<SliderManager />} />
+
           <Route
             path="*"
             element={

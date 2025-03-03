@@ -1,9 +1,9 @@
-import helmet from "helmet"; // Secure HTTP headers
-import cors from "cors"; // Cross-Origin Resource Sharing
-import rateLimit from "express-rate-limit"; // Request rate limiter
-import xssClean from "xss-clean"; // Prevent XSS attacks
-import hpp from "hpp"; // Prevent HTTP Parameter Pollution
-import dotenv from "dotenv"; // Load environment variables
+import helmet from "helmet"; 
+import cors from "cors"; 
+import rateLimit from "express-rate-limit"; 
+import xssClean from "xss-clean"; 
+import hpp from "hpp"; 
+import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -17,6 +17,7 @@ import addressRoutes from "./routes/address.routes.js";
 import SubCategoryRoutes from "./routes/subcategory.routes.js";
 import orderRoutes from "./routes/order.routes.js";
 import userRoutes from "./routes/user.routes.js";
+import SliderRoutes from "./routes/slider.routes.js";
 import logger from "./lib/logger.js";
 
 const PORT = process.env.PORT || 4000;
@@ -70,6 +71,8 @@ app.use("/api/addresses", addressRoutes);
 app.use("/api/orders", orderRoutes);
 // users
 app.use("/api/users", userRoutes);
+// sliders
+app.use("/api/sliders", SliderRoutes);
 
 /// ❌ 404 Not Found Handler
 app.use((req, res, next) => {
