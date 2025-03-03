@@ -5,77 +5,97 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product List</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
-<body class="bg-gray-100">
-
-    <div class="container mx-auto p-5">
-        <h1 class="text-3xl font-bold text-center text-gray-800 my-6">Product List</h1>
+<body class="bg-light">
+    <div class="container py-5">
+        <h1 class="text-center mb-4">Product List</h1>
 
         <!-- Loading Skeleton -->
-        <div id="loading-skeleton" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div class="bg-white p-4 rounded-lg shadow-md animate-pulse">
-                <div class="bg-gray-300 h-48 rounded-lg"></div>
-                <div class="mt-2 bg-gray-300 h-6 rounded"></div>
-                <div class="mt-2 bg-gray-300 h-4 rounded"></div>
-                <div class="mt-2 bg-gray-300 h-4 rounded"></div>
-                <div class="mt-2 bg-gray-300 h-6 rounded"></div>
+        <div id="loading-skeleton" class="row g-4">
+            <div class="col-md-4">
+                <div class="card p-3 shadow-sm">
+                    <div class="bg-secondary placeholder-glow rounded" style="height: 200px;"></div>
+                    <div class="mt-2 placeholder-glow">
+                        <span class="placeholder col-6"></span>
+                    </div>
+                    <div class="mt-2 placeholder-glow">
+                        <span class="placeholder col-8"></span>
+                    </div>
+                    <div class="mt-2 placeholder-glow">
+                        <span class="placeholder col-4"></span>
+                    </div>
+                </div>
             </div>
-            <div class="bg-white p-4 rounded-lg shadow-md animate-pulse">
-                <div class="bg-gray-300 h-48 rounded-lg"></div>
-                <div class="mt-2 bg-gray-300 h-6 rounded"></div>
-                <div class="mt-2 bg-gray-300 h-4 rounded"></div>
-                <div class="mt-2 bg-gray-300 h-4 rounded"></div>
-                <div class="mt-2 bg-gray-300 h-6 rounded"></div>
+            <div class="col-md-4">
+                <div class="card p-3 shadow-sm">
+                    <div class="bg-secondary placeholder-glow rounded" style="height: 200px;"></div>
+                    <div class="mt-2 placeholder-glow">
+                        <span class="placeholder col-6"></span>
+                    </div>
+                    <div class="mt-2 placeholder-glow">
+                        <span class="placeholder col-8"></span>
+                    </div>
+                    <div class="mt-2 placeholder-glow">
+                        <span class="placeholder col-4"></span>
+                    </div>
+                </div>
             </div>
-            <div class="bg-white p-4 rounded-lg shadow-md animate-pulse">
-                <div class="bg-gray-300 h-48 rounded-lg"></div>
-                <div class="mt-2 bg-gray-300 h-6 rounded"></div>
-                <div class="mt-2 bg-gray-300 h-4 rounded"></div>
-                <div class="mt-2 bg-gray-300 h-4 rounded"></div>
-                <div class="mt-2 bg-gray-300 h-6 rounded"></div>
+            <div class="col-md-4">
+                <div class="card p-3 shadow-sm">
+                    <div class="bg-secondary placeholder-glow rounded" style="height: 200px;"></div>
+                    <div class="mt-2 placeholder-glow">
+                        <span class="placeholder col-6"></span>
+                    </div>
+                    <div class="mt-2 placeholder-glow">
+                        <span class="placeholder col-8"></span>
+                    </div>
+                    <div class="mt-2 placeholder-glow">
+                        <span class="placeholder col-4"></span>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- Product Grid -->
-        <div id="product-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" style="display: none;">
-            <!-- Products will be inserted here dynamically -->
-        </div>
-    </div>
-        </div>
+        <div id="product-container" class="row g-4" style="display: none;"></div>
     </div>
 
-    <!-- footer  -->
-
-    <footer class="bg-gray-800 text-white py-4">
-        <div class="container mx-auto text-center">
-            <p>&copy; 2023 Your Company. All rights reserved.</p>
-        </div>
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-3 mt-5 text-center">
+        <p class="mb-0">&copy; 2023 Your Company. All rights reserved.</p>
     </footer>
-    <!-- JavaScript to fetch and display products -->
 
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JavaScript to fetch and display products -->
     <script>
         async function fetchProducts() {
             try {
                 const response = await fetch("/api/products");
-                const {products} = await response.json();
+                const { products } = await response.json();
                 const productContainer = document.getElementById("product-container");
                 const loadingSkeleton = document.getElementById("loading-skeleton");
 
                 productContainer.innerHTML = "";
-                loadingSkeleton.classList.add("hidden");
-                productContainer.classList.remove("hidden");
+                loadingSkeleton.style.display = "none";
+                productContainer.style.display = "flex";
 
                 products.forEach(product => {
                     const productCard = `
-                        <div class="bg-white p-4 rounded-lg shadow-md">
-                            <img loading="lazy" src="${product.image[0]}" alt="${product.name}" class="w-full h-48 object-cover rounded-lg">
-                            <h2 class="text-lg font-semibold mt-2">${product.name}</h2>
-                            <p class="text-gray-600">${product.description.substring(0, 60)}...</p>
-                            <p class="text-green-600 font-bold">$${product.price}</p>
-                            <a href="/${product._id}" class="block mt-2 text-blue-500 hover:underline">View Details</a>
+                        <div class="col-md-4">
+                            <div class="card shadow-sm">
+                                <img loading="lazy" src="${product.image[0]}" alt="${product.name}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                                <div class="card-body">
+                                    <h5 class="card-title">${product.name}</h5>
+                                    <p class="card-text">${product.description.substring(0, 60)}...</p>
+                                    <p class="text-success fw-bold">$${product.price}</p>
+                                    <a href="/${product._id}" class="btn btn-primary">View Details</a>
+                                </div>
+                            </div>
                         </div>
                     `;
                     productContainer.innerHTML += productCard;
@@ -87,7 +107,6 @@
 
         fetchProducts(); // Call the function on page load
     </script>
-
 </body>
 
 </html>
