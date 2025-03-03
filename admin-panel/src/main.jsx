@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router";
 import App from "./App";
 import "./index.css";
-import { SpeedInsights } from "@vercel/speed-insights/next";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import { Provider } from "react-redux";
 import store from "./redux/store/store";
 import Dashboard from "./pages/Dashboard"; // Make sure it's exported correctly
