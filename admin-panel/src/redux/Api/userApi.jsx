@@ -5,6 +5,20 @@ export const userApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_API_URL }),
   tagTypes: ["user"],
   endpoints: (builder) => ({
+    register: builder.mutation({
+      query: (userData) => ({
+        url: "/users/register",
+        method: "POST",
+        body: userData,
+      }),
+    }),
+    login: builder.mutation({
+      query: (userData) => ({
+        url: "/users/login",
+        method: "POST",
+        body: userData,
+      }),
+    }),
     getUsers: builder.query({
       query: () => "users",
       providesTags: ["user"],
@@ -52,6 +66,8 @@ export const {
   useAddUserMutation,
   useUpdateUserMutation,
   useDeleteUserMutation,
+  useLoginMutation,
+  useRegisterMutation,
 } = userApi;
 
 export default userApi;

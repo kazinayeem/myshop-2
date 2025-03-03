@@ -216,7 +216,10 @@ export default function SideBar() {
         </li>
 
         <li className="mb-2">
-          <Link to="/" className="hover:text-gray-400 flex items-center">
+          <Link
+            to="dashboard/logout"
+            className="hover:text-gray-400 flex items-center"
+          >
             🚪 {!isCollapsed && "Logout"}
           </Link>
         </li>
