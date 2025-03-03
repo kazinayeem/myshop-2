@@ -1,15 +1,10 @@
-// product api redux toolkit rtk
-
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const productApi = createApi({
   reducerPath: "productApi",
   baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_API_URL }),
+  tagTypes: ["Products"],
   endpoints: (builder) => ({
-    // getProducts: builder.query({
-    //   query: () => "/products",
-    // }),
-    // product api with params limit and poge and search
     getProducts: builder.query({
       query: ({ limit, page, search }) => {
         let query = `/products?limit=${limit}&page=${page}`;
@@ -18,9 +13,11 @@ const productApi = createApi({
         }
         return query;
       },
+      providesTags: ["Products"], 
     }),
     getProductById: builder.query({
       query: (id) => `/products/${id}`,
+      providesTags: (result, error, id) => [{ type: "Products", id }], 
     }),
     addProduct: builder.mutation({
       query: (newProduct) => ({
@@ -28,6 +25,7 @@ const productApi = createApi({
         method: "POST",
         body: newProduct,
       }),
+      invalidatesTags: ["Products"],
     }),
     updateProduct: builder.mutation({
       query: ({ id, ...updatedProduct }) => ({
@@ -35,15 +33,18 @@ const productApi = createApi({
         method: "PUT",
         body: updatedProduct,
       }),
+      invalidatesTags: ["Products"], 
     }),
     deleteProduct: builder.mutation({
       query: (id) => ({
         url: `/products/${id}`,
         method: "DELETE",
       }),
+      invalidatesTags: ["Products"],
     }),
   }),
 });
+
 export const {
   useGetProductsQuery,
   useGetProductByIdQuery,
