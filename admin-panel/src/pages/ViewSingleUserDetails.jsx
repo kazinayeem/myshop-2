@@ -1,6 +1,10 @@
 import { useParams } from "react-router";
 import { useGetUserByIdQuery } from "../redux/Api/userApi";
 import UserAnalysisCharts from "../components/UserAnalysisCharts";
+import {
+  generateAllInvoicesPDF,
+  generateInvoicePDF,
+} from "../utils/invoiceGenerator";
 
 const ViewSingleUserDetails = () => {
   const { userId } = useParams();
@@ -54,23 +58,23 @@ const ViewSingleUserDetails = () => {
           <h3 className="text-xl font-semibold mt-6">Order History</h3>
           {userDetails.orderhistory?.length > 0 ? (
             <div className="space-y-4">
-              {userDetails.orderhistory.map((order, index) => (
+              {userDetails.orderhistory.map((order) => (
                 <div
                   key={order._id}
                   className="p-4 bg-gray-50 rounded-lg shadow-sm border border-gray-200"
                 >
-                  <p>
+                  <p className="font-medium">
                     <strong>Order ID:</strong> {order._id}
                   </p>
-                  <p>
+                  <p className="text-gray-600">
                     <strong>Status:</strong> {order.status}
                   </p>
-                  <p>
+                  <p className="text-gray-600">
                     <strong>Total Amount:</strong> ${order.amount}
                   </p>
                   <p className="mt-2 font-semibold">Products:</p>
                   <ul className="ml-4 space-y-2">
-                    {order.products.map((product, index) => (
+                    {order.products.map((product) => (
                       <li
                         key={product._id}
                         className="flex justify-between bg-white p-2 rounded-lg shadow-md border"
@@ -82,9 +86,23 @@ const ViewSingleUserDetails = () => {
                         <span className="text-gray-600">
                           ${product.productId.price}
                         </span>
+
+                        {/* download invoice */}
                       </li>
                     ))}
                   </ul>
+                  <button
+                    className="text-blue-500 hover:underline "
+                    onClick={() =>
+                      generateInvoicePDF({
+                        name: userDetails.username,
+                        email: userDetails.email,
+                        order,
+                      })
+                    }
+                  >
+                    Download Invoice
+                  </button>
                 </div>
               ))}
             </div>
@@ -92,6 +110,19 @@ const ViewSingleUserDetails = () => {
             <p>No orders found.</p>
           )}
         </div>
+        {/* download all product invoiice */}
+        <button
+          className="text-blue-500 hover:underline "
+          onClick={() =>
+            generateAllInvoicesPDF({
+              orders: userDetails.orderhistory,
+              name: userDetails.username,
+              email: userDetails.email,
+            })
+          }
+        >
+          Download All Invoices
+        </button>
       </div>
       <UserAnalysisCharts userDetails={userDetails} />
     </div>

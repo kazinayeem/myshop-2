@@ -1,12 +1,12 @@
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
-export const generateInvoicePDF = (order) => {
+export const generateInvoicePDF = ({ name, email, order }) => {
   const doc = new jsPDF();
 
   // Shop Name
   doc.setFontSize(20);
-  doc.text("MY SHOP", 105, 15, { align: "center" });
+  doc.text("KAZI SHOP K AND K", 105, 15, { align: "center" });
 
   // Invoice Title
   doc.setFontSize(16);
@@ -14,8 +14,8 @@ export const generateInvoicePDF = (order) => {
 
   // User Details
   doc.setFontSize(12);
-  doc.text(`User: ${order.userId?.username || "Unknown"}`, 14, 40);
-  doc.text(`Email: ${order.userId?.email || "N/A"}`, 14, 50);
+  doc.text(`User: ${name || "Unknown"}`, 14, 40);
+  doc.text(`Email: ${email || "N/A"}`, 14, 50);
   doc.text(`Status: ${order.status}`, 14, 60);
 
   // Table Headers
@@ -42,11 +42,26 @@ export const generateInvoicePDF = (order) => {
   doc.setFontSize(14);
   doc.text(`Total Amount: $${order.amount.toFixed(2)}`, 14, finalY);
 
+
+  // gap
+  doc.text(" ", 14, finalY + 55);
+  doc.text(" ", 14, finalY + 60);
+  doc.text(" ", 14, finalY + 65);
+  // footer
+  doc.setFontSize(10);
+  doc.text("Thank you for your purchase!", 105, finalY + 20, {
+    align: "center",
+  });
+  doc.text("KAZI SHOP K AND K", 105, finalY + 25, { align: "center" });
+  doc.text("Contact: +880123456789", 105, finalY + 30, { align: "center" });
+  doc.text("Email: kazi@gmail.com", 105, finalY + 35, { align: "center" });
+  doc.text("Address: Dhaka, Bangladesh", 105, finalY + 40, { align: "center" });
+
   // Save PDF
   doc.save(`Invoice_${order._id}.pdf`);
 };
 
-export const generateAllInvoicesPDF = (orders) => {
+export const generateAllInvoicesPDF = ({orders, name, email}) => {
   const doc = new jsPDF();
 
   doc.setFontSize(20);
@@ -61,8 +76,8 @@ export const generateAllInvoicesPDF = (orders) => {
     doc.text(`Invoice #${order._id}`, 14, yOffset);
 
     doc.setFontSize(12);
-    doc.text(`User: ${order.userId?.username || "Unknown"}`, 14, yOffset + 10);
-    doc.text(`Email: ${order.userId?.email || "N/A"}`, 14, yOffset + 20);
+    doc.text(`User: ${name || "Unknown"}`, 14, yOffset + 10);
+    doc.text(`Email: ${email || "N/A"}`, 14, yOffset + 20);
     doc.text(`Status: ${order.status}`, 14, yOffset + 30);
 
     const tableColumn = ["Product", "Quantity", "Price", "Total"];
