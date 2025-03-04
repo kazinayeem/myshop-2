@@ -26,7 +26,8 @@ export const getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find()
       .populate("userId", "username email")
-      .populate("products.productId", "name price").populate("address");
+      .populate("products.productId", "name price")
+      .populate("address");
     res.status(200).json(orders);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -35,8 +36,8 @@ export const getAllOrders = async (req, res) => {
 // order by user id
 export const getOrderByUserId = async (req, res) => {
   try {
-    const orders = await Order.find({ userId : req.params.id })
-  
+    const orders = await Order.find({ userId: req.params.id });
+
     res.status(200).json(orders);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -69,7 +70,12 @@ export const deleteOrder = async (req, res) => {
 // get order by id
 export const getOrderById = async (req, res) => {
   try {
-    const order = await Order.findById(req.params.id);
+    console.log(req.params.id);
+    const order = await Order.findById(req.params.id)
+
+      .populate("userId", "username email")
+      .populate("products.productId", "name price")
+      .populate("address");
     res.status(200).json(order);
   } catch (error) {
     res.status(500).json({ message: error.message });

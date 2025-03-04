@@ -1,0 +1,6 @@
+/admin-panel
+/admin-panel/build
+.vscode
+.git
+node_modules
+

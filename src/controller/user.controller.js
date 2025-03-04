@@ -102,7 +102,14 @@ export const getUserById = async (req, res) => {
     const user = await User.findById(id)
       .select("-password")
       .populate("address")
-      .populate("orderhistory");
+      .populate({
+        path: "orderhistory",
+        populate: {
+          path: "products.productId",
+          select: "name price", // Selecting only name and price
+        },
+      });
+
     return res.status(200).json(user);
   } catch (error) {
     return res.status(500).json({ message: error.message });
