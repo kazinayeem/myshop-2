@@ -1,10 +1,11 @@
 import { Chart } from "react-google-charts";
 import { useGetordersQuery } from "../redux/Api/orderApi";
+import Loading from "./Loading";
 
 const OrderChart = () => {
   const { data: orders, isLoading, isError } = useGetordersQuery();
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <Loading/>;
   if (isError) return <div>Error loading orders</div>;
   if (!orders || orders.length === 0) return <div>No orders available</div>;
 

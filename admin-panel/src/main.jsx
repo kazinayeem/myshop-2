@@ -23,13 +23,15 @@ import PrivateRoute from "./routes/PrivateRoute";
 import LoginPage from "./pages/auth/Login";
 import RegisterPage from "./pages/auth/Register";
 import LogoutButton from "./components/LogoutButton";
+import NotFound from "./pages/NotFound";
+import ProfilePage from "./pages/ProfilePage";
 
 const root = document.getElementById("root");
 
 ReactDOM.createRoot(root).render(
   <Provider store={store}>
     <Analytics />
-    <SpeedInsights  />
+    <SpeedInsights />
     <BrowserRouter>
       <Routes>
         {/* Public Routes */}
@@ -54,17 +56,12 @@ ReactDOM.createRoot(root).render(
           <Route path="orders" element={<ShowAllOrders />} />
           <Route path="slider" element={<SliderManager />} />
           <Route path="logout" element={<LogoutButton />} />
+          <Route path="stock" element={<ProfilePage />} />
+          <Route path="*" element={<NotFound />} />
         </Route>
 
         {/* Catch-all for 404 */}
-        <Route
-          path="*"
-          element={
-            <h1 className="flex flex-col justify-center items-center h-screen text-3xl">
-              404 Not Found || Page Not Found || Upcoming Page
-            </h1>
-          }
-        />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   </Provider>

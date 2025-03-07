@@ -9,6 +9,7 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 
 import PropTypes from "prop-types";
 import { useGetProductsQuery } from "../redux/Api/porductApi";
+import Loading from "../components/Loading";
 
 function ImageRenderer(props) {
   const imageUrl = props.value;
@@ -148,7 +149,7 @@ export default function ProductTable() {
       </div>
 
       {isLoading ? (
-        <div>Loading...</div>
+        <Loading/>
       ) : (
         <div className="ag-theme-alpine w-full max-w-full flex-1">
           <AgGridReact

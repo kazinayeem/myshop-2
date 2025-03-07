@@ -1,5 +1,6 @@
 import { AgGridReact } from "ag-grid-react";
 import { useGetSubCategoriesQuery } from "../redux/Api/subcategoryApi";
+import Loading from "../components/Loading";
 
 export default function ShowSubCategory() {
   const {
@@ -19,7 +20,7 @@ export default function ShowSubCategory() {
 
   return (
     <div className="ag-theme-alpine" style={{ height: 500, width: "100%" }}>
-      {isLoading && <p>Loading...</p>}
+      {isLoading && <Loading />}
       {isError && <p>Error fetching categories</p>}
       {subcategories && (
         <AgGridReact

@@ -6,6 +6,7 @@ import {
   useGetProductByIdQuery,
   useUpdateProductMutation,
 } from "../redux/Api/porductApi";
+import Loading from "../components/Loading";
 export default function EditProduct() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -68,7 +69,7 @@ export default function EditProduct() {
     }
   };
 
-  if (isLoading) return <div className="text-center py-10">Loading...</div>;
+  if (isLoading) return <Loading/>;
   if (isError)
     return (
       <div className="text-red-500 text-center py-10">

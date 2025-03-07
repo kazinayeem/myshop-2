@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import { useGetCategoriesQuery } from "../redux/Api/categoryApi";
 import { AgGridReact } from "ag-grid-react";
 import CategoryModal from "../components/ShowporductModal";
+import Loading from "../components/Loading";
 
 export default function ShowCategory() {
   const { data: categories, isLoading, isError } = useGetCategoriesQuery();
@@ -33,7 +34,7 @@ export default function ShowCategory() {
 
   return (
     <div className="ag-theme-alpine" style={{ height: 500, width: "100%" }}>
-      {isLoading && <p>Loading...</p>}
+      {isLoading && <Loading/>}
       {isError && <p>Error fetching categories</p>}
       {categories && (
         <AgGridReact

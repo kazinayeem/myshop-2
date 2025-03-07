@@ -1,11 +1,12 @@
 import { Chart } from "react-google-charts";
 import { useGetCategoriesQuery } from "../redux/Api/categoryApi";
+import Loading from "./Loading";
 
 
 const PieChart = () => {
   const { data: categories, error, isLoading } = useGetCategoriesQuery();
 
-  if (isLoading) return <p>Loading Chart...</p>;
+  if (isLoading) return <Loading/>;
   if (error) return <p>Error loading categories</p>;
 
   const chartData = [["Category", "Number of Products"]];
