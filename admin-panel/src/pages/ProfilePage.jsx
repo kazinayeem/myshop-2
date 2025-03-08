@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useGetordersQuery } from "../redux/Api/orderApi";
 import { generateProfilePDF } from "../utils/pdfUtils";
 import { motion } from "framer-motion"; // Import Framer Motion
@@ -149,6 +149,7 @@ const ProfilePage = () => {
               <p>
                 <strong>Total Amount:</strong> ₹{order.amount}
               </p>
+
               {/* Conditional rendering for Profit/Loss per order */}
               {order.products.reduce((acc, product) => {
                 const { quantity } = product;
@@ -166,14 +167,23 @@ const ProfilePage = () => {
                 }
                 return acc;
               }, 0) > 0 ? (
-                <p className="text-green-600">
-                  <strong>Profit:</strong> ₹
-                  {order.products.reduce((acc, product) => {
-                    const { quantity } = product;
-                    const { price, buyingPrice } = product.productId;
-                    return acc + (price - buyingPrice) * quantity;
-                  }, 0)}
-                </p>
+                <React.Fragment>
+                  <p className="text-green-600">
+                    <strong>Profit:</strong> ₹
+                    {order.products.reduce((acc, product) => {
+                      const { quantity } = product;
+                      const { price, buyingPrice } = product.productId;
+                      return acc + (price - buyingPrice) * quantity;
+                    }, 0)}
+                  </p>
+                  {order.products.map((product) => (
+                    <p key={product.productId._id}>
+                      <strong>
+                        Buying Price {product.productId.buyingPrice}
+                      </strong>
+                    </p>
+                  ))}
+                </React.Fragment>
               ) : (
                 <p className="text-red-600">
                   <strong>Loss:</strong> ₹
