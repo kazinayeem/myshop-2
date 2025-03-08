@@ -190,7 +190,7 @@ const productSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// productSchema.index({ slug: 1 }); 
+productSchema.index({ slug: 1 }); 
 
 const Product = mongoose.model("Product", productSchema);
 
