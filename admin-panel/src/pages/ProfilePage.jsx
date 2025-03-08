@@ -149,6 +149,9 @@ const ProfilePage = () => {
               <p>
                 <strong>Total Amount:</strong> ₹{order.amount}
               </p>
+              <p>
+                <strong>Total Amount:</strong> ₹{order.productId.buyingPrice}
+              </p>
 
               {/* Conditional rendering for Profit/Loss per order */}
               {order.products.reduce((acc, product) => {
