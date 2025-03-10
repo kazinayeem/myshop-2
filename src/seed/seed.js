@@ -1,16 +1,14 @@
-import mongoose from "mongoose";
 import dotenv from "dotenv";
 import connectDB from "../config/db.js";
-import Category from "../model/category.model.js";
-import SubCategory from "../model/subcategory.model.js";
-import Product, { Variant } from "../model/product.model.js";
-import Order from "../model/order.model.js";
-import User from "../model/user.model.js";
 import Address from "../model/address.model.js";
+import Category from "../model/category.model.js";
+import Order from "../model/order.model.js";
+import Product from "../model/product.model.js";
+import SubCategory from "../model/subcategory.model.js";
+import User from "../model/user.model.js";
 
 dotenv.config();
 
-// Sample Categories and Subcategories
 const createCategoryAndSubCategories = async () => {
   const categories = [
     {
@@ -44,95 +42,67 @@ const createCategoryAndSubCategories = async () => {
     for (let subcategoryData of subcategories) {
       const subcategory = new SubCategory(subcategoryData);
       await subcategory.save();
-      category.subcategory.push(subcategory._id);
     }
-    await category.save();
   }
-
   return categoryInstances;
 };
 
 const seedProducts = async (categoryInstances) => {
   console.log("Seeding products...");
-  let products = [];
-
   for (let i = 0; i < 100; i++) {
-    const hasVariants = Math.random() > 0.5;
     const price = Math.floor(Math.random() * 500) + 100;
     const discount = Math.floor(Math.random() * 30);
     const discountedPrice = price - (price * discount) / 100;
     const category =
       categoryInstances[Math.floor(Math.random() * categoryInstances.length)];
-    const subcategory =
-      category.subcategory[
-        Math.floor(Math.random() * category.subcategory.length)
-      ];
+
+    const priceByVariant = [
+      {
+        name: "Size",
+        value: "Small",
+        price: price,
+        stock: Math.floor(Math.random() * 50) + 1,
+        image: `https://picsum.photos/200/300?variant=${i + 1}`,
+      },
+      {
+        name: "Color",
+        value: "Red",
+        price: price,
+        stock: Math.floor(Math.random() * 50) + 1,
+        image: `https://picsum.photos/200/300?variant=${i + 1}`,
+      },
+      {
+        name: "Size",
+        value: "Medium",
+        price: price,
+        stock: Math.floor(Math.random() * 50) + 1,
+        image: `https://picsum.photos/200/300?variant=${i + 1}`,
+      },
+    ];
 
     const newProduct = new Product({
       name: `Product ${i + 1}`,
       description: `Description for Product ${i + 1}`,
-      section: ["New Arrivals", "Best Sellers"],
-      buyingPrice: price - 50,
       price,
       discountedPrice,
       discountPercent: discount,
+      bulkOrder: {
+        discount: 10,
+        minQuantity: 5,
+      },
+      buyingPrice: price - 10,
       image: [`https://picsum.photos/200/300?product=${i + 1}`],
       category: category._id,
-      subcategory,
-      bulkOrder: {
-        minQuantity: Math.floor(Math.random() * 10) + 1,
-        discount: Math.floor(Math.random() * 20) + 5,
-      },
       stock: Math.floor(Math.random() * 100) + 1,
       brand: "Brand " + (i % 5),
-      rating: (Math.random() * 5).toFixed(1),
-      numReviews: Math.floor(Math.random() * 100),
-      isFeatured: Math.random() > 0.8,
+      priceByVariant,
       slug: `product-${i + 1}`,
-      isDeleted: false,
-      isBlocked: false,
-      warranty: `${Math.floor(Math.random() * 5) + 1} years`,
-      returnable: Math.random() > 0.7,
-      returnableDays: 7,
-      cod: Math.random() > 0.5,
+      subcategory: category._id,
     });
 
     await newProduct.save();
-    category.product.push(newProduct._id);
-    await category.save();
-
-    if (hasVariants) {
-      const variantNames = ["Size", "Color"];
-      const values = {
-        Size: ["Small", "Medium", "Large"],
-        Color: ["Red", "Blue", "Green", "Black", "White"],
-      };
-      const variants = [];
-
-      for (let j = 0; j < Math.floor(Math.random() * 3); j++) {
-        const name =
-          variantNames[Math.floor(Math.random() * variantNames.length)];
-        const value =
-          values[name][Math.floor(Math.random() * values[name].length)];
-        const variant = new Variant({
-          product: newProduct._id,
-          name,
-          value,
-          price,
-          stock: Math.floor(Math.random() * 50) + 1,
-        });
-        await variant.save();
-        variants.push(variant._id);
-      }
-
-      newProduct.priceByVariant = variants;
-      await newProduct.save();
-    }
-    products.push(newProduct);
   }
-
   console.log("✅ 100 Products Seeded Successfully!");
-  return products;
 };
 
 const seedUsers = async () => {
@@ -144,95 +114,87 @@ const seedUsers = async () => {
       username: `user${i + 1}`,
       email: `user${i + 1}@gmail.com`,
       password: "password123",
+      isAdmin: Math.random() > 0.5,
     });
-
     await user.save();
     users.push(user);
   }
-
   console.log("✅ 20 Users Seeded Successfully!");
   return users;
 };
 
-const seedAddresses = async (userInstances) => {
+const seedAddresses = async (users) => {
   console.log("Seeding addresses...");
-  const addressInstances = [];
-
-  for (let user of userInstances) {
+  for (let user of users) {
     const address = new Address({
       userId: user._id,
-      addressLine1: `Street ${Math.floor(Math.random() * 100)}`,
-      addressLine2: `Apt ${Math.floor(Math.random() * 10)}`,
-      city: "City Name",
-      state: "State Name",
-      zipCode: `1000${Math.floor(Math.random() * 10)}`,
+      addressLine1: "123 Main Street",
+      addressLine2: "Apt 4B",
+      city: "Dhaka",
+      state: "Dhaka",
+      country: "Bangladesh",
+      zipCode: "1000",
     });
-
     await address.save();
-    addressInstances.push(address);
+  }
+  console.log("✅ Addresses Seeded Successfully!");
+};
+const seedOrders = async (users) => {
+  console.log("Seeding orders...");
+  const products = await Product.find({});
+  const addresses = await Address.find({}); // Fetch all addresses
+
+  if (products.length === 0 || addresses.length === 0) {
+    console.log("⚠️ No products or addresses found! Skipping order seeding.");
+    return;
   }
 
-  console.log("✅ Addresses Seeded Successfully!");
-  return addressInstances;
-};
+  for (let user of users) {
+    const address = addresses.find(
+      (addr) => addr.userId?.toString() === user._id.toString()
+    );
 
-const seedOrders = async (
-  userInstances,
-  addressInstances,
-  productInstances
-) => {
-  console.log("Seeding orders...");
-
-  for (let i = 0; i < 50; i++) {
-    const user =
-      userInstances[Math.floor(Math.random() * userInstances.length)];
-    const address =
-      addressInstances[Math.floor(Math.random() * addressInstances.length)];
-
-    // Randomly selecting products for the order
-    const selectedProducts = [];
-    let totalAmount = 0;
-
-    for (let j = 0; j < Math.floor(Math.random() * 5) + 1; j++) {
-      // Each order has 1-5 products
-      const product =
-        productInstances[Math.floor(Math.random() * productInstances.length)];
-      const quantity = Math.floor(Math.random() * 3) + 1; // Random quantity (1-3)
-      const price = product.price; // Original product price
-      const totalPrice = price * quantity;
-
-      selectedProducts.push({
-        productId: product._id,
-        quantity,
-        price,
-        totalPrice,
-      });
-
-      totalAmount += totalPrice;
+    if (!address) {
+      console.log(`⚠️ No address found for user: ${user.username}`);
+      continue;
     }
 
-    // Ensure address and amount are set correctly
+    // Pick 2-3 random products for the order
+    const orderProducts = [];
+    const numProducts = Math.floor(Math.random() * 2) + 2; // 2-3 products per order
+    for (let i = 0; i < numProducts; i++) {
+      const product = products[Math.floor(Math.random() * products.length)];
+      const quantity = Math.floor(Math.random() * 3) + 1; // Random quantity between 1 and 3
+      orderProducts.push({
+        productId: product._id,
+        quantity,
+        price: product.price,
+      });
+    }
+
+    // Calculate total price
+    const totalPrice = orderProducts.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0
+    );
+
     const order = new Order({
       userId: user._id,
-      products: selectedProducts,
-      amount: totalAmount, // Make sure the amount is set
-      address: address._id, // Ensure address is set
-      status: "pending", // You can change this to "completed" or any other status as needed
+      products: orderProducts,
+      totalPrice,
+      amount: totalPrice,
+      address: address._id,
+      status: Math.random() > 0.5 ? "pending" : "shipped",
     });
 
     await order.save();
-    user.orderhistory.push(order._id);
-    await user.save();
   }
-
-  console.log("✅ 50 Orders Seeded Successfully!");
+  console.log("✅ Orders Seeded Successfully!");
 };
 
 const seed = async () => {
   await connectDB();
-  console.log(
-    "Deleting existing categories, subcategories, products, users, orders, and addresses..."
-  );
+  console.log("Deleting existing data...");
 
   await Category.deleteMany({});
   await SubCategory.deleteMany({});
@@ -242,10 +204,10 @@ const seed = async () => {
   await Order.deleteMany({});
 
   const categoryInstances = await createCategoryAndSubCategories();
-  const productInstances = await seedProducts(categoryInstances);
-  const userInstances = await seedUsers();
-  const addressInstances = await seedAddresses(userInstances);
-  await seedOrders(userInstances, addressInstances, productInstances);
+  await seedProducts(categoryInstances);
+  const users = await seedUsers();
+  await seedAddresses(users);
+  await seedOrders(users);
 
   console.log("✅ Seeding Completed Successfully!");
   process.exit();

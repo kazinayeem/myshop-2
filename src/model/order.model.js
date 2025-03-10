@@ -1,5 +1,3 @@
-// order model
-
 import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema(
@@ -20,9 +18,14 @@ const orderSchema = new mongoose.Schema(
           type: Number,
           required: true,
         },
+        price: {
+          type: Number,
+          required: true,
+        },
       },
     ],
-    amount: {
+    totalPrice: {
+      // Change `amount` to `totalPrice` here
       type: Number,
       required: true,
     },

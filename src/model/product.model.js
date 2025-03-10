@@ -1,43 +1,5 @@
 import mongoose from "mongoose";
 
-// Variant Schema
-const variantSchema = new mongoose.Schema(
-  {
-    product: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Product",
-      required: true,
-    },
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    value: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    price: {
-      type: Number,
-      required: true,
-      min: 0, // Ensures price is non-negative
-    },
-    stock: {
-      type: Number,
-      required: true,
-      min: 0, // Ensures stock is not negative
-    },
-    image: {
-      type: String, // Optional variant-specific image
-      required: false,
-    },
-  },
-  { timestamps: true }
-);
-
-export const Variant = mongoose.model("Variant", variantSchema);
-
 // Product Schema
 const productSchema = new mongoose.Schema(
   {
@@ -77,13 +39,39 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: false,
       min: 0,
-      max: 100, // Ensures percentage remains valid
+      max: 100,
     },
     priceByVariant: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Variant",
-        required: false,
+        name: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        value: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        price: {
+          type: Number,
+          required: true,
+          min: 0,
+        },
+        buyingPrice: {
+          type: Number,
+          required: false,
+          min: 0,
+        },
+        stock: {
+          type: Number,
+          required: true,
+          min: 0, 
+        },
+        image: {
+          type: String, 
+          required: false,
+        },
       },
     ],
     image: [
@@ -185,12 +173,11 @@ const productSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    
   },
   { timestamps: true }
 );
 
-productSchema.index({ slug: 1 }); 
+
 
 const Product = mongoose.model("Product", productSchema);
 
