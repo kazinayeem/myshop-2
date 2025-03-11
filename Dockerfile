@@ -10,8 +10,7 @@ COPY . .
 
 EXPOSE 8080
 
-# seed db
 
-RUN npm run seed
+
 
 CMD ["npm", "start"]
