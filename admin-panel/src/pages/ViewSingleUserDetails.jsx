@@ -1,14 +1,14 @@
+import { motion } from "framer-motion";
 import { useState } from "react";
 import { useParams } from "react-router";
-import { useGetUserByIdQuery } from "../redux/Api/userApi";
-import UserAnalysisCharts from "../components/UserAnalysisCharts";
 import Loading from "../components/Loading";
-import { motion } from "framer-motion";
+import UserAnalysisCharts from "../components/UserAnalysisCharts";
+import { useUpdateordersMutation } from "../redux/Api/orderApi";
+import { useGetUserByIdQuery } from "../redux/Api/userApi";
 import {
   generateAllInvoicesPDF,
   generateInvoicePDF,
 } from "../utils/invoiceGenerator";
-import { useUpdateordersMutation } from "../redux/Api/orderApi";
 
 const ViewSingleUserDetails = () => {
   const { userId } = useParams();
@@ -74,6 +74,14 @@ const ViewSingleUserDetails = () => {
           <p className="font-medium text-lg text-gray-800">
             Total Amount: ${totalAmount.toFixed(2)}
           </p>
+
+          {/* user mobileNumber */}
+          {userDetails.mobileNumber && (
+            <div className="mt-4">
+              <h3 className="text-lg font-semibold text-gray-800">Mobile</h3>
+              <p className="text-gray-600">{userDetails.mobileNumber}</p>
+            </div>
+          )}
 
           {/* user address form user.address array*/}
           {userDetails.address && userDetails.address.length > 0 && (
