@@ -6,7 +6,6 @@
     "start": "cross-env NODE_ENV=production node ./src/app.js",
     "dev": "cross-env NODE_ENV=development nodemon ./src/app.js",
     "client": "npm run dev --prefix admin-panel",
-    "seed": "node ./src/seed/seed.js",
     "dev:all": "concurrently \"npm run dev\" \"npm run client\""
   },
   "keywords": [
