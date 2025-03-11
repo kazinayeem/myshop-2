@@ -68,7 +68,7 @@ const Userlist = () => {
             <p className="text-gray-600">
               <strong>Address:</strong>{" "}
               {selectedUser.address?.length > 0
-                ? `${selectedUser.address[0]?.street}, ${selectedUser.address[0]?.city}`
+                ? `${selectedUser.address[0]?.city}, ${selectedUser.address[0]?.state} ${selectedUser.address[0]?.zipCode}`
                 : "No address available"}
             </p>
             <Link

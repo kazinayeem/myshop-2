@@ -1,6 +1,6 @@
 // user model admin, user both
-import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+import mongoose from "mongoose";
 const userSchema = new mongoose.Schema(
   {
     username: {
@@ -21,11 +21,10 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    // role: {
-    //   type: String,
-    //   enum: ["user", "admin"],
-    //   default: "USER",
-    // },
+    mobileNumber : {
+      type: String,
+      required: true,
+    },
     isUser: {
       type: Boolean,
       default: true,

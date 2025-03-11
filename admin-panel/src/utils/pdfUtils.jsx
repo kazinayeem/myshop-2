@@ -11,7 +11,6 @@ export const generateProfilePDF = ({
 }) => {
   const doc = new jsPDF("p", "mm", "a4");
 
-  // Add Profile Info
   doc.setFontSize(20);
   doc.text("MY SHOP - Profile Summary", 105, 15, { align: "center" });
 
@@ -23,31 +22,46 @@ export const generateProfilePDF = ({
   doc.text(`Total Profit: ₹${totalProfit}`, 14, 70);
   doc.text(`Total Loss: ₹${totalLoss}`, 14, 80);
 
-  // Add Orders Table
-  const tableColumn = ["Order ID", "Status", "Amount", "Profit/Loss"];
-  const tableRows = orders.map((order) => [
-    order._id,
-    order.status,
-    `₹${order.amount}`,
-    order.products.reduce((acc, product) => {
-      // Destructure the product properties and check for valid values
-      const { price, buyingPrice, quantity } = product.productId;
+  const tableColumn = [
+    "Order ID",
+    "Product Name",
+    "Status",
+    "Amount",
+    "Profit/Loss",
+  ];
 
-      // Check if price, buyingPrice, and quantity are valid numbers
-      const validPrice = typeof price === "number" && !isNaN(price) ? price : 0;
-      const validBuyingPrice =
-        typeof buyingPrice === "number" && !isNaN(buyingPrice)
-          ? buyingPrice
-          : 0;
-      const validQuantity =
-        typeof quantity === "number" && !isNaN(quantity) ? quantity : 0;
+  const tableRows = orders
+    .map((order) => {
+      return order.products.map((product) => {
+        const { price, buyingPrice } = product.productId;
+        const { quantity } = product;
+        const validPrice =
+          typeof price === "number" && !isNaN(price) ? price : 0;
+        const validBuyingPrice =
+          typeof buyingPrice === "number" && !isNaN(buyingPrice)
+            ? buyingPrice
+            : 0;
+        const validQuantity =
+          typeof quantity === "number" && !isNaN(quantity) ? quantity : 0;
 
-      // Calculate the profit/loss for the product
-      const profitLoss = (validPrice - validBuyingPrice) * validQuantity;
+        const profitLoss = (validPrice - validBuyingPrice) * validQuantity;
 
-      return acc + profitLoss; // Accumulate profit/loss
-    }, 0),
-  ]);
+        const status = profitLoss < 0 ? "Loss" : "Profit";
+        const statusColor = profitLoss < 0 ? "#f8d7da" : "#d4edda"; // red for loss, green for profit
+        const profitLossAmount =
+          profitLoss < 0 ? `₹${Math.abs(profitLoss)}` : `₹${profitLoss}`;
+
+        return [
+          order._id,
+          product.productId.name,
+          status,
+          `₹${order.totalPrice}`,
+          profitLossAmount, 
+          statusColor, 
+        ];
+      });
+    })
+    .flat(); 
 
   // Add the table to the PDF document
   autoTable(doc, {
@@ -55,6 +69,10 @@ export const generateProfilePDF = ({
     head: [tableColumn],
     body: tableRows,
     theme: "grid",
+    columnStyles: {
+      2: { fillColor: (row) => row[5] }, 
+      4: { halign: "center" }, 
+    },
   });
 
   // Footer
@@ -71,5 +89,5 @@ export const generateProfilePDF = ({
   doc.text("Address: Mumbai, India", 105, footerY + 20, { align: "center" });
 
   // Save PDF
-  doc.save(`${user.username}_Profile.pdf`);
+  doc.save(`${user.username}_${Math.round(Math.random() * 100000)}Profile.pdf`);
 };

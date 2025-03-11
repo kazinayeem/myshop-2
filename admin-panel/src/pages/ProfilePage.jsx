@@ -18,7 +18,7 @@ const ProfilePage = () => {
       let loss = 0;
 
       orders.forEach((order) => {
-        totalAmountSpent += order.amount;
+        totalAmountSpent += order.totalPrice;
         order.products.forEach((product) => {
           const { quantity } = product;
           const { price, buyingPrice } = product.productId;
@@ -147,10 +147,7 @@ const ProfilePage = () => {
                 <strong>Status:</strong> {order.status}
               </p>
               <p>
-                <strong>Total Amount:</strong> ₹{order.amount}
-              </p>
-              <p>
-                <strong>Total Amount:</strong> ₹{order.productId.buyingPrice}
+                <strong>Total Amount:</strong> ₹{order.totalPrice}
               </p>
 
               {/* Conditional rendering for Profit/Loss per order */}
@@ -180,8 +177,18 @@ const ProfilePage = () => {
                     }, 0)}
                   </p>
                   {order.products.map((product) => (
-                    <p key={product.productId._id}>
-                      <strong>
+                    <p
+                      key={product.productId._id}
+                      className="text-gray-600 flex flex-row justify-between items-center "
+                    >
+                      <strong className="text-gray-600 ">
+                        {" "}
+                        Price {product.productId.price}
+                      </strong>
+                      <strong
+                        className="text-green-600 
+                          font-semibold"
+                      >
                         Buying Price {product.productId.buyingPrice}
                       </strong>
                     </p>

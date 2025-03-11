@@ -30,7 +30,7 @@ const ViewSingleUserDetails = () => {
 
   const totalOrders = userDetails.orderhistory?.length || 0;
   const totalAmount = userDetails.orderhistory?.reduce(
-    (sum, order) => sum + order.amount,
+    (sum, order) => sum + order.totalPrice,
     0
   );
 
@@ -74,6 +74,21 @@ const ViewSingleUserDetails = () => {
           <p className="font-medium text-lg text-gray-800">
             Total Amount: ${totalAmount.toFixed(2)}
           </p>
+
+          {/* user address form user.address array*/}
+          {userDetails.address && userDetails.address.length > 0 && (
+            <div className="mt-4">
+              <h3 className="text-lg font-semibold text-gray-800">Address</h3>
+              <ul className="list-disc list-inside space-y-2 mt-2">
+                {userDetails.address.map((address, index) => (
+                  <li key={index} className="text-gray-600">
+                    {address.addressLine1}, {address.addressLine2},{" "}
+                    {address.state}, {address.zipCode}, {address.city}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </motion.div>
 
         {/* Order History */}

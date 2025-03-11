@@ -2,14 +2,13 @@ import { Chart } from "react-google-charts";
 import PropTypes from 'prop-types';
 
 const UserAnalysisCharts = ({ userDetails }) => {
-  // Prepare order count and total sales data
-  //const totalOrders = userDetails.orderhistory?.length || 0;
+  
   const totalSales = userDetails.orderhistory?.reduce(
-    (sum, order) => sum + order.amount,
+    (sum, order) => sum + order.totalPrice,
     0
   );
 
-  // Prepare the products quantity data
+ 
   const productQuantities = userDetails.orderhistory?.flatMap((order) =>
     order.products.map((product) => ({
       productId: product.productId,

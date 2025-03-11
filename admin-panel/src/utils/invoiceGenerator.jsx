@@ -48,7 +48,7 @@ export const generateInvoicePDF = ({ name, email, order }) => {
 
   // Total Amount
   doc.setFontSize(14);
-  doc.text(`Total Amount: $${order.amount.toFixed(2)}`, 14, finalY);
+  doc.text(`Total Amount: $${order.totalPrice.toFixed(2)}`, 14, finalY);
 
   // Refund and Warranty Policy
   const policyText = `
@@ -115,7 +115,7 @@ export const generateAllInvoicesPDF = ({ orders, name, email }) => {
     }
 
     doc.setFontSize(14);
-    doc.text(`Total Amount: $${order.amount.toFixed(2)}`, 14, finalY);
+    doc.text(`Total Amount: $${order.totalPrice.toFixed(2)}`, 14, finalY);
 
     // Refund and Warranty Policy
     // Refund and Warranty Policy
