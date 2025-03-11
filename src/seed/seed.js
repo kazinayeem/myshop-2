@@ -115,6 +115,7 @@ const seedUsers = async () => {
       email: `user${i + 1}@gmail.com`,
       password: "password123",
       isAdmin: Math.random() > 0.5,
+      mobileNumber: `017${Math.floor(Math.random() * 10000000)}`,
     });
     await user.save();
     users.push(user);
