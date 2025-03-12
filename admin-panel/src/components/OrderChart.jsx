@@ -11,7 +11,7 @@ const OrderChart = () => {
 
   const data = [["Order ID", "Total Amount"]];
   orders.forEach((order) => {
-    data.push([order.userId.email, order.amount]);
+    data.push([order.userId.email, order.totalPrice]);
   });
 
   const options = {
