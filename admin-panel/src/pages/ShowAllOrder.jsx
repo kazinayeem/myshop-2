@@ -1,10 +1,10 @@
+import { motion } from "framer-motion";
 import { useState } from "react";
+import Loading from "../components/Loading";
 import {
   useGetordersQuery,
   useUpdateordersMutation,
 } from "../redux/Api/orderApi";
-import Loading from "../components/Loading";
-import { motion } from "framer-motion";
 
 export default function ShowAllOrders() {
   const { data: orders, isLoading, isError } = useGetordersQuery();
@@ -69,7 +69,7 @@ export default function ShowAllOrders() {
                   ))}
                 </td>
                 <td className="p-3 text-center font-semibold">
-                  ${order.amount}
+                  ${order.totalPrice.toFixed(3)}
                 </td>
                 <td className="p-3 text-center text-blue-600 font-medium">
                   {order.status}
