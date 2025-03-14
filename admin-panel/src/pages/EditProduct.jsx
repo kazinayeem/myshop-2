@@ -1,3 +1,5 @@
+// File: src/pages/EditProduct.jsx
+
 import { useEffect, useState } from "react";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
@@ -9,6 +11,7 @@ import {
   useUpdateProductMutation,
 } from "../redux/Api/porductApi";
 import { useGetSubCategoriesQuery } from "../redux/Api/subcategoryApi";
+
 export default function EditProduct() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -21,12 +24,9 @@ export default function EditProduct() {
   } = useGetProductByIdQuery(id);
   const [updateProduct, { isLoading: isUpdating }] = useUpdateProductMutation();
 
-  // get category
-  const { data: categories, isLoading: isLoadingCategories } =
-    useGetCategoriesQuery();
-  // sub category
-  const { data: subcategories, isLoading: isLoadingSubcategories } =
-    useGetSubCategoriesQuery();
+  // Get categories & subcategories
+  const { data: categories } = useGetCategoriesQuery();
+  const { data: subcategories } = useGetSubCategoriesQuery();
 
   const [formData, setFormData] = useState(null);
 
@@ -36,6 +36,7 @@ export default function EditProduct() {
     }
   }, [product]);
 
+  // General Input Handler
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -44,12 +45,17 @@ export default function EditProduct() {
     }));
   };
 
+  // ✅ Fix: Update only the changed variant inside the array
   const handleVariantChange = (index, key, value) => {
-    const updatedVariants = [...formData.priceByVariant];
-    updatedVariants[index][key] = value;
-    setFormData({ ...formData, priceByVariant: updatedVariants });
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      priceByVariant: prevFormData.priceByVariant.map((variant, i) =>
+        i === index ? { ...variant, [key]: value } : variant
+      ),
+    }));
   };
 
+  // Add a new variant
   const addVariant = () => {
     setFormData({
       ...formData,
@@ -60,11 +66,12 @@ export default function EditProduct() {
     });
   };
 
+  // Remove a variant
   const removeVariant = (index) => {
-    const updatedVariants = formData.priceByVariant.filter(
-      (_, i) => i !== index
-    );
-    setFormData({ ...formData, priceByVariant: updatedVariants });
+    setFormData((prev) => ({
+      ...prev,
+      priceByVariant: prev.priceByVariant.filter((_, i) => i !== index),
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -106,6 +113,7 @@ export default function EditProduct() {
             required
           />
         </div>
+
         {/* Description */}
         <div>
           <label className="block text-gray-700 font-medium">Description</label>
@@ -115,103 +123,24 @@ export default function EditProduct() {
               setFormData({ ...formData, description: value })
             }
             className="bg-white"
-            modules={{
-              toolbar: [
-                [{ header: [1, 2, false] }],
-                ["bold", "italic", "underline", "strike", "blockquote"],
-                [
-                  { list: "ordered" },
-                  { list: "bullet" },
-                  { indent: "-1" },
-                  { indent: "+1" },
-                ],
-                ["link", "image"],
-                ["clean"],
-              ],
-            }}
-            formats={[
-              "header",
-              "font",
-              "size",
-              "bold",
-              "italic",
-              "underline",
-              "strike",
-              "blockquote",
-              "list",
-              "bullet",
-              "indent",
-              "link",
-              "image",
-              "color",
-            ]}
           />
         </div>
 
-        {/* price */}
-
-        <div>
-          <label className="block text-gray-700 font-medium">Price</label>
-          <input
-            type="number"
-            name="price"
-            value={formData.price}
-            onChange={handleChange}
-            className="w-full p-2 border rounded mt-1"
-          />
-        </div>
-
-        {/* discount price */}
-
-        <div>
-          <label className="block text-gray-700 font-medium">
-            Discount Price
-          </label>
-          <input
-            type="number"
-            name="discountedPrice"
-            value={formData.discountedPrice}
-            onChange={handleChange}
-            className="w-full p-2 border rounded mt-1"
-          />
-        </div>
-
-        {/* buy price */}
-        <div>
-          <label className="block text-gray-700 font-medium">
-            buyingPrice Price
-          </label>
-          <input
-            type="number"
-            name="buyingPrice"
-            value={formData.buyingPrice}
-            onChange={handleChange}
-            className="w-full p-2 border rounded mt-1"
-          />
-        </div>
-
-        <div>
-          <label className="block text-gray-700 font-medium">Discount %</label>
-          <input
-            type="number"
-            name="buyingPrice"
-            value={formData.discountPercent}
-            onChange={handleChange}
-            className="w-full p-2 border rounded mt-1"
-          />
-        </div>
-
-        {/* stock */}
-        <div>
-          <label className="block text-gray-700 font-medium">stock</label>
-          <input
-            type="number"
-            name="stock"
-            value={formData.stock}
-            onChange={handleChange}
-            className="w-full p-2 border rounded mt-1"
-          />
-        </div>
+        {/* Price, Discount, Buying Price, Stock */}
+        {["price", "discountedPrice", "buyingPrice", "stock"].map((field) => (
+          <div key={field}>
+            <label className="block text-gray-700 font-medium">
+              {field.replace(/([A-Z])/g, " $1").trim()}
+            </label>
+            <input
+              type="number"
+              name={field}
+              value={formData[field]}
+              onChange={handleChange}
+              className="w-full p-2 border rounded mt-1"
+            />
+          </div>
+        ))}
 
         {/* Category & Subcategory */}
         <div className="grid grid-cols-2 gap-4">
@@ -220,18 +149,10 @@ export default function EditProduct() {
             <select
               name="category"
               value={formData.category?._id || ""}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  category: categories.find(
-                    (cat) => cat._id === e.target.value
-                  ),
-                })
-              }
+              onChange={handleChange}
               className="w-full p-2 border rounded mt-1"
             >
               <option value="">Select Category</option>
-              {isLoadingCategories && <option>Loading...</option>}
               {categories?.map((category) => (
                 <option key={category._id} value={category._id}>
                   {category.name}
@@ -243,22 +164,12 @@ export default function EditProduct() {
             <label className="block text-gray-700 font-medium">
               Subcategory
             </label>
-
-            {/* show cateogry */}
             <select
               name="subcategory"
               value={formData.subcategory?._id || ""}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  subcategory: subcategories.find(
-                    (cat) => cat._id === e.target.value
-                  ),
-                })
-              }
+              onChange={handleChange}
               className="w-full p-2 border rounded mt-1"
             >
-              {isLoadingSubcategories && <option>Loading...</option>}
               <option value="">Select Subcategory</option>
               {subcategories?.map((subcategory) => (
                 <option key={subcategory._id} value={subcategory._id}>
@@ -269,69 +180,31 @@ export default function EditProduct() {
           </div>
         </div>
 
-        {/* Variants (Size, Color, etc.) */}
+        {/* ✅ Variants */}
         <h3 className="text-lg font-medium mt-4">Variants</h3>
         {formData.priceByVariant.map((variant, index) => (
           <div
             key={index}
-            className="grid grid-cols-4 gap-4 p-2 border rounded mb-2"
+            className="grid grid-cols-6 gap-2 p-2 border rounded mb-2"
           >
-            {/* value */}
-
-            <input
-              type="text"
-              value={variant.name}
-              onChange={(e) =>
-                handleVariantChange(index, "name", e.target.value)
-              }
-              className="p-2 border rounded"
-              placeholder="Type (e.g., Size)"
-            />
-            <input
-              type="text"
-              value={variant.value}
-              onChange={(e) =>
-                handleVariantChange(index, "value", e.target.value)
-              }
-              className="p-2 border rounded"
-              placeholder="Value (e.g., Large)"
-            />
-            <input
-              type="number"
-              value={variant.price}
-              onChange={(e) =>
-                handleVariantChange(index, "price", e.target.value)
-              }
-              className="p-2 border rounded"
-              placeholder="Price"
-            />
-            <input
-              type="number"
-              value={variant.stock}
-              onChange={(e) =>
-                handleVariantChange(index, "stock", e.target.value)
-              }
-              className="p-2 border rounded"
-              placeholder="Stock"
-            />
-            <input
-              type="number"
-              name="buyingPrice"
-              value={variant.buyingPrice}
-              onChange={(e) => handleVariantChange(index, e)}
-              placeholder="Buying Price"
-              className="p-2 border rounded-md "
-              required
-            />
-            <input
-              type="text"
-              name="image"
-              value={variant.image}
-              onChange={(e) => handleVariantChange(index, e)}
-              placeholder="Image URL"
-              className="p-2 border rounded-md "
-              required
-            />
+            {["name", "value", "price", "stock", "buyingPrice", "image"].map(
+              (key) => (
+                <input
+                  key={key}
+                  type={
+                    key === "price" || key === "stock" || key === "buyingPrice"
+                      ? "number"
+                      : "text"
+                  }
+                  value={variant[key]}
+                  onChange={(e) =>
+                    handleVariantChange(index, key, e.target.value)
+                  }
+                  placeholder={key}
+                  className="p-2 border rounded"
+                />
+              )
+            )}
             <button
               type="button"
               onClick={() => removeVariant(index)}
@@ -349,65 +222,23 @@ export default function EditProduct() {
           + Add Variant
         </button>
 
-        {/* Product Images */}
-        <h3 className="text-lg font-medium mt-4">Product Images</h3>
-        <div className="grid grid-cols-2 gap-4">
-          {formData.image.map((img, index) => (
-            <div key={index} className="flex flex-col items-center">
-              <img
-                src={img}
-                alt={`Product ${index}`}
-                className="w-32 h-32 object-cover rounded shadow"
-              />
-              <input
-                type="text"
-                value={img}
-                onChange={(e) => {
-                  const updatedImages = [...formData.image];
-                  updatedImages[index] = e.target.value;
-                  setFormData({ ...formData, image: updatedImages });
-                }}
-                className="w-full p-2 border rounded mt-2 text-sm"
-              />
-            </div>
-          ))}
-        </div>
-
         {/* Toggle Switches */}
-        <label className="flex items-center">
-          <input
-            type="checkbox"
-            name="isFeatured"
-            checked={formData.isFeatured}
-            onChange={handleChange}
-            className="mr-2"
-          />
-          <span className="text-gray-700">Featured Product</span>
-        </label>
+        {["isFeatured", "cod", "returnable"].map((key) => (
+          <label key={key} className="flex items-center">
+            <input
+              type="checkbox"
+              name={key}
+              checked={formData[key]}
+              onChange={handleChange}
+              className="mr-2"
+            />
+            <span className="text-gray-700">
+              {key.replace(/([A-Z])/g, " $1").trim()}
+            </span>
+          </label>
+        ))}
 
-        <label className="flex items-center">
-          <input
-            type="checkbox"
-            name="cod"
-            checked={formData.cod}
-            onChange={handleChange}
-            className="mr-2"
-          />
-          <span className="text-gray-700">Cash on Delivery</span>
-        </label>
-
-        <label className="flex items-center">
-          <input
-            type="checkbox"
-            name="returnable"
-            checked={formData.returnable}
-            onChange={handleChange}
-            className="mr-2"
-          />
-          <span className="text-gray-700">Returnable</span>
-        </label>
-
-        {/* Submit Button */}
+        {/* Submit */}
         <button
           type="submit"
           className="w-full bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mt-4"
