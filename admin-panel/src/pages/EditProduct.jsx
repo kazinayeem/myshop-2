@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import { useNavigate, useParams } from "react-router";
+import Loading from "../components/Loading";
+import { useGetCategoriesQuery } from "../redux/Api/categoryApi";
 import {
   useGetProductByIdQuery,
   useUpdateProductMutation,
 } from "../redux/Api/porductApi";
-import Loading from "../components/Loading";
-import { useGetCategoriesQuery } from "../redux/Api/categoryApi";
 import { useGetSubCategoriesQuery } from "../redux/Api/subcategoryApi";
 export default function EditProduct() {
   const { id } = useParams();
@@ -55,7 +55,7 @@ export default function EditProduct() {
       ...formData,
       priceByVariant: [
         ...formData.priceByVariant,
-        { name: "", value: "", price: 0, stock: 0 },
+        { name: "", value: "", price: 0, stock: 0, buyingPrice: 0, image: "" },
       ],
     });
   };
