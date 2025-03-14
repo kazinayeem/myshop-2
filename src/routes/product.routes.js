@@ -13,6 +13,6 @@ router.get("/", GetAllProducts);
 // search based on query
 router.get("/search", GetProductByName);
 router.get("/:id", GetProductById);
-router.post("/add", AddProduct);
+router.post("/", AddProduct);
 router.put("/:id", UpdateProduct);
 export default router;

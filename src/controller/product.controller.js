@@ -1,16 +1,18 @@
 // get all products
 
 import Product from "../model/product.model.js";
-
+import slugify from "slugify";
 // Add a new product
 export const AddProduct = async (req, res) => {
   try {
-    // Save the product first
-
-    // Handle Variants
-
+    const newproduct = new Product({
+      ...req.body,
+      slug: slugify(req.body.name, { lower: true }),
+    });
+    await newproduct.save();
     return res.status(201).json({
       message: "Product added successfully",
+      product: newproduct,
     });
   } catch (error) {
     console.error("Error adding product:", error);

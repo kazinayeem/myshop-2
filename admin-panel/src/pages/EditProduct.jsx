@@ -7,6 +7,8 @@ import {
   useUpdateProductMutation,
 } from "../redux/Api/porductApi";
 import Loading from "../components/Loading";
+import { useGetCategoriesQuery } from "../redux/Api/categoryApi";
+import { useGetSubCategoriesQuery } from "../redux/Api/subcategoryApi";
 export default function EditProduct() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -18,6 +20,13 @@ export default function EditProduct() {
     error,
   } = useGetProductByIdQuery(id);
   const [updateProduct, { isLoading: isUpdating }] = useUpdateProductMutation();
+
+  // get category
+  const { data: categories, isLoading: isLoadingCategories } =
+    useGetCategoriesQuery();
+  // sub category
+  const { data: subcategories, isLoading: isLoadingSubcategories } =
+    useGetSubCategoriesQuery();
 
   const [formData, setFormData] = useState(null);
 
@@ -69,7 +78,7 @@ export default function EditProduct() {
     }
   };
 
-  if (isLoading) return <Loading/>;
+  if (isLoading) return <Loading />;
   if (isError)
     return (
       <div className="text-red-500 text-center py-10">
@@ -97,6 +106,48 @@ export default function EditProduct() {
             required
           />
         </div>
+        {/* Description */}
+        <div>
+          <label className="block text-gray-700 font-medium">Description</label>
+          <ReactQuill
+            value={formData.description}
+            onChange={(value) =>
+              setFormData({ ...formData, description: value })
+            }
+            className="bg-white"
+            modules={{
+              toolbar: [
+                [{ header: [1, 2, false] }],
+                ["bold", "italic", "underline", "strike", "blockquote"],
+                [
+                  { list: "ordered" },
+                  { list: "bullet" },
+                  { indent: "-1" },
+                  { indent: "+1" },
+                ],
+                ["link", "image"],
+                ["clean"],
+              ],
+            }}
+            formats={[
+              "header",
+              "font",
+              "size",
+              "bold",
+              "italic",
+              "underline",
+              "strike",
+              "blockquote",
+              "list",
+              "bullet",
+              "indent",
+              "link",
+              "image",
+              "color",
+            ]}
+          />
+        </div>
+
         {/* price */}
 
         <div>
@@ -150,41 +201,60 @@ export default function EditProduct() {
             className="w-full p-2 border rounded mt-1"
           />
         </div>
-        {/* Description */}
-        <div>
-          <label className="block text-gray-700 font-medium">Description</label>
-          <ReactQuill
-            value={formData.description}
-            onChange={(value) =>
-              setFormData({ ...formData, description: value })
-            }
-            className="bg-white"
-          />
-        </div>
 
         {/* Category & Subcategory */}
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-gray-700 font-medium">Category</label>
-            <input
-              type="text"
+            <select
               name="category"
-              value={formData.category?.name || ""}
-              readOnly
-              className="w-full p-2 border rounded mt-1 bg-gray-100"
-            />
+              value={formData.category?._id || ""}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  category: categories.find(
+                    (cat) => cat._id === e.target.value
+                  ),
+                })
+              }
+              className="w-full p-2 border rounded mt-1"
+            >
+              <option value="">Select Category</option>
+              {isLoadingCategories && <option>Loading...</option>}
+              {categories?.map((category) => (
+                <option key={category._id} value={category._id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
           </div>
           <div>
             <label className="block text-gray-700 font-medium">
               Subcategory
             </label>
-            <input
-              type="text"
+
+            {/* show cateogry */}
+            <select
               name="subcategory"
-              value={formData.subcategory?.name || ""}
-              onChange={handleChange}
+              value={formData.subcategory?._id || ""}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  subcategory: subcategories.find(
+                    (cat) => cat._id === e.target.value
+                  ),
+                })
+              }
               className="w-full p-2 border rounded mt-1"
-            />
+            >
+              {isLoadingSubcategories && <option>Loading...</option>}
+              <option value="">Select Subcategory</option>
+              {subcategories?.map((subcategory) => (
+                <option key={subcategory._id} value={subcategory._id}>
+                  {subcategory.name}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
