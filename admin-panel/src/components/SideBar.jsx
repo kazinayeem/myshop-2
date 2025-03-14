@@ -207,11 +207,11 @@ export default function SideBar() {
 
         <li className="mb-2">
           <Link
-            to="/dashboard/stock"
+            to="/dashboard/profit-loss"
             className="hover:text-gray-400 flex items-center"
           >
             <PackageCheck size={18} className="mr-2" />{" "}
-            {!isCollapsed && "Check Stock"}
+            {!isCollapsed && "Loss and Profit"}
           </Link>
         </li>
 

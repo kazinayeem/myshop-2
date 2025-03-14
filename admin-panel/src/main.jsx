@@ -1,30 +1,30 @@
 // In index.jsx
-import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router";
-import App from "./App";
-import "./index.css";
-import { SpeedInsights } from "@vercel/speed-insights/react";
-import { Provider } from "react-redux";
-import store from "./redux/store/store";
-import Dashboard from "./pages/Dashboard"; // Make sure it's exported correctly
-import ShowPage from "./pages/ShowPage";
-import AddProduct from "./pages/AddProduct";
-import EditProduct from "./pages/EditProduct";
-import ShowCategory from "./pages/ShowCategory";
-import AddCategory from "./pages/AddCategory";
-import AddSubCategory from "./pages/AddSubcategory";
-import ShowAllOrders from "./pages/ShowAllOrder";
 import { Analytics } from "@vercel/analytics/react";
-import ShowSubCategory from "./pages/ShowSubCategory";
-import Userlist from "./pages/Userlist";
-import ViewSingleUserDetails from "./pages/ViewSingleUserDetails";
-import SliderManager from "./pages/SliderManager";
-import PrivateRoute from "./routes/PrivateRoute";
+import { SpeedInsights } from "@vercel/speed-insights/react";
+import ReactDOM from "react-dom/client";
+import { Provider } from "react-redux";
+import { BrowserRouter, Route, Routes } from "react-router";
+import App from "./App";
+import LogoutButton from "./components/LogoutButton";
+import "./index.css";
+import AddCategory from "./pages/AddCategory";
+import AddProduct from "./pages/AddProduct";
+import AddSubCategory from "./pages/AddSubcategory";
 import LoginPage from "./pages/auth/Login";
 import RegisterPage from "./pages/auth/Register";
-import LogoutButton from "./components/LogoutButton";
+import Dashboard from "./pages/Dashboard";
+import EditProduct from "./pages/EditProduct";
 import NotFound from "./pages/NotFound";
 import ProfilePage from "./pages/ProfilePage";
+import ShowAllOrders from "./pages/ShowAllOrder";
+import ShowCategory from "./pages/ShowCategory";
+import ShowPage from "./pages/ShowPage";
+import ShowSubCategory from "./pages/ShowSubCategory";
+import SliderManager from "./pages/SliderManager";
+import Userlist from "./pages/Userlist";
+import ViewSingleUserDetails from "./pages/ViewSingleUserDetails";
+import store from "./redux/store/store";
+import PrivateRoute from "./routes/PrivateRoute";
 
 const root = document.getElementById("root");
 
@@ -56,7 +56,7 @@ ReactDOM.createRoot(root).render(
           <Route path="orders" element={<ShowAllOrders />} />
           <Route path="slider" element={<SliderManager />} />
           <Route path="logout" element={<LogoutButton />} />
-          <Route path="stock" element={<ProfilePage />} />
+          <Route path="profit-loss" element={<ProfilePage />} />
           <Route path="*" element={<NotFound />} />
         </Route>
 
