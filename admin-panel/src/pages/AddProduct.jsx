@@ -190,6 +190,19 @@ const AddProduct = () => {
           />
         </div>
 
+        {/* buying price */}
+        <div>
+          <label className="block text-sm font-medium">Buying Price</label>
+          <input
+            type="number"
+            name="buyingPrice"
+            value={product.buyingPrice}
+            onChange={handleChange}
+            required
+            className="w-full p-2 border rounded-md"
+          />
+        </div>
+
         {/* Price & Discount */}
         <div className="grid grid-cols-3 gap-4">
           <div>

@@ -179,12 +179,23 @@ export default function EditProduct() {
         {/* buy price */}
         <div>
           <label className="block text-gray-700 font-medium">
-            Discount Price
+            buyingPrice Price
           </label>
           <input
             type="number"
             name="buyingPrice"
             value={formData.buyingPrice}
+            onChange={handleChange}
+            className="w-full p-2 border rounded mt-1"
+          />
+        </div>
+
+        <div>
+          <label className="block text-gray-700 font-medium">Discount %</label>
+          <input
+            type="number"
+            name="buyingPrice"
+            value={formData.discountPercent}
             onChange={handleChange}
             className="w-full p-2 border rounded mt-1"
           />
@@ -265,6 +276,8 @@ export default function EditProduct() {
             key={index}
             className="grid grid-cols-4 gap-4 p-2 border rounded mb-2"
           >
+            {/* value */}
+
             <input
               type="text"
               value={variant.name}
@@ -300,6 +313,24 @@ export default function EditProduct() {
               }
               className="p-2 border rounded"
               placeholder="Stock"
+            />
+            <input
+              type="number"
+              name="buyingPrice"
+              value={variant.buyingPrice}
+              onChange={(e) => handleVariantChange(index, e)}
+              placeholder="Buying Price"
+              className="p-2 border rounded-md "
+              required
+            />
+            <input
+              type="text"
+              name="image"
+              value={variant.image}
+              onChange={(e) => handleVariantChange(index, e)}
+              placeholder="Image URL"
+              className="p-2 border rounded-md "
+              required
             />
             <button
               type="button"

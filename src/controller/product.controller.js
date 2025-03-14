@@ -1,15 +1,29 @@
 // get all products
-
+import Category from "../model/category.model.js";
 import Product from "../model/product.model.js";
+import SubCategory from "../model/subcategory.model.js";
 import slugify from "slugify";
 // Add a new product
 export const AddProduct = async (req, res) => {
   try {
+    const categoryid = req.body.category;
+    const subcategoryid = req.body.subcategory;
     const newproduct = new Product({
       ...req.body,
       slug: slugify(req.body.name, { lower: true }),
     });
     await newproduct.save();
+    await Category.findByIdAndUpdate(
+      categoryid,
+      { $push: { product: newproduct._id } },
+      { new: true }
+    );
+    await SubCategory.findByIdAndUpdate(
+      subcategoryid,
+      { $push: { product: newproduct._id } },
+      { new: true }
+    );
+
     return res.status(201).json({
       message: "Product added successfully",
       product: newproduct,
@@ -33,20 +47,76 @@ export const DeleteProduct = async (req, res) => {
   }
 };
 
-//  update product
 export const UpdateProduct = async (req, res) => {
   try {
-    const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
-    if (!product) {
+    const { id } = req.params;
+    const { name, category, subcategory } = req.body;
+
+   
+    const existingProduct = await Product.findById(id);
+    if (!existingProduct) {
       return res.status(404).json({ message: "Product not found" });
     }
-    return res.status(200).json({ message: "Product updated successfully" });
+
+    
+    if (name && name !== existingProduct.name) {
+      req.body.slug = slugify(name, { lower: true });
+    }
+
+   
+    const categoryChanged =
+      category && category !== existingProduct.category.toString();
+    const subcategoryChanged =
+      subcategory && subcategory !== existingProduct.subcategory.toString();
+
+    
+    const updatedProduct = await Product.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+
+   
+    if (categoryChanged) {
+      await Category.findByIdAndUpdate(existingProduct.category, {
+        $pull: { product: id },
+      });
+      await Category.findByIdAndUpdate(category, { $push: { product: id } });
+    }
+
+  
+    if (subcategoryChanged) {
+      await SubCategory.findByIdAndUpdate(existingProduct.subcategory, {
+        $pull: { product: id },
+      });
+      await SubCategory.findByIdAndUpdate(subcategory, {
+        $push: { product: id },
+      });
+    }
+
+    return res.status(200).json({
+      message: "Product updated successfully",
+      product: updatedProduct,
+    });
   } catch (error) {
+    console.error("Error updating product:", error);
     return res.status(500).json({ message: "Server Error" });
   }
 };
+
+//  update product
+// export const UpdateProduct = async (req, res) => {
+//   try {
+//     const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+//       new: true,
+//     });
+
+//     if (!product) {
+//       return res.status(404).json({ message: "Product not found" });
+//     }
+//     return res.status(200).json({ message: "Product updated successfully" });
+//   } catch (error) {
+//     return res.status(500).json({ message: "Server Error" });
+//   }
+// };
 
 export const GetAllProducts = async (req, res) => {
   // pagination
