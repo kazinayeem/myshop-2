@@ -25,6 +25,7 @@ import Userlist from "./pages/Userlist";
 import ViewSingleUserDetails from "./pages/ViewSingleUserDetails";
 import store from "./redux/store/store";
 import PrivateRoute from "./routes/PrivateRoute";
+import OrderDetails from "./pages/OrderDetails";
 
 const root = document.getElementById("root");
 
@@ -54,6 +55,7 @@ ReactDOM.createRoot(root).render(
           <Route path="users" element={<Userlist />} />
           <Route path="users/:userId" element={<ViewSingleUserDetails />} />
           <Route path="orders" element={<ShowAllOrders />} />
+          <Route path="orders/:id" element={<OrderDetails />} />
           <Route path="slider" element={<SliderManager />} />
           <Route path="logout" element={<LogoutButton />} />
           <Route path="profit-loss" element={<ProfilePage />} />

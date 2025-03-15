@@ -73,6 +73,25 @@ export default function EditProduct() {
       priceByVariant: prev.priceByVariant.filter((_, i) => i !== index),
     }));
   };
+  const handleCategoryChange = (e) => {
+    const selectedCategory = categories?.find(
+      (cat) => cat._id === e.target.value
+    );
+    setFormData((prev) => ({
+      ...prev,
+      category: selectedCategory || null, // Ensure valid object
+    }));
+  };
+
+  const handleSubcategoryChange = (e) => {
+    const selectedSubcategory = subcategories?.find(
+      (sub) => sub._id === e.target.value
+    );
+    setFormData((prev) => ({
+      ...prev,
+      subcategory: selectedSubcategory || null, // Ensure valid object
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -149,7 +168,7 @@ export default function EditProduct() {
             <select
               name="category"
               value={formData.category?._id || ""}
-              onChange={handleChange}
+              onChange={handleCategoryChange}
               className="w-full p-2 border rounded mt-1"
             >
               <option value="">Select Category</option>
@@ -167,7 +186,7 @@ export default function EditProduct() {
             <select
               name="subcategory"
               value={formData.subcategory?._id || ""}
-              onChange={handleChange}
+              onChange={handleSubcategoryChange}
               className="w-full p-2 border rounded mt-1"
             >
               <option value="">Select Subcategory</option>

@@ -73,7 +73,7 @@ export const getOrderById = async (req, res) => {
     console.log(req.params.id);
     const order = await Order.findById(req.params.id)
 
-      .populate("userId", "username email")
+      .populate("userId", "username email mobileNumber")
       .populate("products.productId", "name price buyingPrice")
       .populate("address");
     res.status(200).json(order);

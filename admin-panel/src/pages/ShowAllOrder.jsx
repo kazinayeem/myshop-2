@@ -5,12 +5,15 @@ import {
   useGetordersQuery,
   useUpdateordersMutation,
 } from "../redux/Api/orderApi";
+import { useNavigate } from "react-router";
 
 export default function ShowAllOrders() {
+  const navigate = useNavigate();
   const { data: orders, isLoading, isError } = useGetordersQuery();
   const [updateOrder] = useUpdateordersMutation();
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [newStatus, setNewStatus] = useState("");
+  const [filterStatus, setFilterStatus] = useState(""); // Filter state
 
   const handleUpdateStatus = async (orderId) => {
     if (!newStatus) return;
@@ -27,6 +30,11 @@ export default function ShowAllOrders() {
   if (isError)
     return <p className="text-center text-red-500">Failed to fetch orders.</p>;
 
+  // Filter orders based on selected status
+  const filteredOrders = filterStatus
+    ? orders?.filter((order) => order.status === filterStatus)
+    : orders;
+
   return (
     <motion.div
       className="max-w-5xl mx-auto mt-10 p-8 bg-white rounded-xl shadow-lg"
@@ -37,6 +45,28 @@ export default function ShowAllOrders() {
       <h2 className="text-3xl font-bold text-gray-700 mb-6 text-center">
         All Orders
       </h2>
+
+      {/* Filter Dropdown */}
+      <div className="flex justify-end mb-4">
+        <select
+          value={filterStatus}
+          onChange={(e) => setFilterStatus(e.target.value)}
+          className="p-2 border rounded-md focus:ring focus:ring-blue-300"
+        >
+          <option value="">All Orders</option>
+          <option value="delivered">Delivered</option>
+          <option value="pending">Pending</option>
+          <option value="shipped">Shipped</option>
+          <option value="cancelled">Cancelled</option>
+          <option value="returned">Returned</option>
+          <option value="refunded">Refunded</option>
+          <option value="failed">Failed</option>
+          <option value="completed">Completed</option>
+          <option value="processing">Processing</option>
+          
+        </select>
+      </div>
+
       <div className="overflow-x-auto">
         <table className="w-full border-collapse rounded-lg shadow-md overflow-hidden">
           <thead>
@@ -49,7 +79,7 @@ export default function ShowAllOrders() {
             </tr>
           </thead>
           <tbody>
-            {orders?.map((order) => (
+            {filteredOrders?.map((order) => (
               <motion.tr
                 key={order._id}
                 className="border-b transition hover:bg-gray-100"
@@ -116,6 +146,14 @@ export default function ShowAllOrders() {
                       Change Status
                     </motion.button>
                   )}
+                  {/* see more */}
+                  <motion.button
+                    className="bg-green-500 text-white px-3 py-2 rounded-lg shadow-md hover:bg-green-600 transition ml-2"
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => navigate(`/dashboard/orders/${order._id}`)}
+                  >
+                    See More
+                  </motion.button>
                 </td>
               </motion.tr>
             ))}
