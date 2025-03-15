@@ -1,6 +1,6 @@
 import { AgGridReact } from "ag-grid-react";
 import { useState } from "react";
-
+import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router";
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 
@@ -8,7 +8,10 @@ import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 import PropTypes from "prop-types";
-import { useGetProductsQuery } from "../redux/Api/porductApi";
+import {
+  useDeleteProductMutation,
+  useGetProductsQuery,
+} from "../redux/Api/porductApi";
 import Loading from "../components/Loading";
 
 function ImageRenderer(props) {
@@ -56,12 +59,17 @@ export default function ProductTable() {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("asc");
   const { data, isLoading } = useGetProductsQuery({ limit, page, search });
+  // delete product rtk query
+  const [deleteProduct] = useDeleteProductMutation();
   const handleEdit = (product) => {
     navigate(`/dashboard/edit-product/${product._id}`);
   };
 
-  const handleDelete = (id) => {
-    console.log("Delete", id);
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this product?")) {
+      await deleteProduct(id).unwrap();
+      toast.success("Product deleted successfully!");
+    }
   };
 
   const colDefs = [
@@ -119,6 +127,7 @@ export default function ProductTable() {
 
   return (
     <div className="w-full h-screen p-2 flex flex-col items-center bg-gray-100">
+      <Toaster position="top-right" reverseOrder={false} />
       <div className="flex gap-4 mb-4 w-full max-w-4xl">
         <input
           type="text"
@@ -149,7 +158,7 @@ export default function ProductTable() {
       </div>
 
       {isLoading ? (
-        <Loading/>
+        <Loading />
       ) : (
         <div className="ag-theme-alpine w-full max-w-full flex-1">
           <AgGridReact
