@@ -1,8 +1,8 @@
+import { motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
+import Loading from "../components/Loading";
 import { useGetordersQuery } from "../redux/Api/orderApi";
 import { generateProfilePDF } from "../utils/pdfUtils";
-import { motion } from "framer-motion"; // Import Framer Motion
-import Loading from "../components/Loading";
 
 const ProfilePage = () => {
   const { data: orders, isLoading, isError } = useGetordersQuery();
@@ -127,7 +127,7 @@ const ProfilePage = () => {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 1 }}
         >
           <h2 className="text-xl font-semibold text-gray-800 mt-8">
             Your Orders
@@ -150,10 +150,12 @@ const ProfilePage = () => {
                 <strong>Total Amount:</strong> ₹{order.totalPrice}
               </p>
 
-              {/* Conditional rendering for Profit/Loss per order */}
+              
               {order.products.reduce((acc, product) => {
+               
                 const { quantity } = product;
                 const { price, buyingPrice } = product.productId;
+                console.log(price, buyingPrice, quantity); // its ok show all
 
                 if (
                   typeof price === "number" &&
