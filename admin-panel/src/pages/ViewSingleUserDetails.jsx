@@ -123,7 +123,7 @@ const ViewSingleUserDetails = () => {
                     <strong>Status:</strong> {order.status}
                   </p>
                   <p className="text-gray-600">
-                    <strong>Total Amount:</strong> ${order.amount}
+                    <strong>Total Amount:</strong> ${order.totalPrice}
                   </p>
                   <p className="mt-2 font-semibold text-gray-800">Products:</p>
                   <ul className="ml-4 space-y-2">
