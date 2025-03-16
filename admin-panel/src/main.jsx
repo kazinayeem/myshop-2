@@ -39,7 +39,7 @@ ReactDOM.createRoot(root).render(
         <Route path="/" element={<App />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-
+      
         {/* Protected Routes */}
         <Route
           path="/dashboard/*"

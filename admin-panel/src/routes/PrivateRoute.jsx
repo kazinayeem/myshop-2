@@ -1,23 +1,33 @@
-import { Navigate } from "react-router";
-import { useSelector } from "react-redux";
+import { Navigate, useNavigate } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
+import { setUser } from "../redux/slice/authSclice";
 
 const PrivateRoute = ({ element: Component, ...rest }) => {
-  // Check if the user is authenticated
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      dispatch(setUser({ user: { name: "Test User",  }, token }));
+    } else {
+      navigate("/login");
+    }
+
+    setLoading(false);
+  }, [dispatch, navigate]);
+
   const { isAuthenticated } = useSelector((state) => state.auth);
 
-  // if already authenticated, redirect to dashboard
-//   const token = localStorage.getItem("token");
-//   if (token) {
-//     return <Navigate to="/dashboard" />;
-//   }
+  if (loading) return <p>Loading...</p>; // Prevent flashing
 
-  return isAuthenticated ? (
-    <Component {...rest} /> // Render the passed component
-  ) : (
-    <Navigate to="/login" /> // Redirect if not authenticated
-  );
+  return isAuthenticated ? <Component {...rest} /> : <Navigate to="/login" />;
 };
+
 PrivateRoute.propTypes = {
   element: PropTypes.elementType.isRequired,
 };
