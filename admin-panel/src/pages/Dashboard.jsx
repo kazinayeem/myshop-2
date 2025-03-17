@@ -2,6 +2,7 @@ import { Outlet, useLocation } from "react-router";
 import SideBar from "../components/SideBar";
 import ProductList from "../components/ProductList";
 import OrderChart from "../components/OrderChart";
+import TotalSaleandProfite from "../components/TotalSaleandProfite";
 
 export default function Dashboard() {
   const location = useLocation();
@@ -13,6 +14,7 @@ export default function Dashboard() {
       <div className="flex-1 p-6">
         {isMainDashboard && (
           <>
+          <TotalSaleandProfite/>
             <ProductList />
             <OrderChart />
           </>

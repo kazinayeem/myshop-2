@@ -2,14 +2,14 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import Loading from "../components/Loading";
 import {
-  useGetordersQuery,
+  useGetOrdersQuery,
   useUpdateordersMutation,
 } from "../redux/Api/orderApi";
 import { useNavigate } from "react-router";
 
 export default function ShowAllOrders() {
   const navigate = useNavigate();
-  const { data: orders, isLoading, isError } = useGetordersQuery();
+  const { data: orders, isLoading, isError } = useGetOrdersQuery();
   const [updateOrder] = useUpdateordersMutation();
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [newStatus, setNewStatus] = useState("");

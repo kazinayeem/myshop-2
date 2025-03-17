@@ -1,218 +1,94 @@
-import { motion } from "framer-motion";
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
+import { useGetOrdersQuery } from "../redux/Api/orderApi";
+import OrderDetails from "../components/OrderDetails";
+import TotalSaleandProfite from "../components/TotalSaleandProfite";
 import Loading from "../components/Loading";
-import { useGetordersQuery } from "../redux/Api/orderApi";
-import { generateProfilePDF } from "../utils/pdfUtils";
 
 const ProfilePage = () => {
-  const { data: orders, isLoading, isError } = useGetordersQuery();
-  const [totalAmount, setTotalAmount] = useState(0);
-  const [orderCount, setOrderCount] = useState(0);
-  const [totalProfit, setTotalProfit] = useState(0);
-  const [totalLoss, setTotalLoss] = useState(0);
+  const today = new Date().toISOString().split("T")[0];
+  const [startDate, setStartDate] = useState(today);
+  const [endDate, setEndDate] = useState("");
 
-  useEffect(() => {
-    if (orders) {
-      let totalAmountSpent = 0;
-      let profit = 0;
-      let loss = 0;
+  const {
+    data: orders,
+    isLoading,
+    isError,
+  } = useGetOrdersQuery(startDate && endDate ? { startDate, endDate } : {});
 
-      orders.forEach((order) => {
-        totalAmountSpent += order.totalPrice;
-        order.products.forEach((product) => {
-          const { quantity } = product;
-          const { price, buyingPrice } = product.productId;
-
-          if (
-            typeof price === "number" &&
-            typeof buyingPrice === "number" &&
-            !isNaN(price) &&
-            !isNaN(buyingPrice) &&
-            typeof quantity === "number" &&
-            !isNaN(quantity)
-          ) {
-            const profitLoss = (price - buyingPrice) * quantity;
-
-            if (profitLoss > 0) {
-              profit += profitLoss;
-            } else {
-              loss += profitLoss;
-            }
-          }
-        });
-      });
-
-      setTotalAmount(totalAmountSpent);
-      setOrderCount(orders.length);
-      setTotalProfit(profit);
-      setTotalLoss(loss);
-    }
-  }, [orders]);
-
-  const handleGeneratePDF = () => {
-    const user = { username: "UserName", email: "user@example.com" }; // Replace with actual data
-    const profileData = {
-      user,
-      totalAmount,
-      orderCount,
-      totalProfit,
-      totalLoss,
-      orders,
-    };
-    generateProfilePDF(profileData);
-  };
-
-  if (isLoading)
-    return (
-      <motion.div animate={{ opacity: 0.5 }} className="text-center">
-        <Loading />
-      </motion.div>
-    );
-  if (isError) return <div>Error fetching data</div>;
+  if (isLoading) return <Loading />;
+  if (isError)
+    return <p className="text-center text-red-500">Error loading orders.</p>;
 
   return (
-    <motion.div
-      className="font-sans bg-gray-50 min-h-screen py-12 px-6"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.8 }}
-    >
-      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8 space-y-6">
-        <h1 className="text-3xl font-bold text-center text-gray-800">
-          Your Profile
-        </h1>
+    <div className="container mx-auto p-6">
+      <TotalSaleandProfite />
 
-        <motion.div
-          className="text-center"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-        >
-          <p className="text-lg">
-            <strong>Username:</strong> Kazi Nayeem
-          </p>
-          <p className="text-lg">
-            <strong>Email:</strong> kazi1@gmail.com
-          </p>
-          <p className="text-lg">
-            <strong>Total Orders:</strong> {orderCount}
-          </p>
-          <p className="text-lg">
-            <strong>Total Amount Spent:</strong> ₹{totalAmount}
-          </p>
-
-          {totalProfit > 0 && (
-            <p className="text-lg text-green-600">
-              <strong>Profit:</strong> ₹{totalProfit}
-            </p>
-          )}
-
-          {totalLoss < 0 && (
-            <p className="text-lg text-red-600">
-              <strong>Loss:</strong> ₹{Math.abs(totalLoss)}
-            </p>
-          )}
-        </motion.div>
-
-        <motion.button
-          onClick={handleGeneratePDF}
-          className="w-full py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all duration-300"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          transition={{ type: "spring", stiffness: 300 }}
-        >
-          Generate PDF
-        </motion.button>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1 }}
-        >
-          <h2 className="text-xl font-semibold text-gray-800 mt-8">
-            Your Orders
-          </h2>
-          {orders.map((order) => (
-            <motion.div
-              key={order._id}
-              className="bg-gray-100 p-4 rounded-lg mt-4 shadow-md hover:shadow-lg transition-shadow duration-300"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <h3 className="text-xl font-medium text-gray-700">
-                Order ID: {order._id}
-              </h3>
-              <p>
-                <strong>Status:</strong> {order.status}
-              </p>
-              <p>
-                <strong>Total Amount:</strong> ₹{order.totalPrice}
-              </p>
-
-              
-              {order.products.reduce((acc, product) => {
-               
-                const { quantity } = product;
-                const { price, buyingPrice } = product.productId;
-                console.log(price, buyingPrice, quantity); // its ok show all
-
-                if (
-                  typeof price === "number" &&
-                  typeof buyingPrice === "number" &&
-                  !isNaN(price) &&
-                  !isNaN(buyingPrice) &&
-                  typeof quantity === "number" &&
-                  !isNaN(quantity)
-                ) {
-                  return acc + (price - buyingPrice) * quantity;
-                }
-                return acc;
-              }, 0) > 0 ? (
-                <React.Fragment>
-                  <p className="text-green-600">
-                    <strong>Profit:</strong> ₹
-                    {order.products.reduce((acc, product) => {
-                      const { quantity } = product;
-                      const { price, buyingPrice } = product.productId;
-                      return acc + (price - buyingPrice) * quantity;
-                    }, 0)}
-                  </p>
-                  {order.products.map((product) => (
-                    <p
-                      key={product.productId._id}
-                      className="text-gray-600 flex flex-row justify-between items-center "
-                    >
-                      <strong className="text-gray-600 ">
-                        {" "}
-                        Price {product.productId.price}
-                      </strong>
-                      <strong
-                        className="text-green-600 
-                          font-semibold"
-                      >
-                        Buying Price {product.productId.buyingPrice}
-                      </strong>
-                    </p>
-                  ))}
-                </React.Fragment>
-              ) : (
-                <p className="text-red-600">
-                  <strong>Loss:</strong> ₹
-                  {Math.abs(
-                    order.products.reduce((acc, product) => {
-                      const { quantity } = product;
-                      const { price, buyingPrice } = product.productId;
-                      return acc + (price - buyingPrice) * quantity;
-                    }, 0)
-                  )}
-                </p>
-              )}
-            </motion.div>
-          ))}
-        </motion.div>
+      <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
+        <h2 className="text-xl font-bold mb-4">Filter Orders</h2>
+        <div className="flex space-x-4 mb-4">
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="border p-2 rounded w-full"
+          />
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="border p-2 rounded w-full"
+          />
+        </div>
       </div>
-    </motion.div>
+      <div data-headlessui-state={orders}>
+        <OrderDetails orders={orders} />
+      </div>
+
+      {/* <div className="bg-white shadow-lg rounded-lg p-6">
+        <h2 className="text-xl font-bold mb-4">Order Details</h2>
+        {orders.map((order) => (
+          <div key={order._id} className="border-b border-gray-300 pb-4 mb-4">
+            <p className="font-semibold">Order ID: {order._id}</p>
+            <p>
+              Status:{" "}
+              <span className="font-medium text-blue-600">{order.status}</span>
+            </p>
+            <p>
+              Total Price:{" "}
+              <span className="font-medium">
+                ${order.totalPrice.toFixed(2)}
+              </span>
+            </p>
+            <div className="mt-2">
+              <h3 className="font-semibold">Products:</h3>
+              <ul className="list-disc list-inside ml-4">
+                {order.products.map((product) => (
+                  <li key={product._id} className="mt-2">
+                    {product.productId ? (
+                      <>
+                        <p className="font-semibold">
+                          {product.productId.name}
+                        </p>
+                        <p>Quantity: {product.quantity}</p>
+                        <p>
+                          Buying Price: $
+                          {product.productId.buyingPrice.toFixed(2)}
+                        </p>
+                        <p>Selling Price: ${product.price.toFixed(2)}</p>
+                      </>
+                    ) : (
+                      <p className="text-gray-500">
+                        Product information not available.
+                      </p>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        ))}
+      </div> */}
+    </div>
   );
 };
 

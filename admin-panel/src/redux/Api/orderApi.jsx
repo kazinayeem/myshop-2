@@ -5,14 +5,23 @@ export const ordersApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_API_URL }),
   tagTypes: ["Orders"],
   endpoints: (builder) => ({
-    getorders: builder.query({
-      query: () => "orders",
-      providesTags: ["Orders"], // Ensure case consistency
+    getOrders: builder.query({
+      query: ({ startDate, endDate } = {}) => {
+        const queryParams =
+          startDate && endDate
+            ? `?startDate=${startDate}&endDate=${endDate}`
+            : "";
+        return `orders${queryParams}`;
+      },
+      providesTags: (result) =>
+        result
+          ? [...result.map(({ _id }) => ({ type: "Order", id: _id })), "Order"]
+          : ["Order"],
     }),
 
     getordersById: builder.query({
       query: (id) => `orders/${id}`,
-      providesTags: (result, error, id) => [{ type: "Orders", id }], // Correcting to `providesTags`
+      providesTags: (result, error, id) => [{ type: "Orders", id }], 
     }),
 
     addorders: builder.mutation({
@@ -33,7 +42,7 @@ export const ordersApi = createApi({
       invalidatesTags: (result, error, { id }) => [
         { type: "Orders", id },
         "Orders",
-      ], // Invalidate specific order and list
+      ],
     }),
 
     deleteorders: builder.mutation({
@@ -41,13 +50,13 @@ export const ordersApi = createApi({
         url: `orders/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Orders"], // Ensure case consistency
+      invalidatesTags: ["Orders"], 
     }),
   }),
 });
 
 export const {
-  useGetordersQuery,
+  useGetOrdersQuery,
   useGetordersByIdQuery,
   useAddordersMutation,
   useUpdateordersMutation,

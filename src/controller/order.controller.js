@@ -24,10 +24,25 @@ export const createOrder = async (req, res) => {
 // get all orders
 export const getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.find()
+    const { startDate, endDate } = req.query;
+    let filter = {};
+
+    if (startDate && endDate) {
+      filter.createdAt = {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate),
+      };
+    } else {
+      const now = new Date();
+      const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      filter.createdAt = { $gte: firstDayOfMonth };
+    }
+
+    const orders = await Order.find(filter)
       .populate("userId", "username email")
       .populate("products.productId", "name price buyingPrice")
       .populate("address");
+
     res.status(200).json(orders);
   } catch (error) {
     res.status(500).json({ message: error.message });
