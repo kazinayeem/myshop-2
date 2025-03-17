@@ -24,7 +24,7 @@ export const createOrder = async (req, res) => {
 // get all orders
 export const getAllOrders = async (req, res) => {
   try {
-    const { startDate, endDate } = req.query;
+    const { startDate, endDate, orderId } = req.query;
     let filter = {};
 
     if (startDate && endDate) {
@@ -38,6 +38,10 @@ export const getAllOrders = async (req, res) => {
       filter.createdAt = { $gte: firstDayOfMonth };
     }
 
+    if (orderId) {
+      filter._id = orderId;
+    }
+
     const orders = await Order.find(filter)
       .populate("userId", "username email")
       .populate("products.productId", "name price buyingPrice")
@@ -48,6 +52,7 @@ export const getAllOrders = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 // order by user id
 export const getOrderByUserId = async (req, res) => {
   try {

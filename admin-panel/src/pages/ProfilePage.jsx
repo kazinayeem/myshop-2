@@ -3,6 +3,8 @@ import { useGetOrdersQuery } from "../redux/Api/orderApi";
 import OrderDetails from "../components/OrderDetails";
 import TotalSaleandProfite from "../components/TotalSaleandProfite";
 import Loading from "../components/Loading";
+import { generateProfilePDF } from "../utils/pdfUtils";
+import DatetoDateFilter from "../components/DatetoDateFilter";
 
 const ProfilePage = () => {
   const today = new Date().toISOString().split("T")[0];
@@ -14,6 +16,53 @@ const ProfilePage = () => {
     isLoading,
     isError,
   } = useGetOrdersQuery(startDate && endDate ? { startDate, endDate } : {});
+  // Ensure orders is an array and has data
+  const calculateFinancials = (orders) => {
+    if (!Array.isArray(orders))
+      return { totalSales: 0, totalProfit: 0, totalLoss: 0 };
+
+    let totalSales = 0;
+    let totalProfit = 0;
+    let totalLoss = 0;
+
+    orders.forEach((order) => {
+      if (Array.isArray(order.products)) {
+        order.products.forEach((product) => {
+          if (product.productId) {
+            const costPrice = product.productId.buyingPrice * product.quantity;
+            const sellingPrice = product.price * product.quantity;
+            const profitOrLoss = sellingPrice - costPrice;
+
+            totalSales += sellingPrice;
+            if (profitOrLoss > 0) {
+              totalProfit += profitOrLoss;
+            } else {
+              totalLoss += Math.abs(profitOrLoss);
+            }
+          }
+        });
+      }
+    });
+
+    return { totalSales, totalProfit, totalLoss };
+  };
+
+  const generateReport = () => {
+    const { totalSales, totalProfit, totalLoss } = calculateFinancials(
+      orders || []
+    );
+    const reportData = {
+      startDate,
+      endDate,
+      totalAmount: totalSales,
+      orderCount: orders.length,
+      totalProfit,
+      totalLoss,
+      orders,
+    };
+
+    generateProfilePDF(reportData);
+  };
 
   if (isLoading) return <Loading />;
   if (isError)
@@ -22,6 +71,23 @@ const ProfilePage = () => {
   return (
     <div className="container mx-auto p-6">
       <TotalSaleandProfite endDate={endDate} startDate={startDate} />
+
+      {/* generate report button */}
+      <div className="flex justify-end mb-4">
+        <button
+          onClick={generateReport}
+          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+        >
+          Generate Report
+        </button>
+      </div>
+
+      <DatetoDateFilter
+        endDate={endDate}
+        setEndDate={setEndDate}
+        startDate={startDate}
+        setStartDate={setStartDate}
+      />
 
       {/* last 7, 10 ,and 30 day filter */}
       <div className="flex justify-end mb-4">
@@ -63,7 +129,7 @@ const ProfilePage = () => {
         </select>
       </div>
 
-      <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
+      {/* <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
         <h2 className="text-xl font-bold mb-4">Filter Orders</h2>
         <div className="flex space-x-4 mb-4">
           <input
@@ -79,55 +145,12 @@ const ProfilePage = () => {
             className="border p-2 rounded w-full"
           />
         </div>
-      </div>
+
+      </div> */}
+
       <div data-headlessui-state={orders}>
         <OrderDetails orders={orders} />
       </div>
-
-      {/* <div className="bg-white shadow-lg rounded-lg p-6">
-        <h2 className="text-xl font-bold mb-4">Order Details</h2>
-        {orders.map((order) => (
-          <div key={order._id} className="border-b border-gray-300 pb-4 mb-4">
-            <p className="font-semibold">Order ID: {order._id}</p>
-            <p>
-              Status:{" "}
-              <span className="font-medium text-blue-600">{order.status}</span>
-            </p>
-            <p>
-              Total Price:{" "}
-              <span className="font-medium">
-                ${order.totalPrice.toFixed(2)}
-              </span>
-            </p>
-            <div className="mt-2">
-              <h3 className="font-semibold">Products:</h3>
-              <ul className="list-disc list-inside ml-4">
-                {order.products.map((product) => (
-                  <li key={product._id} className="mt-2">
-                    {product.productId ? (
-                      <>
-                        <p className="font-semibold">
-                          {product.productId.name}
-                        </p>
-                        <p>Quantity: {product.quantity}</p>
-                        <p>
-                          Buying Price: $
-                          {product.productId.buyingPrice.toFixed(2)}
-                        </p>
-                        <p>Selling Price: ${product.price.toFixed(2)}</p>
-                      </>
-                    ) : (
-                      <p className="text-gray-500">
-                        Product information not available.
-                      </p>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        ))}
-      </div> */}
     </div>
   );
 };

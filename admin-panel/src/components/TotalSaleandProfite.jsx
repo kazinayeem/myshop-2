@@ -1,6 +1,7 @@
 import { useGetOrdersQuery } from "../redux/Api/orderApi";
 import { takaSign } from "../utils/Currency";
 import PropTypes from "prop-types";
+
 export default function TotalSaleandProfite({ startDate, endDate }) {
   const {
     data: orders,
@@ -12,32 +13,41 @@ export default function TotalSaleandProfite({ startDate, endDate }) {
   if (isError)
     return <p className="text-center text-red-500">Error loading orders.</p>;
 
+  // Ensure orders is an array and has data
   const calculateFinancials = (orders) => {
+    if (!Array.isArray(orders))
+      return { totalSales: 0, totalProfit: 0, totalLoss: 0 };
+
     let totalSales = 0;
     let totalProfit = 0;
     let totalLoss = 0;
 
     orders.forEach((order) => {
-      order.products.forEach((product) => {
-        if (product.productId) {
-          const costPrice = product.productId.buyingPrice * product.quantity;
-          const sellingPrice = product.price * product.quantity;
-          const profitOrLoss = sellingPrice - costPrice;
+      if (Array.isArray(order.products)) {
+        order.products.forEach((product) => {
+          if (product.productId) {
+            const costPrice = product.productId.buyingPrice * product.quantity;
+            const sellingPrice = product.price * product.quantity;
+            const profitOrLoss = sellingPrice - costPrice;
 
-          totalSales += sellingPrice;
-          if (profitOrLoss > 0) {
-            totalProfit += profitOrLoss;
-          } else {
-            totalLoss += Math.abs(profitOrLoss);
+            totalSales += sellingPrice;
+            if (profitOrLoss > 0) {
+              totalProfit += profitOrLoss;
+            } else {
+              totalLoss += Math.abs(profitOrLoss);
+            }
           }
-        }
-      });
+        });
+      }
     });
 
     return { totalSales, totalProfit, totalLoss };
   };
 
-  const { totalSales, totalProfit, totalLoss } = calculateFinancials(orders);
+  const { totalSales, totalProfit, totalLoss } = calculateFinancials(
+    orders || []
+  );
+
   return (
     <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
       <h1 className="text-2xl font-bold mb-4">Financial Overview</h1>
@@ -52,7 +62,6 @@ export default function TotalSaleandProfite({ startDate, endDate }) {
         <div className="bg-green-100 p-4 rounded-lg">
           <p className="text-lg font-semibold">Total Profit</p>
           <p className="text-xl font-bold">
-            {" "}
             {takaSign()}
             {totalProfit.toFixed(2)}
           </p>

@@ -37,7 +37,7 @@ export default function SideBar() {
     <div
       className={`${
         isCollapsed ? "w-16" : "w-64"
-      } min-h-screen bg-gray-800 text-white p-4 transition-all duration-300`}
+      } min-h-screen bg-gray-800 text-white p-4 transition-all duration-300 `}
     >
       {/* Sidebar Collapse Button */}
       <button

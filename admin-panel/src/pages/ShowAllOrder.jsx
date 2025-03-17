@@ -7,14 +7,22 @@ import {
 } from "../redux/Api/orderApi";
 import { useNavigate } from "react-router";
 import { takaSign } from "../utils/Currency";
+import DatetoDateFilter from "../components/DatetoDateFilter";
 
 export default function ShowAllOrders() {
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState();
   const navigate = useNavigate();
-  const { data: orders, isLoading, isError } = useGetOrdersQuery();
+  const {
+    data: orders,
+    isLoading,
+    isError,
+  } = useGetOrdersQuery(startDate && endDate ? { startDate, endDate } : {});
   const [updateOrder] = useUpdateordersMutation();
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [newStatus, setNewStatus] = useState("");
-  const [filterStatus, setFilterStatus] = useState(""); // Filter state
+  const [filterStatus, setFilterStatus] = useState("");
+  const [searchId, setSearchId] = useState("");
 
   const handleUpdateStatus = async (orderId) => {
     if (!newStatus) return;
@@ -32,13 +40,20 @@ export default function ShowAllOrders() {
     return <p className="text-center text-red-500">Failed to fetch orders.</p>;
 
   // Filter orders based on selected status
-  const filteredOrders = filterStatus
-    ? orders?.filter((order) => order.status === filterStatus)
-    : orders;
+  const filteredOrders = orders?.filter((order) => {
+    // Apply status filter if provided
+    const statusFilter = !filterStatus || order.status === filterStatus;
+
+    // Apply orderId search filter
+    const idFilter =
+      !searchId || order._id.toLowerCase().includes(searchId.toLowerCase());
+
+    return statusFilter && idFilter;
+  });
 
   return (
     <motion.div
-      className="max-w-5xl mx-auto mt-10 p-8 bg-white rounded-xl shadow-lg"
+      className="min-w-full max-w-5xl mx-auto mt-10 p-8 bg-white rounded-xl shadow-lg"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -47,8 +62,9 @@ export default function ShowAllOrders() {
         All Orders
       </h2>
 
-      {/* Filter Dropdown */}
-      <div className="flex justify-end mb-4">
+      {/* Filter and Search */}
+      <div className="flex justify-between mb-4 ">
+        {/* Filter Dropdown */}
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
@@ -64,14 +80,38 @@ export default function ShowAllOrders() {
           <option value="failed">Failed</option>
           <option value="completed">Completed</option>
           <option value="processing">Processing</option>
-          
         </select>
+
+        {/* Search by Order ID */}
+        <div className="flex items-center">
+          <input
+            type="text"
+            value={searchId}
+            onChange={(e) => setSearchId(e.target.value)}
+            placeholder="Search by Order ID"
+            className="p-2 border rounded-md mr-2"
+          />
+          <motion.button
+            className="bg-gray-500 text-white px-3 py-2 rounded-lg shadow-md hover:bg-gray-600 transition"
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setSearchId("")}
+          >
+            Clear Search
+          </motion.button>
+        </div>
       </div>
+      <DatetoDateFilter
+        endDate={endDate}
+        setEndDate={setEndDate}
+        startDate={startDate}
+        setStartDate={setStartDate}
+      />
 
       <div className="overflow-x-auto">
         <table className="w-full border-collapse rounded-lg shadow-md overflow-hidden">
           <thead>
             <tr className="bg-blue-500 text-white">
+              <th className="p-3 text-left">Order ID</th>
               <th className="p-3">User</th>
               <th className="p-3">Products</th>
               <th className="p-3">Amount</th>
@@ -88,6 +128,7 @@ export default function ShowAllOrders() {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3 }}
               >
+                <td className="p-3 text-gray-700 font-semibold">{order._id}</td>
                 <td className="p-3 text-center">{order.userId?.username}</td>
                 <td className="p-3 text-center">
                   {order.products.map((product) => (
@@ -100,7 +141,8 @@ export default function ShowAllOrders() {
                   ))}
                 </td>
                 <td className="p-3 text-center font-semibold">
-                  {takaSign()}{order.totalPrice.toFixed(3)}
+                  {takaSign()}
+                  {order.totalPrice.toFixed(3)}
                 </td>
                 <td className="p-3 text-center text-blue-600 font-medium">
                   {order.status}
@@ -147,7 +189,7 @@ export default function ShowAllOrders() {
                       Change Status
                     </motion.button>
                   )}
-                  {/* see more */}
+                  {/* See more */}
                   <motion.button
                     className="bg-green-500 text-white px-3 py-2 rounded-lg shadow-md hover:bg-green-600 transition ml-2"
                     whileTap={{ scale: 0.95 }}

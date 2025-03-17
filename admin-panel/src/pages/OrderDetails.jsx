@@ -5,6 +5,7 @@ import {
   useUpdateordersMutation,
 } from "../redux/Api/orderApi";
 import { takaSign } from "../utils/Currency";
+import { generateInvoicePDF } from "../utils/invoiceGenerator";
 
 const OrderDetails = () => {
   const { id } = useParams();
@@ -21,6 +22,16 @@ const OrderDetails = () => {
     } catch (error) {
       console.error("Failed to update order status", error);
     }
+  };
+
+  const handleDownloadInvoice = () => {
+    generateInvoicePDF({
+      name: order.userId?.username,
+      email: order.userId?.email,
+      userPhone : order.userId?.mobileNumber,
+      order: order,
+      address : order.address,
+    });
   };
 
   if (isLoading) return <div className="text-center p-5">Loading...</div>;
@@ -43,7 +54,11 @@ const OrderDetails = () => {
           <span className="font-medium text-green-600">{order.status}</span>
         </p>
         <p className="text-gray-600">
-          Total Price: <span className="font-medium"> {takaSign()} {order.totalPrice}</span>
+          Total Price:{" "}
+          <span className="font-medium">
+            {" "}
+            {takaSign()} {order.totalPrice}
+          </span>
         </p>
       </div>
 
@@ -113,7 +128,8 @@ const OrderDetails = () => {
                   <div>
                     <p className="font-medium">{item.productId.name}</p>
                     <p>
-                      Price:  {takaSign()} {item.price} | Quantity: {item.quantity}
+                      Price: {takaSign()} {item.price} | Quantity:{" "}
+                      {item.quantity}
                     </p>
                   </div>
                 ) : (
@@ -125,6 +141,16 @@ const OrderDetails = () => {
         ) : (
           <p>No products found.</p>
         )}
+      </div>
+
+      {/* Download Invoice Button */}
+      <div className="mt-6">
+        <button
+          onClick={handleDownloadInvoice}
+          className="bg-green-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-600 transition"
+        >
+          Download Invoice
+        </button>
       </div>
     </div>
   );

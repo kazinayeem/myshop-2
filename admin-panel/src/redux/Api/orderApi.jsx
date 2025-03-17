@@ -6,11 +6,18 @@ export const ordersApi = createApi({
   tagTypes: ["Orders"],
   endpoints: (builder) => ({
     getOrders: builder.query({
-      query: ({ startDate, endDate } = {}) => {
-        const queryParams =
-          startDate && endDate
-            ? `?startDate=${startDate}&endDate=${endDate}`
-            : "";
+      query: ({ startDate, endDate, orderId } = {}) => {
+        let queryParams = "";
+
+        if (startDate && endDate) {
+          queryParams = `?startDate=${startDate}&endDate=${endDate}`;
+        }
+        if (orderId) {
+          queryParams = queryParams
+            ? `${queryParams}&orderId=${orderId}`
+            : `?orderId=${orderId}`;
+        }
+
         return `orders${queryParams}`;
       },
       providesTags: (result) =>
@@ -21,7 +28,7 @@ export const ordersApi = createApi({
 
     getordersById: builder.query({
       query: (id) => `orders/${id}`,
-      providesTags: (result, error, id) => [{ type: "Orders", id }], 
+      providesTags: (result, error, id) => [{ type: "Orders", id }],
     }),
 
     addorders: builder.mutation({
@@ -39,9 +46,10 @@ export const ordersApi = createApi({
         method: "PUT",
         body: updatedorders,
       }),
+      // Invalidate the updated order and refetch the list of orders
       invalidatesTags: (result, error, { id }) => [
-        { type: "Orders", id },
-        "Orders",
+        { type: "Orders", id }, // Invalidate the specific updated order
+        "Orders", // Invalidate the list of orders so it's refetched
       ],
     }),
 
@@ -50,7 +58,7 @@ export const ordersApi = createApi({
         url: `orders/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Orders"], 
+      invalidatesTags: ["Orders"],
     }),
   }),
 });
