@@ -28,9 +28,13 @@ const OrderDetails = ({ orders }) => {
                   <h3 className="font-semibold mb-2">Products:</h3>
                   <ul className="list-disc list-inside ml-4">
                     {order.products.map((product) => (
-                      <li key={product._id} className="mt-2">
+                      <li
+                        key={product._id}
+                        className="mt-2 list-none flex flex-row justify-between items-center bg-white p-2 rounded-lg shadow-md border border-gray-200"
+                      >
                         {product.productId ? (
                           <>
+                            <p>Product ID: {product.productId._id}</p>
                             <p className="font-semibold">
                               {product.productId.name}
                             </p>

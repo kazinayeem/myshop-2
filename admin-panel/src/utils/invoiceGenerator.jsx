@@ -1,5 +1,6 @@
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { takaSign } from "./Currency";
 
 const logoPath = "https://i.ibb.co.com/yGz1JpX/825159-preview.jpg";
 
@@ -16,7 +17,7 @@ export const generateInvoicePDF = ({ name, email, order }) => {
   doc.text("MY SHOP", 105, 20, { align: "center" });
 
   // Invoice Title
-  doc.setFontSize(16);
+  doc.setFontSize(12);
   doc.text(`Invoice #${order._id}`, 14, 40);
 
   // User Details
@@ -30,8 +31,10 @@ export const generateInvoicePDF = ({ name, email, order }) => {
   const tableRows = order.products.map((product) => [
     product.productId?.name || "Unknown",
     product.quantity,
-    `$${product.productId?.price?.toFixed(2) || "0.00"}`,
-    `$${(product.quantity * (product.productId?.price || 0)).toFixed(2)}`,
+    `${takaSign()} ${product.productId?.price?.toFixed(2) || "0.00"}`,
+    `${takaSign()} ${(
+      product.quantity * (product.productId?.price || 0)
+    ).toFixed(2)}`,
   ]);
 
   // Generate Table
@@ -48,7 +51,11 @@ export const generateInvoicePDF = ({ name, email, order }) => {
 
   // Total Amount
   doc.setFontSize(14);
-  doc.text(`Total Amount: $${order.totalPrice.toFixed(2)}`, 14, finalY);
+  doc.text(
+    `Total Amount:  ${takaSign()} ${order.totalPrice.toFixed(2)}`,
+    14,
+    finalY
+  );
 
   // Refund and Warranty Policy
   const policyText = `
@@ -99,8 +106,10 @@ export const generateAllInvoicesPDF = ({ orders, name, email }) => {
     const tableRows = order.products.map((product) => [
       product.productId?.name || "Unknown",
       product.quantity,
-      `$${product.productId?.price?.toFixed(2) || "0.00"}`,
-      `$${(product.quantity * (product.productId?.price || 0)).toFixed(2)}`,
+      `${takaSign()} ${product.productId?.price?.toFixed(2) || "0.00"}`,
+      `${takaSign()} ${(
+        product.quantity * (product.productId?.price || 0)
+      ).toFixed(2)}`,
     ]);
 
     let finalY = yOffset + 40;
@@ -115,7 +124,11 @@ export const generateAllInvoicesPDF = ({ orders, name, email }) => {
     }
 
     doc.setFontSize(14);
-    doc.text(`Total Amount: $${order.totalPrice.toFixed(2)}`, 14, finalY);
+    doc.text(
+      `Total Amount: ${takaSign()}${order.totalPrice.toFixed(2)}`,
+      14,
+      finalY
+    );
 
     // Refund and Warranty Policy
     // Refund and Warranty Policy

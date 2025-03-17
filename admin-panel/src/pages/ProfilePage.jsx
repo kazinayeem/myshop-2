@@ -21,7 +21,47 @@ const ProfilePage = () => {
 
   return (
     <div className="container mx-auto p-6">
-      <TotalSaleandProfite />
+      <TotalSaleandProfite endDate={endDate} startDate={startDate} />
+
+      {/* last 7, 10 ,and 30 day filter */}
+      <div className="flex justify-end mb-4">
+        <select
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+          className="p-2 border rounded-md focus:ring focus:ring-blue-300"
+        >
+          {/* value as a date */}
+          <option value="">Select Date</option>
+          <option value={today}>Today</option>
+          <option
+            value={
+              new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+                .toISOString()
+                .split("T")[0]
+            }
+          >
+            Last 7 Days
+          </option>
+          <option
+            value={
+              new Date(Date.now() - 10 * 24 * 60 * 60 * 1000)
+                .toISOString()
+                .split("T")[0]
+            }
+          >
+            Last 10 Days
+          </option>
+          <option
+            value={
+              new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+                .toISOString()
+                .split("T")[0]
+            }
+          >
+            Last 30 Days
+          </option>
+        </select>
+      </div>
 
       <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
         <h2 className="text-xl font-bold mb-4">Filter Orders</h2>

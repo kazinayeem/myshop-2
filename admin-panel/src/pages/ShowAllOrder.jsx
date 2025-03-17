@@ -6,6 +6,7 @@ import {
   useUpdateordersMutation,
 } from "../redux/Api/orderApi";
 import { useNavigate } from "react-router";
+import { takaSign } from "../utils/Currency";
 
 export default function ShowAllOrders() {
   const navigate = useNavigate();
@@ -99,7 +100,7 @@ export default function ShowAllOrders() {
                   ))}
                 </td>
                 <td className="p-3 text-center font-semibold">
-                  ${order.totalPrice.toFixed(3)}
+                  {takaSign()}{order.totalPrice.toFixed(3)}
                 </td>
                 <td className="p-3 text-center text-blue-600 font-medium">
                   {order.status}

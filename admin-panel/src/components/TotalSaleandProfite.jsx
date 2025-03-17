@@ -1,8 +1,12 @@
 import { useGetOrdersQuery } from "../redux/Api/orderApi";
 import { takaSign } from "../utils/Currency";
-
-export default function TotalSaleandProfite() {
-  const { data: orders, isLoading, isError } = useGetOrdersQuery({});
+import PropTypes from "prop-types";
+export default function TotalSaleandProfite({ startDate, endDate }) {
+  const {
+    data: orders,
+    isLoading,
+    isError,
+  } = useGetOrdersQuery(startDate && endDate ? { startDate, endDate } : {});
 
   if (isLoading) return <p className="text-center text-gray-600">Loading...</p>;
   if (isError)
@@ -56,7 +60,6 @@ export default function TotalSaleandProfite() {
         <div className="bg-red-100 p-4 rounded-lg">
           <p className="text-lg font-semibold">Total Loss</p>
           <p className="text-xl font-bold">
-            {" "}
             {takaSign()}
             {totalLoss.toFixed(2)}
           </p>
@@ -65,3 +68,9 @@ export default function TotalSaleandProfite() {
     </div>
   );
 }
+
+// props types
+TotalSaleandProfite.propTypes = {
+  startDate: PropTypes.string,
+  endDate: PropTypes.string,
+};

@@ -4,6 +4,7 @@ import {
   useGetordersByIdQuery,
   useUpdateordersMutation,
 } from "../redux/Api/orderApi";
+import { takaSign } from "../utils/Currency";
 
 const OrderDetails = () => {
   const { id } = useParams();
@@ -42,7 +43,7 @@ const OrderDetails = () => {
           <span className="font-medium text-green-600">{order.status}</span>
         </p>
         <p className="text-gray-600">
-          Total Price: <span className="font-medium">${order.totalPrice}</span>
+          Total Price: <span className="font-medium"> {takaSign()} {order.totalPrice}</span>
         </p>
       </div>
 
@@ -112,7 +113,7 @@ const OrderDetails = () => {
                   <div>
                     <p className="font-medium">{item.productId.name}</p>
                     <p>
-                      Price: ${item.price} | Quantity: {item.quantity}
+                      Price:  {takaSign()} {item.price} | Quantity: {item.quantity}
                     </p>
                   </div>
                 ) : (
