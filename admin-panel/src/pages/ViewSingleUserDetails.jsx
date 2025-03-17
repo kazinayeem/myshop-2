@@ -5,10 +5,7 @@ import Loading from "../components/Loading";
 import UserAnalysisCharts from "../components/UserAnalysisCharts";
 import { useUpdateordersMutation } from "../redux/Api/orderApi";
 import { useGetUserByIdQuery } from "../redux/Api/userApi";
-import {
-  generateAllInvoicesPDF,
-  generateInvoicePDF,
-} from "../utils/invoiceGenerator";
+import { generateInvoicePDF } from "../utils/invoiceGenerator";
 import { takaSign } from "../utils/Currency";
 
 const ViewSingleUserDetails = () => {
@@ -204,18 +201,6 @@ const ViewSingleUserDetails = () => {
           ) : (
             <p className="text-gray-500">No orders found.</p>
           )}
-          <button
-            className="text-blue-500 hover:underline mt-4"
-            onClick={() =>
-              generateAllInvoicesPDF({
-                orders: userDetails.orderhistory,
-                name: userDetails.username,
-                email: userDetails.email,
-              })
-            }
-          >
-            Download All Invoices
-          </button>
         </motion.div>
       </div>
       <motion.div
