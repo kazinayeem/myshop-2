@@ -15,6 +15,8 @@ import {
   Image,
   Tag,
   PackageCheck,
+  LogOut,
+  ShoppingBag,
 } from "lucide-react";
 
 export default function SideBar() {
@@ -54,6 +56,16 @@ export default function SideBar() {
             className="hover:text-gray-400 flex items-center"
           >
             🏠 {!isCollapsed && "Home"}
+          </Link>
+        </li>
+
+        <li className="mb-2">
+          <Link
+            to="/dashboard/pos"
+            className="hover:text-gray-400 flex items-center"
+          >
+            <ShoppingBag size={18} className="mr-2" />
+            {!isCollapsed && "Pos"}
           </Link>
         </li>
 
@@ -217,10 +229,10 @@ export default function SideBar() {
 
         <li className="mb-2">
           <Link
-            to="dashboard/logout"
+            to="/dashboard/logout"
             className="hover:text-gray-400 flex items-center"
           >
-            🚪 {!isCollapsed && "Logout"}
+            <LogOut size={18} className="mr-2" /> {!isCollapsed && "Logout"}
           </Link>
         </li>
       </ul>

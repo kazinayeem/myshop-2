@@ -1,4 +1,3 @@
-
 import { BrowserRouter, Route, Routes } from "react-router";
 import App from "../App";
 import LogoutButton from "../components/LogoutButton";
@@ -20,6 +19,7 @@ import SliderManager from "../pages/SliderManager";
 import Userlist from "../pages/Userlist";
 import ViewSingleUserDetails from "../pages/ViewSingleUserDetails";
 import PrivateRoute from "./PrivateRoute";
+import PosPage from "../pages/PosPage";
 
 export default function MainRoutes() {
   return (
@@ -50,6 +50,7 @@ export default function MainRoutes() {
           <Route path="logout" element={<LogoutButton />} />
           <Route path="profit-loss" element={<ProfilePage />} />
           <Route path="*" element={<NotFound />} />
+          <Route path="pos" element={<PosPage />} />
         </Route>
 
         {/* Catch-all for 404 */}
