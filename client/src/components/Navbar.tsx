@@ -1,22 +1,55 @@
 "use client";
 import { Search } from "lucide-react";
-import { FaHeart, FaShoppingCart, FaBars } from "react-icons/fa";
-import { useState } from "react";
+import { FaHeart, FaShoppingCart, FaBars,  } from "react-icons/fa";
+import { CiLogin } from "react-icons/ci";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
+interface Brand {
+  _id: number;
+  name: string;
+  logo: string;
+}
 
 export default function Navbar() {
+  const [brand, setBrand] = useState<Brand[]>([]);
   const [menuOpen, setMenuOpen] = useState(false);
+  useEffect(() => {
+    const fetchBrand = async () => {
+      try {
+        const response = await fetch(
+          "https://myshop-2-production.up.railway.app/api/brands"
+        );
+        const data = await response.json();
+        setBrand(data);
+      } catch (error) {
+        console.error("Error fetching brand data:", error);
+      }
+    };
+    fetchBrand();
+  }, []);
 
   return (
     <nav className="flex justify-between  items-center px-10 py-4 shadow-md bg-white relative">
       {/* Logo */}
-      <div className="text-xl font-bold">
-        <Link href="/" className="text-gray-700">
-          <span className="text-red-500">Shop</span>Easy
+      <div className="flex items-center space-x-2">
+        <Link href="/">
+          <Image
+            width={40}
+            height={40}
+            src={brand[0]?.logo}
+            alt="Brand Logo"
+            className="w-10 h-10 rounded-full"
+          />
+        </Link>
+        {/* Brand Name */}
+        <Link href="/">
+          <span className="text-xl font-bold text-gray-700">
+            {brand[0]?.name}
+          </span>
         </Link>
       </div>
 
-      {/* Mobile Menu Button */}
       <button
         className="md:hidden text-xl"
         onClick={() => setMenuOpen(!menuOpen)}
@@ -52,6 +85,13 @@ export default function Navbar() {
         </div>
         <FaHeart className="text-xl text-gray-700 cursor-pointer" />
         <FaShoppingCart className="text-xl text-gray-700 cursor-pointer" />
+        {/* login and logout */}
+        <Link
+          href="/auth"
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200 ease-in-out"
+        >
+          <CiLogin className="text-xl" />
+        </Link>
       </div>
     </nav>
   );

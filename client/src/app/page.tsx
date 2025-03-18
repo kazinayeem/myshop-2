@@ -4,9 +4,12 @@ import Categories from '@/components/ViewCategory';
 import React from 'react'
 
 export default function page() {
-  return <div>
-    <MainHeader />
-    <FlashSales />
-    <Categories />
-  </div>;
+  return (
+    <div>
+      <MainHeader />
+      <FlashSales />
+      <Categories />
+      <FlashSales />
+    </div>
+  );
 }

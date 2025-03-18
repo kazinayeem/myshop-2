@@ -20,7 +20,7 @@ export default function ShowCategory() {
     <div className="w-full lg:w-1/4 bg-gray-100 p-4 rounded-lg h-auto lg:h-[50vh]">
       <h2 className="text-xl font-semibold mb-4">Categories</h2>
       <ul>
-        {categories?.slice(0, 8).map((category) => (
+        {categories?.slice(0, 4).map((category) => (
           <li
             key={category._id}
             className="mb-2 cursor-pointer hover:text-blue-500 flex items-center justify-between p-2 rounded-lg transition duration-200 ease-in-out"
