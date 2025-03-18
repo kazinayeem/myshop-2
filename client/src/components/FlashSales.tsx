@@ -114,11 +114,7 @@ export default function ProductsList() {
             </CardHeader>
             <CardContent className="flex px-4 flex-col h-full justify-between">
               <div>
-                <Link
-                  href={`/product/${product._id}`}
-                  className="block"
-                  
-                >
+                <Link href={`/product/${product._id}`} className="block">
                   <CardTitle className="text-lg font-semibold truncate">
                     {product.name}
                   </CardTitle>
@@ -141,7 +137,9 @@ export default function ProductsList() {
       {/* View All Product Button */}
       <div className="flex justify-center mt-8">
         <Button variant="destructive" className="w-full max-w-xs">
-          View All Products
+          <Link href="/product" className="w-full max-w-xs">
+            View All Products
+          </Link>
         </Button>
       </div>
     </div>
