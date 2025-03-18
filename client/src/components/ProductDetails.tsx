@@ -36,7 +36,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     if (params.id) {
-      fetch(`${process.env.NEXT_PUBLIC_SERVER_PORT}/${params.id}`)
+      fetch(`${process.env.NEXT_PUBLIC_SERVER_PORT}/products/${params.id}`)
         .then((res) => res.json())
         .then((data) => {
           setProduct(data);
