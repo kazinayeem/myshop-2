@@ -22,10 +22,35 @@ const orderSchema = new mongoose.Schema(
           type: Number,
           required: true,
         },
+        variant: {
+          type: String,
+          required: false,
+        },
       },
     ],
     totalPrice: {
-      // Change `amount` to `totalPrice` here
+      type: Number,
+      required: true,
+    },
+    paidAmount: {
+      type: Number,
+      required: true,
+    },
+    dueAmount: {
+      type: Number,
+      required: true,
+    },
+    paymentMethod: {
+      type: String,
+      enum: ["credit_card", "paypal", "cash_on_delivery"],
+      required: true,
+    },
+    paymentStatus: {
+      type: String,
+      enum: ["paid", "pending", "failed"],
+      default: "pending",
+    },
+    deliveryCharge: {
       type: Number,
       required: true,
     },

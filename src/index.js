@@ -1,8 +1,8 @@
-import helmet from "helmet"; 
-import cors from "cors"; 
-import rateLimit from "express-rate-limit"; 
-import xssClean from "xss-clean"; 
-import hpp from "hpp"; 
+import helmet from "helmet";
+import cors from "cors";
+import rateLimit from "express-rate-limit";
+import xssClean from "xss-clean";
+import hpp from "hpp";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -18,8 +18,7 @@ import orderRoutes from "./routes/order.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import SliderRoutes from "./routes/slider.routes.js";
 import logger from "./lib/logger.js";
-
-
+import Brand from "./routes/brand.routes.js";
 
 // initialize express
 const app = express();
@@ -37,7 +36,7 @@ app.use(hpp());
 
 // middlewares
 app.use(cookieParser());
-app.use(cors()); 
+app.use(cors());
 app.use(
   morgan("combined", {
     stream: {
@@ -72,6 +71,8 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/users", userRoutes);
 // sliders
 app.use("/api/sliders", SliderRoutes);
+// brands
+app.use("/api/brands", Brand);
 
 /// ❌ 404 Not Found Handler
 app.use((req, res, next) => {

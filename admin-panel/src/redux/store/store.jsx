@@ -6,6 +6,7 @@ import subCategoryApi from "../Api/subcategoryApi";
 import ordersApi from "../Api/orderApi";
 import userApi from "../Api/userApi";
 import { sliderApi } from "../Api/sliderApi";
+import brandsApi from "../Api/brandApi";
 
 const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ const store = configureStore({
     [ordersApi.reducerPath]: ordersApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
     [sliderApi.reducerPath]: sliderApi.reducer,
+    [brandsApi.reducerPath]: brandsApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
@@ -24,7 +26,8 @@ const store = configureStore({
       .concat(subCategoryApi.middleware)
       .concat(ordersApi.middleware)
       .concat(userApi.middleware)
-      .concat(sliderApi.middleware),
+      .concat(sliderApi.middleware)
+      .concat(brandsApi.middleware),
 });
 
 export default store;

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
+
 import {
   Menu,
   X,
@@ -7,7 +8,6 @@ import {
   ChevronUp,
   Box,
   Plus,
-  Edit,
   Eye,
   Users,
   List,
@@ -17,6 +17,7 @@ import {
   PackageCheck,
   LogOut,
   ShoppingBag,
+  Workflow,
 } from "lucide-react";
 
 export default function SideBar() {
@@ -102,14 +103,6 @@ export default function SideBar() {
                   className="hover:text-gray-400 flex items-center"
                 >
                   <Plus size={18} className="mr-2" /> Add Product
-                </Link>
-              </li>
-              <li className="mb-2">
-                <Link
-                  to="/dashboard/edit-product"
-                  className="hover:text-gray-400 flex items-center"
-                >
-                  <Edit size={18} className="mr-2" /> Edit Product
                 </Link>
               </li>
             </ul>
@@ -224,6 +217,16 @@ export default function SideBar() {
           >
             <PackageCheck size={18} className="mr-2" />{" "}
             {!isCollapsed && "Loss and Profit"}
+          </Link>
+        </li>
+
+        <li className="mb-2">
+          <Link
+            to="/dashboard/brandPage"
+            className="hover:text-gray-400 flex items-center"
+          >
+            <Workflow size={18} className="mr-2" />{" "}
+            {!isCollapsed && "Brand Page"}
           </Link>
         </li>
 

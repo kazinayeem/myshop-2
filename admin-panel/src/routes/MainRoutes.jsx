@@ -20,6 +20,7 @@ import Userlist from "../pages/Userlist";
 import ViewSingleUserDetails from "../pages/ViewSingleUserDetails";
 import PrivateRoute from "./PrivateRoute";
 import PosPage from "../pages/PosPage";
+import BrandPage from "../pages/BrandPage";
 
 export default function MainRoutes() {
   return (
@@ -51,6 +52,7 @@ export default function MainRoutes() {
           <Route path="profit-loss" element={<ProfilePage />} />
           <Route path="*" element={<NotFound />} />
           <Route path="pos" element={<PosPage />} />
+          <Route path="brandPage" element={<BrandPage />} />
         </Route>
 
         {/* Catch-all for 404 */}
