@@ -1,22 +1,39 @@
 import Order from "../model/order.model.js";
+import User from "../model/user.model.js";
 
 // order controller
 
 //  create order
 export const createOrder = async (req, res) => {
   try {
-    const { userId, products, amount, address } = req.body;
-
     const newOrder = new Order({
-      userId,
-      products,
-      amount,
-      address,
+      userId: req.body.userId,
+      products: req.body.products,
+      totalPrice: req.body.totalPrice,
+      paidAmount: req.body.paidAmount,
+      dueAmount: req.body.dueAmount,
+      paymentMethod: req.body.paymentMethod,
+      paymentStatus: req.body.paymentStatus,
+      deliveryCharge: req.body.deliveryCharge,
+      address: req.body.address,
+      status: req.body.status,
     });
 
     const savedOrder = await newOrder.save();
+    const updatedUser = await User.findByIdAndUpdate(
+      req.body.userId,
+      { $push: { orderhistory: savedOrder._id } },
+      { new: true }
+    );
 
-    res.status(201).json(savedOrder);
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(201).json({
+      message: "Order created successfully",
+      order: savedOrder,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -42,7 +59,10 @@ export const getAllOrders = async (req, res) => {
       filter._id = orderId;
     }
 
+    // new order filter
+
     const orders = await Order.find(filter)
+      .sort({ createdAt: -1 })
       .populate("userId", "username email")
       .populate("products.productId", "name price buyingPrice")
       .populate("address");
