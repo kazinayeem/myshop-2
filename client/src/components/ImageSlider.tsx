@@ -19,7 +19,7 @@ export default function ImageSlider() {
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
-    fetch("https://myshop-2-production.up.railway.app/api/sliders")
+    fetch(`${process.env.NEXT_PUBLIC_SERVER_PORT}/sliders`)
       .then((response) => response.json())
       .then((data) => setSliders(data))
       .catch((error) => console.error("Error fetching sliders:", error));
