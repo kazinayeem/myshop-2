@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 interface Product {
@@ -113,9 +114,15 @@ export default function ProductsList() {
             </CardHeader>
             <CardContent className="flex px-4 flex-col h-full justify-between">
               <div>
-                <CardTitle className="text-lg font-semibold truncate">
-                  {product.name}
-                </CardTitle>
+                <Link
+                  href={`/product/${product._id}`}
+                  className="block"
+                  
+                >
+                  <CardTitle className="text-lg font-semibold truncate">
+                    {product.name}
+                  </CardTitle>
+                </Link>
                 <div className="flex justify-between items-center mt-2">
                   <p className="text-red-500 font-bold">
                     ${product.discountedPrice.toFixed(2)}{" "}

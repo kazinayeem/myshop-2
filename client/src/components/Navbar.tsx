@@ -2,6 +2,7 @@
 import { Search } from "lucide-react";
 import { FaHeart, FaShoppingCart, FaBars } from "react-icons/fa";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -9,7 +10,11 @@ export default function Navbar() {
   return (
     <nav className="flex justify-between  items-center px-10 py-4 shadow-md bg-white relative">
       {/* Logo */}
-      <div className="text-xl font-bold">Exclusive</div>
+      <div className="text-xl font-bold">
+        <Link href="/" className="text-gray-700">
+          <span className="text-red-500">Shop</span>Easy
+        </Link>
+      </div>
 
       {/* Mobile Menu Button */}
       <button
