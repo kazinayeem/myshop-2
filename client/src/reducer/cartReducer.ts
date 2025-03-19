@@ -5,6 +5,7 @@ const initialState: CartState = {
   items: [],
   totalQuantity: 0,
   totalPrice: 0,
+  discountPrice: 0,
 };
 
 const cartSlice = createSlice({
@@ -65,9 +66,17 @@ const cartSlice = createSlice({
         state.totalPrice += itemToUpdate.price * quantityDifference;
       }
     },
+    setDiscountPrice(state, action: PayloadAction<number>) {
+      state.discountPrice = action.payload;
+    },
   },
 });
 
-export const { addItem, removeItem, clearCart, updateItemQuantity } =
-  cartSlice.actions;
+export const {
+  addItem,
+  removeItem,
+  clearCart,
+  updateItemQuantity,
+  setDiscountPrice,
+} = cartSlice.actions;
 export default cartSlice.reducer;
