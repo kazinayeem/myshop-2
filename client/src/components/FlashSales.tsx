@@ -95,15 +95,17 @@ export default function ProductsList() {
             key={product._id}
             className="overflow-hidden h-full group relative"
           >
-            <CardHeader className="p-0 relative">
+            <CardHeader className="p-0 relative w-full h-full">
               <Image
                 loading="lazy"
-                width={100}
-                height={192}
-                src={product.image?.[0] || "https://via.placeholder.com/200"}
-                alt={product.name}
-                className="w-full h-48 object-cover"
+                layout="responsive"
+                width={400}
+                height={300}
+                src={product?.image?.[0] || "https://via.placeholder.com/200"}
+                alt={product?.name || "Placeholder Image"}
+                className="object-cover"
               />
+
               {/* Adjusted buttons container */}
               <div className="absolute bottom-0 left-4 right-4 gap-4 flex flex-row space-x-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                 {/* Add to Cart Button */}

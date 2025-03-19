@@ -51,13 +51,14 @@ export default function ImageSlider() {
           >
             <Card className="w-full h-full relative">
               <Image
-                layout="fill"
-                objectFit="cover"
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 50vw"
                 src={slide.image}
                 alt={slide.title}
                 loading="lazy"
                 className="rounded-lg"
               />
+
               <CardContent className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 text-white p-4">
                 <h2 className="text-2xl font-bold">{slide.title}</h2>
                 <p className="text-sm mb-4">{slide.description}</p>

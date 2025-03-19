@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAppDispatch } from "@/lib/hooks";
+import {  loginSuccess } from "@/reducer/authReducer";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -20,6 +22,8 @@ const AuthPage = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
+
+  const dispatch = useAppDispatch();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,6 +50,13 @@ const AuthPage = () => {
       if (isLogin) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
+        dispatch(
+          loginSuccess({
+            id: data.user._id || "asdsadasda",
+            name: data.user.name,
+            email: data.user.email,
+          })
+        );
       } else {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));

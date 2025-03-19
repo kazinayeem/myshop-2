@@ -1,10 +1,11 @@
 "use client";
 import { Search } from "lucide-react";
-import { FaHeart, FaShoppingCart, FaBars,  } from "react-icons/fa";
+import { FaHeart, FaShoppingCart, FaBars } from "react-icons/fa";
 import { CiLogin } from "react-icons/ci";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+
 interface Brand {
   _id: number;
   name: string;
@@ -14,6 +15,7 @@ interface Brand {
 export default function Navbar() {
   const [brand, setBrand] = useState<Brand[]>([]);
   const [menuOpen, setMenuOpen] = useState(false);
+
   useEffect(() => {
     const fetchBrand = async () => {
       try {
@@ -34,13 +36,15 @@ export default function Navbar() {
       {/* Logo */}
       <div className="flex items-center space-x-2">
         <Link href="/">
-          <Image
-            width={40}
-            height={40}
-            src={brand[0]?.logo}
-            alt="Brand Logo"
-            className="w-10 h-10 rounded-full"
-          />
+          {brand[0]?.logo && (
+            <Image
+              width={40}
+              height={40}
+              src={brand[0].logo}
+              alt="Brand Logo"
+              className="w-10 h-10 rounded-full"
+            />
+          )}
         </Link>
         {/* Brand Name */}
         <Link href="/">
