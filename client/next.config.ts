@@ -13,6 +13,7 @@ const nextConfig: NextConfig = {
       "picsum.photos",
       "plus.unsplash.com",
       "cdn-icons-png.flaticon.com"
+      
     ],
   },
 };

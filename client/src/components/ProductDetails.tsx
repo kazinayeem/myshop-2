@@ -1,7 +1,9 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Heart } from "lucide-react";
+import { useAppDispatch } from "@/lib/hooks";
+import { addItem } from "@/reducer/cartReducer";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -22,17 +24,20 @@ interface Product {
   discountPercent: number;
   image: string[];
   stock: number;
+  color?: string[];
   returnable: boolean;
   priceByVariant?: Variant[];
 }
 
 export default function ProductDetails({ params }: { params: { id: string } }) {
+  const dispatch = useAppDispatch();
   const [product, setProduct] = useState<Product | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [currentImage, setCurrentImage] = useState<string | null>(null);
   const [selectedVariants, setSelectedVariants] = useState<{
     [key: string]: Variant;
   }>({});
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
 
   useEffect(() => {
     if (params.id) {
@@ -73,35 +78,45 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
   );
 
   const addtoCart = () => {
-    const productToCart = {
-      productId: product._id,
-      quantity,
-      selectedVariants,
-    };
+    const variantKey = Object.keys(selectedVariants)[0];
+    const variantValue = selectedVariants[variantKey]?.value;
+    console.log("Selected Variants:", variantValue);
 
-    // set local storage or make an API call to add to cart
-    localStorage.setItem(
-      "cart",
-      JSON.stringify({
-        ...productToCart,
-        quantity: quantity + 1,
+    if (selectedStock <= 0) {
+      alert("Out of stock");
+      return;
+    }
+
+    dispatch(
+      addItem({
+        id: product._id,
+        name: product.name,
+        price: finalPrice,
+        quantity: quantity,
+        image: currentImage || product.image[0],
+        variantsName: variantKey,
+        size: variantValue,
+        color: selectedColor || selectedVariants?.Color?.value,
       })
     );
   };
+
   const buyNow = () => {
     const productToBuy = {
       productId: product._id,
       quantity,
       selectedVariants,
+      color: selectedColor,
     };
+    console.log("Product to buy:", productToBuy);
 
     alert(JSON.stringify(productToBuy, null, 2));
   };
+
   return (
     <div className="container mx-auto p-4 md:p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
       {/* Left Side - Product Images */}
       <div className="flex flex-col items-center w-full">
-        {/* Main Image */}
         <div className="border rounded-lg p-4 w-full max-w-[400px]">
           {currentImage && (
             <Image
@@ -114,8 +129,6 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
             />
           )}
         </div>
-
-        {/* Thumbnail Images */}
         <div className="flex gap-2 mt-4 overflow-auto">
           {product.image.map((img, index) => (
             <button
@@ -140,21 +153,6 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
       {/* Right Side - Product Details */}
       <div className="w-full">
         <h1 className="text-2xl font-bold">{product.name}</h1>
-
-        {/* Rating & Stock */}
-        <div className="flex flex-wrap items-center space-x-2 my-2">
-          <span className="text-yellow-500">★★★★☆</span>
-          <span className="text-gray-500 text-sm">(150 Reviews)</span>
-          <span
-            className={`font-medium ${
-              selectedStock > 0 ? "text-green-500" : "text-red-500"
-            }`}
-          >
-            {selectedStock > 0 ? "In Stock" : "Out of Stock"}
-          </span>
-        </div>
-
-        {/* Pricing */}
         <div className="text-2xl font-semibold text-gray-900">
           ${finalPrice}{" "}
           {product.discountPercent > 0 && selectedVariantPrice === 0 && (
@@ -164,109 +162,95 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
           )}
         </div>
 
-        {/* Variant Selection (Size, Color, etc.) */}
-        <div className="mt-4 space-y-4">
-          {product.priceByVariant &&
-            product.priceByVariant.length > 0 &&
-            Array.from(new Set(product.priceByVariant.map((v) => v.name))).map(
+        {/* Color Selection */}
+        {product.color && product.color.length > 0 && (
+          <div className="mt-4">
+            <label className="block font-medium text-gray-700">COLOR:</label>
+            <div className="flex flex-wrap gap-2 mt-2">
+              {product.color.map((color) => (
+                <button
+                  key={color}
+                  className={`w-6 h-6 rounded-full border ${
+                    selectedColor === color
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  }`}
+                  style={{ backgroundColor: color }}
+                  onClick={() => setSelectedColor(color)}
+                ></button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Dynamic Variant Selection */}
+        {product.priceByVariant && product.priceByVariant.length > 0 && (
+          <div className="mt-4 space-y-4">
+            {Array.from(new Set(product.priceByVariant.map((v) => v.name))).map(
               (variantType) => (
                 <div key={variantType}>
                   <label className="block font-medium text-gray-700">
                     {variantType.toUpperCase()}:
                   </label>
                   <div className="flex flex-wrap gap-2 mt-2">
-                    {product.priceByVariant
-                      ?.filter((variant) => variant.name === variantType)
-                      ?.map((variant) => (
-                        <button
-                          key={`${variantType}-${variant.value}`}
-                          onClick={() => {
-                            setSelectedVariants((prev) => ({
-                              ...prev,
-                              [variant.name]: variant,
-                            }));
-                            setCurrentImage(variant.image || product.image[0]);
-                          }}
-                          className={`p-2 border rounded-lg ${
-                            selectedVariants[variant.name]?.value ===
-                            variant.value
-                              ? "border-red-500"
-                              : "border-gray-300"
-                          }`}
-                          style={{
-                            backgroundColor:
-                              variant.name === "color"
-                                ? variant.value
-                                : undefined,
-                            color:
-                              variant.name === "color"
-                                ? "transparent"
-                                : "inherit",
-                          }}
-                        >
-                          {variant.name !== "color" ? variant.value : "⬤"}
-                        </button>
-                      ))}
+                    {product.priceByVariant &&
+                      product.priceByVariant
+                        .filter((variant) => variant.name === variantType)
+                        .map((variant) => (
+                          <button
+                            key={`${variantType}-${variant.value}`}
+                            onClick={() => {
+                              setSelectedVariants((prev) => ({
+                                ...prev,
+                                [variant.name]: variant,
+                              }));
+                              setCurrentImage(
+                                variant.image || product.image[0]
+                              );
+                            }}
+                            className={`p-2 border rounded-lg ${
+                              selectedVariants[variant.name]?.value ===
+                              variant.value
+                                ? "border-red-500"
+                                : "border-gray-300"
+                            }`}
+                          >
+                            {variant.value}
+                          </button>
+                        ))}
                   </div>
                 </div>
               )
             )}
+          </div>
+        )}
+
+        <div className="flex items-center justify-center border p-2 rounded-lg w-40">
+          <Button
+            variant="ghost"
+            onClick={() => setQuantity(Math.max(1, quantity - 1))}
+          >
+            <ChevronLeft size={18} />
+          </Button>
+          <span className="px-4">{quantity}</span>
+          <Button variant="ghost" onClick={() => setQuantity(quantity + 1)}>
+            <ChevronRight size={18} />
+          </Button>
         </div>
 
-        {/* Quantity Selector */}
         <div className="mt-4 flex items-center space-x-4">
-          <div className="flex items-center border p-2 rounded-lg">
-            <Button
-              variant="ghost"
-              onClick={() => setQuantity(Math.max(1, quantity - 1))}
-            >
-              <ChevronLeft size={18} />
-            </Button>
-            <span className="px-4">{quantity}</span>
-            <Button variant="ghost" onClick={() => setQuantity(quantity + 1)}>
-              <ChevronRight size={18} />
-            </Button>
-          </div>
-
-          {/* Buy Now Button */}
           <Button variant={"destructive"} onClick={buyNow}>
             Buy Now
           </Button>
-
           <Button variant={"secondary"} onClick={addtoCart}>
             Add to cart
           </Button>
-
-          {/* Wishlist Button */}
-          <Button variant="outline" size="icon">
-            <Heart />
-          </Button>
-        </div>
-
-        {/* Product Description */}
-        <div
-          className="mt-4 text-gray-700"
-          dangerouslySetInnerHTML={{ __html: product.description }}
-        />
-
-        {/* Delivery & Return Info */}
-        <div className="mt-6 border-t pt-4 space-y-3">
-          <div className="flex justify-between items-center">
-            <span>🚚 Free Delivery</span>
-            <a href="#" className="text-blue-500 underline text-sm">
-              Enter ZIP Code
-            </a>
-          </div>
-          {product.returnable && (
-            <div className="flex justify-between items-center">
-              <span>🔄 Returnable</span>
-              <a href="#" className="text-blue-500 underline text-sm">
-                View Policy
-              </a>
-            </div>
-          )}
         </div>
       </div>
+      <div
+        className="mt-4 text-gray-700"
+        dangerouslySetInnerHTML={{ __html: product.description }}
+      />
     </div>
   );
 }

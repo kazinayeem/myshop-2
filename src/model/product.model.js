@@ -84,6 +84,15 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
+    color: [
+      {
+        type: String,
+        required: false,
+        trim: true,
+
+        // lowercase: true,
+      },
+    ],
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",

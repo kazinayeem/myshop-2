@@ -35,7 +35,7 @@ const AddProduct = () => {
     rating: 0,
     numReviews: 0,
     isFeatured: false,
-
+    color: [],
     isDeleted: false,
     isBlocked: false,
     warranty: "",
@@ -332,6 +332,24 @@ const AddProduct = () => {
           >
             + Add Variant
           </button>
+        </div>
+
+        {/* color */}
+        <div>
+          <label className="block text-sm font-medium">Color</label>
+          <input
+            type="text"
+            name="color"
+            value={product.color.join(",")}
+            onChange={(e) =>
+              setProduct({
+                ...product,
+                color: e.target.value.split(","),
+              })
+            }
+            className="w-full p-2 border rounded-md"
+            placeholder="Comma-separated colors"
+          />
         </div>
 
         {/* Bulk Order */}

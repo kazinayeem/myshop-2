@@ -5,6 +5,7 @@ import { CiLogin } from "react-icons/ci";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useAppSelector } from "@/lib/hooks";
 
 interface Brand {
   _id: number;
@@ -15,6 +16,8 @@ interface Brand {
 export default function Navbar() {
   const [brand, setBrand] = useState<Brand[]>([]);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const totalQuantity = useAppSelector((state) => state.cart.totalQuantity);
 
   useEffect(() => {
     const fetchBrand = async () => {
@@ -87,8 +90,17 @@ export default function Navbar() {
           />
           <Search className="absolute right-3 top-3 text-gray-500" size={18} />
         </div>
+        {/* Cart Icon with Quantity Badge */}
+        <Link href="/cart" className="relative">
+          <FaShoppingCart className="text-xl text-gray-700 cursor-pointer" />
+          {totalQuantity > 0 && (
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full px-1 text-xs">
+              {totalQuantity}
+            </span>
+          )}
+        </Link>
         <FaHeart className="text-xl text-gray-700 cursor-pointer" />
-        <FaShoppingCart className="text-xl text-gray-700 cursor-pointer" />
+
         {/* login and logout */}
         <Link
           href="/auth"
