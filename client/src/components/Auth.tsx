@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAppDispatch } from "@/lib/hooks";
-import {  loginSuccess } from "@/reducer/authReducer";
+import { loginSuccess } from "@/reducer/authReducer";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -52,8 +52,8 @@ const AuthPage = () => {
         localStorage.setItem("user", JSON.stringify(data.user));
         dispatch(
           loginSuccess({
-            id: data.user._id || "asdsadasda",
-            name: data.user.name,
+            id: data.user.id,
+            username: data.user.username,
             email: data.user.email,
           })
         );
