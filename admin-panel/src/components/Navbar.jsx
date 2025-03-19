@@ -4,6 +4,8 @@ import { Menu, X } from "lucide-react";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  
+  
 
   return (
     <nav className="bg-blue-600 text-white p-4 shadow-md">

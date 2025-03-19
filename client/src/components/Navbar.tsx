@@ -5,7 +5,9 @@ import { CiLogin } from "react-icons/ci";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useAppSelector } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { Button } from "./ui/button";
+import { logout } from "@/reducer/authReducer";
 
 interface Brand {
   _id: number;
@@ -17,7 +19,11 @@ export default function Navbar() {
   const [brand, setBrand] = useState<Brand[]>([]);
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const dispatch = useAppDispatch();
+
   const totalQuantity = useAppSelector((state) => state.cart.totalQuantity);
+  // check is user logged in or not
+  const isLoggedIn = useAppSelector((state) => state.auth.isAuthenticated);
 
   useEffect(() => {
     const fetchBrand = async () => {
@@ -102,12 +108,20 @@ export default function Navbar() {
         <FaHeart className="text-xl text-gray-700 cursor-pointer" />
 
         {/* login and logout */}
-        <Link
-          href="/auth"
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200 ease-in-out"
-        >
-          <CiLogin className="text-xl" />
-        </Link>
+        {isLoggedIn ? (
+          <Button
+            variant="destructive"
+            onClick={() => {
+              dispatch(logout());
+            }}
+          >
+            Logout
+          </Button>
+        ) : (
+          <Link href="/login">
+            <CiLogin className="text-xl text-gray-700 cursor-pointer" />
+          </Link>
+        )}
       </div>
     </nav>
   );
