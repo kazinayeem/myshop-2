@@ -98,6 +98,9 @@ const seedProducts = async (categoryInstances) => {
       priceByVariant,
       slug: `product-${i + 1}`,
       subcategory: category._id,
+      video: `https://www.youtube.com/watch?v=example${i + 1}`,
+      isFeatured: Math.random() > 0.5,
+      color: "Red",
     });
 
     await newProduct.save();
@@ -183,8 +186,13 @@ const seedOrders = async (users) => {
       userId: user._id,
       products: orderProducts,
       totalPrice,
-      amount: totalPrice,
+      totalPrice: totalPrice,
       address: address._id,
+      paidAmount: totalPrice,
+      dueAmount: 0,
+      paymentMethod: "credit_card",
+      paymentStatus: "paid",
+      deliveryCharge: 50,
       status: Math.random() > 0.5 ? "pending" : "shipped",
     });
 

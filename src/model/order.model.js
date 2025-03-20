@@ -52,7 +52,7 @@ const orderSchema = new mongoose.Schema(
     },
     deliveryCharge: {
       type: Number,
-      required: true,
+      required: false,
     },
     address: {
       type: mongoose.Schema.Types.ObjectId,

@@ -5,9 +5,10 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production node ./src/app.js",
     "dev": "cross-env NODE_ENV=development nodemon ./src/app.js",
-    "client" : "npm run dev --prefix client",
+    "client": "npm run dev --prefix client",
     "client-admin": "npm run dev --prefix admin-panel",
-    "dev:all": "concurrently \"npm run dev\" \"npm run client-admin\" \"npm run client\""
+    "dev:all": "concurrently \"npm run dev\" \"npm run client-admin\" \"npm run client\"",
+    "seed": "node ./src/seed/seed.js"
   },
   "keywords": [
     "node",
