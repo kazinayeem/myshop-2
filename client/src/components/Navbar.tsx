@@ -2,13 +2,20 @@
 import { Search } from "lucide-react";
 import { FaHeart, FaShoppingCart, FaBars } from "react-icons/fa";
 import { CiLogin } from "react-icons/ci";
+import { CgProfile } from "react-icons/cg";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { Button } from "./ui/button";
 import { logout } from "@/reducer/authReducer";
-
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { remove } from "@/app/actions";
+import { useRouter } from "next/navigation";
 interface Brand {
   _id: number;
   name: string;
@@ -16,13 +23,11 @@ interface Brand {
 }
 
 export default function Navbar() {
+  const router = useRouter();
   const [brand, setBrand] = useState<Brand[]>([]);
   const [menuOpen, setMenuOpen] = useState(false);
-
   const dispatch = useAppDispatch();
-
   const totalQuantity = useAppSelector((state) => state.cart.totalQuantity);
-  // check is user logged in or not
   const isLoggedIn = useAppSelector((state) => state.auth.isAuthenticated);
 
   useEffect(() => {
@@ -40,8 +45,15 @@ export default function Navbar() {
     fetchBrand();
   }, []);
 
+  const logoutHandler = () => {
+    dispatch(logout());
+    remove();
+    setMenuOpen(false);
+    router.push("/");
+  };
+
   return (
-    <nav className="flex justify-between  items-center px-10 py-4 shadow-md bg-white relative">
+    <nav className="flex justify-between items-center px-10 py-4 shadow-md bg-white relative">
       {/* Logo */}
       <div className="flex items-center space-x-2">
         <Link href="/">
@@ -55,7 +67,6 @@ export default function Navbar() {
             />
           )}
         </Link>
-        {/* Brand Name */}
         <Link href="/">
           <span className="text-xl font-bold text-gray-700">
             {brand[0]?.name}
@@ -96,6 +107,40 @@ export default function Navbar() {
           />
           <Search className="absolute right-3 top-3 text-gray-500" size={18} />
         </div>
+
+        {/* Profile Dropdown */}
+        {isLoggedIn ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger className="focus:outline-none">
+              <CgProfile size={30} className="cursor-pointer" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              className="w-48 bg-white shadow-lg rounded-lg"
+            >
+              <DropdownMenuItem asChild>
+                <Link href="/user/profile">Profile</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/user/address">Address</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/user/order">Orders</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="text-red-500"
+                onClick={logoutHandler}
+              >
+                Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <Link href="/auth">
+            <CiLogin className="text-xl text-gray-700 cursor-pointer" />
+          </Link>
+        )}
+
         {/* Cart Icon with Quantity Badge */}
         <Link href="/cart" className="relative">
           <FaShoppingCart className="text-xl text-gray-700 cursor-pointer" />
@@ -106,22 +151,6 @@ export default function Navbar() {
           )}
         </Link>
         <FaHeart className="text-xl text-gray-700 cursor-pointer" />
-
-        {/* login and logout */}
-        {isLoggedIn ? (
-          <Button
-            variant="destructive"
-            onClick={() => {
-              dispatch(logout());
-            }}
-          >
-            Logout
-          </Button>
-        ) : (
-          <Link href="/login">
-            <CiLogin className="text-xl text-gray-700 cursor-pointer" />
-          </Link>
-        )}
       </div>
     </nav>
   );

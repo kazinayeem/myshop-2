@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
-import Image from "next/image";
+import Image from "next/legacy/image";
 
 interface Slider {
   _id: string;
@@ -51,7 +51,7 @@ export default function ImageSlider() {
           >
             <Card className="w-full h-full relative">
               <Image
-                fill
+                layout="fill"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 50vw"
                 src={slide.image}
                 alt={slide.title}

@@ -1,4 +1,4 @@
-// auth reducer.ts
+
 import { AuthState, User } from "@/lib/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
@@ -30,9 +30,22 @@ const authSlice = createSlice({
       state.user = null;
       state.isAuthenticated = false;
     },
+    setUserandToken(
+      state,
+      action: PayloadAction<{ user: User; token: string }>
+    ) {
+      state.user = action.payload.user;
+      state.isAuthenticated = true;
+      localStorage.setItem("token", action.payload.token);
+    },
   },
 });
 
-export const { loginRequest, loginSuccess, loginFailure, logout } =
-  authSlice.actions;
+export const {
+  loginRequest,
+  loginSuccess,
+  loginFailure,
+  logout,
+  setUserandToken,
+} = authSlice.actions;
 export default authSlice.reducer;

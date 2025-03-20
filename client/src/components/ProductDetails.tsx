@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useAppDispatch } from "@/lib/hooks";
 import { addItem } from "@/reducer/cartReducer";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { useEffect, useState } from "react";
 
 interface Variant {

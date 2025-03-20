@@ -1,17 +1,24 @@
 "use client";
 
+import { create } from "@/app/actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAppDispatch } from "@/lib/hooks";
 import { loginSuccess } from "@/reducer/authReducer";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
 const AuthPage = () => {
+  const router = useRouter();
   const [isLogin, setIsLogin] = useState(true);
-  const [form, setForm] = useState({ email: "", username: "", password: "" });
+  const [form, setForm] = useState({
+    email: "user1@gmail.com",
+    username: "",
+    password: "password123",
+  });
   const [loading, setLoading] = useState(false);
 
   const toggleAuthMode = () => {
@@ -48,8 +55,14 @@ const AuthPage = () => {
       if (!response.ok) throw new Error(data.message || "Something went wrong");
 
       if (isLogin) {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
+        create({
+          token: data.token,
+          user: {
+            id: data.user.id,
+            username: data.user.username,
+            email: data.user.email,
+          },
+        });
         dispatch(
           loginSuccess({
             id: data.user.id,
@@ -57,9 +70,7 @@ const AuthPage = () => {
             email: data.user.email,
           })
         );
-      } else {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
+        router.push("/");
       }
 
       toast.success(isLogin ? "Login successful!" : "Registration successful!");

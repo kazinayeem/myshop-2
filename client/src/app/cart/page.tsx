@@ -8,7 +8,7 @@ import {
   updateItemQuantity,
 } from "@/reducer/cartReducer";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Minus, Plus } from "lucide-react";

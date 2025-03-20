@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { useEffect, useRef, useState } from "react";
 
 interface Category {

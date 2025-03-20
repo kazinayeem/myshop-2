@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import type { Metadata } from "next";
 import "./globals.css";
 import StoreProvider from "./StoreProvider";
+import AuthProvider from "./AuthProvider";
 
 export const metadata: Metadata = {
   title: "My Store",
@@ -17,8 +18,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={`antialiased  scroll-smooth`} cz-shortcut-listen="true">
         <StoreProvider>
-          <Navbar />
-          <main className=" mx-auto  px-4 py-8">{children}</main>
+          <AuthProvider>
+            <Navbar />
+            <main className=" mx-auto  px-4 py-8">{children}</main>
+          </AuthProvider>
         </StoreProvider>
       </body>
     </html>

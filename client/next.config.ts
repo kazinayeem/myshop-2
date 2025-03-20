@@ -12,8 +12,8 @@ const nextConfig: NextConfig = {
       "random.imagecdn.app",
       "picsum.photos",
       "plus.unsplash.com",
-      "cdn-icons-png.flaticon.com"
-      
+      "cdn-icons-png.flaticon.com",
+      "via.placeholder.com",
     ],
   },
 };
