@@ -105,18 +105,13 @@ export default function ProductsList() {
                 alt={product?.name || "Placeholder Image"}
                 className="object-cover"
               />
-
-              {/* Adjusted buttons container */}
-              <div className="absolute bottom-0 left-4 right-4 gap-4 flex flex-row space-x-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                {/* Add to Cart Button */}
-                <Button className="w-[40%] h-10">Add to Cart</Button>
-                {/* Buy Now Button */}
-                <Button className="w-[40%] h-10">Buy Now</Button>
-              </div>
             </CardHeader>
             <CardContent className="flex px-4 flex-col h-full justify-between">
               <div>
-                <Link href={`/product/${product._id}`} className="block">
+                <Link
+                  href={`/product/${product._id}`}
+                  className="block hover:underline"
+                >
                   <CardTitle className="text-lg font-semibold truncate">
                     {product.name}
                   </CardTitle>

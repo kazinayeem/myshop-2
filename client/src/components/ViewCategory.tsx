@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/legacy/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 interface Category {
@@ -12,6 +13,7 @@ interface Category {
 }
 
 export default function Categories() {
+  const router = useRouter();
   const [categories, setCategories] = useState<Category[]>([]);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -62,8 +64,9 @@ export default function Categories() {
         >
           {categories.map((category) => (
             <div
+              onClick={() => router.push(`/category/${category._id}`)}
               key={category._id}
-              className="flex flex-col items-center justify-center border rounded-lg p-4 w-40 h-40 md:w-40 shadow-sm hover:shadow-md transition-all"
+              className="flex flex-col items-center justify-center border rounded-lg p-4 w-40 h-40 md:w-40 shadow-sm hover:shadow-md transition-all cursor-pointer"
             >
               <div className="w-20 h-20 rounded-full overflow-hidden">
                 <Image

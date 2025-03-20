@@ -73,27 +73,57 @@ export default function Navbar() {
           </span>
         </Link>
       </div>
+      <div className="lg:hidden md:flex items-center space-x-4">
+        <DropdownMenu>
+          <DropdownMenuTrigger className="focus:outline-none">
+            <FaBars size={30} className="cursor-pointer" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            align="end"
+            className="w-48 bg-white shadow-lg rounded-lg"
+          >
+            <DropdownMenuItem asChild>
+              <Link href="/product">All Prodcut</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/new/">New Collection</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/user/order">Orders</Link>
+            </DropdownMenuItem>
 
-      <button
-        className="md:hidden text-xl"
+            <DropdownMenuItem asChild>
+              <Link href="/about">About</Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      {/* <button
+        className="md:hidden lg:hidden text-xl"
         onClick={() => setMenuOpen(!menuOpen)}
       >
         <FaBars />
-      </button>
+      </button> */}
 
       {/* Navigation Links */}
       <ul
-        className={`md:flex space-x-6 text-gray-700 absolute md:static bg-white w-full md:w-auto md:flex-row flex-col md:space-y-0 space-y-4 md:items-center left-0 top-16 transition-all duration-300 ease-in-out ${
+        className={`md:flex space-x-6 text-gray-700 absolute md:static bg-white w-full md:w-auto md:flex-row flex-col md:space-y-0 space-y-4 md:items-center left-0 top-16 transition-all duration-300 ease-in-out lg:items-center  ${
           menuOpen ? "flex" : "hidden"
         }`}
       >
-        <li className="border-b-2 border-black pb-1 px-6 md:px-0">Home</li>
         <li className="hover:text-black cursor-pointer px-6 md:px-0">
-          Contact
+          <Link href="/product">All Product</Link>
         </li>
-        <li className="hover:text-black cursor-pointer px-6 md:px-0">About</li>
         <li className="hover:text-black cursor-pointer px-6 md:px-0">
-          Sign Up
+          <Link href="/new">New Collection</Link>
+        </li>
+
+        <li className="hover:text-black cursor-pointer px-6 md:px-0">
+          <Link href="/about">About</Link>
+        </li>
+        <li className="hover:text-black cursor-pointer px-6 md:px-0">
+          <Link href="/contact">Contact</Link>
         </li>
       </ul>
 

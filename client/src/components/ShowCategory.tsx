@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { FaArrowRightLong } from "react-icons/fa6";
 interface Category {
@@ -25,7 +26,12 @@ export default function ShowCategory() {
             key={category._id}
             className="mb-2 cursor-pointer hover:text-blue-500 flex items-center justify-between p-2 rounded-lg transition duration-200 ease-in-out"
           >
-            <span>{category.name}</span>
+            <Link
+              href={`/category/${category._id}`}
+              className="flex items-center"
+            >
+              <span>{category.name}</span>
+            </Link>
             <span className="ml-2">
               <FaArrowRightLong />
             </span>
