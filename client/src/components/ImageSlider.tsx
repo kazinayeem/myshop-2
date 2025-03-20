@@ -1,29 +1,15 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useGetSlidersQuery } from "@/api/sliderApi";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Slider } from "@/lib/types";
 import { motion } from "framer-motion";
 import Image from "next/legacy/image";
-
-interface Slider {
-  _id: string;
-  title: string;
-  description: string;
-  image: string;
-  buttonText: string;
-  buttonLink: string;
-}
+import { useEffect, useState } from "react";
 
 export default function ImageSlider() {
-  const [sliders, setSliders] = useState<Slider[]>([]);
+  const { data: sliders = [], isLoading, isError } = useGetSlidersQuery({});
   const [current, setCurrent] = useState(0);
-
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_SERVER_PORT}/sliders`)
-      .then((response) => response.json())
-      .then((data) => setSliders(data))
-      .catch((error) => console.error("Error fetching sliders:", error));
-  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -32,14 +18,17 @@ export default function ImageSlider() {
     return () => clearInterval(interval);
   }, [sliders]);
 
-  if (sliders.length === 0) {
+  if (isLoading) {
     return <div className="text-center p-4">Loading...</div>;
+  }
+  if (isError) {
+    return <div className="text-center p-4">Error: Something Went Wrong</div>;
   }
 
   return (
     <div className="relative w-full max-w-full mx-auto overflow-hidden h-[50vh] flex items-center justify-center">
       <div className="relative w-full h-full">
-        {sliders.map((slide, index) => (
+        {sliders.map((slide: Slider, index: number) => (
           <motion.div
             key={slide._id}
             className={`absolute w-full h-full flex items-center justify-center transition-opacity duration-500 ${

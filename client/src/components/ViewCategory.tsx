@@ -1,37 +1,18 @@
 "use client";
 
+import { useGetCategoriesQuery } from "@/api/categoryApi";
 import { Button } from "@/components/ui/button";
+import { Category } from "@/lib/types";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/legacy/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-
-interface Category {
-  _id: number;
-  name: string;
-  image: string;
-}
+import { useRef } from "react";
 
 export default function Categories() {
   const router = useRouter();
-  const [categories, setCategories] = useState<Category[]>([]);
+
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_PORT}/categories`
-        );
-        const data = await response.json();
-        setCategories(data);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
-
-    fetchCategories();
-  }, []);
+  const { data: categories, isLoading, isError } = useGetCategoriesQuery({});
 
   const scroll = (direction: "left" | "right") => {
     if (scrollContainerRef.current) {
@@ -43,6 +24,8 @@ export default function Categories() {
     }
   };
 
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error: Something Went Wrong </div>;
   return (
     <div className="p-6 container mx-auto">
       <h2 className="text-4xl font-bold mb-4">Browse By Category</h2>
@@ -62,7 +45,7 @@ export default function Categories() {
           ref={scrollContainerRef}
           className="flex overflow-x-auto gap-4 scrollbar-hide scroll-smooth"
         >
-          {categories.map((category) => (
+          {categories.map((category: Category) => (
             <div
               onClick={() => router.push(`/category/${category._id}`)}
               key={category._id}

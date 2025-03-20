@@ -141,7 +141,7 @@ export const GetAllProducts = async (req, res) => {
       .sort({ createdAt: -1 });
 
     if (page > totalPages) {
-      return res.status(404).json({ message: "No more products" });
+      return res.status(200).json({ message: "No more products" });
     }
 
     return res.status(200).json({

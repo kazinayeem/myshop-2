@@ -1,36 +1,17 @@
 "use client";
 
+import { useGetProductsQuery } from "@/api/productApi";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Product } from "@/lib/types";
 import Image from "next/legacy/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-interface Product {
-  _id: string;
-  name: string;
-  description: string;
-  price: number;
-  discountedPrice: number;
-  discountPercent: number;
-  image: string[];
-  category: {
-    _id: string;
-    name: string;
-    image: string;
-  };
-  stock: number;
-  rating: number;
-}
-
 export default function ProductsList() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [countdown, setCountdown] = useState<number>(3600); // Countdown in seconds (e.g., 1 hour)
+  const [countdown, setCountdown] = useState<number>(3600);
 
-  // Update countdown every second
   useEffect(() => {
     const intervalId = setInterval(() => {
       setCountdown((prev) => prev - 1);
@@ -38,6 +19,16 @@ export default function ProductsList() {
 
     return () => clearInterval(intervalId);
   }, []);
+
+  const {
+    data: { products } = {},
+    isLoading,
+    isError,
+  } = useGetProductsQuery({
+    limit: 10,
+    page: 1,
+    search: "",
+  });
 
   // Format countdown to HH:MM:SS
   const formatCountdown = (seconds: number) => {
@@ -49,26 +40,7 @@ export default function ProductsList() {
       .padStart(2, "0")}:${sec.toString().padStart(2, "0")}`;
   };
 
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_SERVER_PORT}/products?limit=10`)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`HTTP error! Status: ${res.status}`);
-        }
-        return res.json();
-      })
-      .then((data) => {
-        setProducts(Array.isArray(data) ? data : data.products || []);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Fetch error:", err);
-        setError("Failed to fetch products");
-        setLoading(false);
-      });
-  }, []);
-
-  if (loading)
+  if (isLoading)
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
         {[...Array(10)].map((_, index) => (
@@ -77,7 +49,10 @@ export default function ProductsList() {
       </div>
     );
 
-  if (error) return <p className="text-red-500 text-center">{error}</p>;
+  if (isError)
+    return (
+      <p className="text-red-500 text-center">Error: Something went wrong!</p>
+    );
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -90,7 +65,7 @@ export default function ProductsList() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-        {products.map((product) => (
+        {products.map((product: Product) => (
           <Card
             key={product._id}
             className="overflow-hidden h-full group relative"

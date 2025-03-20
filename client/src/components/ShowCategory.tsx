@@ -1,27 +1,20 @@
 "use client";
 
+import { useGetCategoriesQuery } from "@/api/categoryApi";
+import { Category } from "@/lib/types";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { FaArrowRightLong } from "react-icons/fa6";
-interface Category {
-  _id: string;
-  name: string;
-  image: string;
-}
 
 export default function ShowCategory() {
-  const [categories, setCategories] = useState<Category[]>([]);
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_SERVER_PORT}/categories`)
-      .then((response) => response.json())
-      .then((data) => setCategories(data))
-      .catch((error) => console.error("Error fetching categories:", error));
-  }, []);
+  const { data: categories, isLoading, isError } = useGetCategoriesQuery({});
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error: Something Went Wrong </div>;
   return (
     <div className="w-full lg:w-1/4 bg-gray-100 p-4 rounded-lg h-auto lg:h-[50vh]">
       <h2 className="text-xl font-semibold mb-4">Categories</h2>
       <ul>
-        {categories?.slice(0, 4).map((category) => (
+        {categories?.slice(0, 4).map((category: Category) => (
           <li
             key={category._id}
             className="mb-2 cursor-pointer hover:text-blue-500 flex items-center justify-between p-2 rounded-lg transition duration-200 ease-in-out"

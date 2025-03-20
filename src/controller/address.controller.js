@@ -1,13 +1,14 @@
 // address controller
 
 import Address from "../model/address.model.js";
+import User from "../model/user.model.js";
 
 // add address
 
 export const addAddress = async (req, res) => {
   try {
-    const { addressLine1, addressLine2, city, state, zipCode } = req.body;
-    const userId = req.user.id;
+    const { addressLine1, addressLine2, city, state, zipCode, userId } =
+      req.body;
 
     const newAddress = new Address({
       userId,
@@ -19,14 +20,17 @@ export const addAddress = async (req, res) => {
     });
 
     const savedAddress = await newAddress.save();
+    await User.findByIdAndUpdate(
+      userId,
+      { $push: { address: savedAddress._id } },
+      { new: true }
+    );
 
     res.status(201).json(savedAddress);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
-
-
 
 // get address by id
 export const getAddressById = async (req, res) => {
@@ -62,6 +66,11 @@ export const updateAddress = async (req, res) => {
 export const deleteAddress = async (req, res) => {
   try {
     const deletedAddress = await Address.findByIdAndDelete(req.params.id);
+    await User.findByIdAndUpdate(
+      deletedAddress.userId,
+      { $push: { address: savedAddress._id } },
+      { new: true }
+    );
     if (!deletedAddress) {
       return res.status(404).json({ message: "Address not found" });
     }
