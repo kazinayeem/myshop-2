@@ -116,6 +116,7 @@ export default function ShowAllOrders() {
               <th className="p-3">Products</th>
               <th className="p-3">Amount</th>
               <th className="p-3">Status</th>
+              <th className="p-3">Payment Status</th>
               <th className="p-3">Actions</th>
             </tr>
           </thead>
@@ -136,7 +137,9 @@ export default function ShowAllOrders() {
                       key={product.productId?._id}
                       className="text-sm text-gray-700"
                     >
-                      {product.productId?.name} ({product.quantity})
+                      {product.productId?.name} ({product.quantity}) -{" "} ({
+                      product.variant} - {product.color || "N/A"}) -{""}
+                     
                     </div>
                   ))}
                 </td>
@@ -146,6 +149,9 @@ export default function ShowAllOrders() {
                 </td>
                 <td className="p-3 text-center text-blue-600 font-medium">
                   {order.status}
+                </td>
+                <td className="p-3 text-center text-green-600 font-medium">
+                  {order.paymentStatus}
                 </td>
                 <td className="p-3 text-center">
                   {selectedOrder === order._id ? (

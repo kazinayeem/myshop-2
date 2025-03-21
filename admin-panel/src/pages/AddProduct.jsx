@@ -257,6 +257,19 @@ const AddProduct = () => {
           />
         </div>
 
+        {/* video url */}
+        <div>
+          <label className="block text-sm font-medium">Video URL</label>
+          <input
+            type="text"
+            name="video"
+            value={product.video}
+            onChange={handleChange}
+            className="w-full p-2 border rounded-md"
+            placeholder="Video URL"
+          />
+        </div>
+
         {/* Variants */}
         <div>
           <label className="block text-sm font-medium">Price by Variant</label>

@@ -26,6 +26,11 @@ const orderSchema = new mongoose.Schema(
           type: String,
           required: false,
         },
+        color: {
+          type: String,
+          required: false,
+        },
+        
       },
     ],
     totalPrice: {
@@ -42,8 +47,22 @@ const orderSchema = new mongoose.Schema(
     },
     paymentMethod: {
       type: String,
-      enum: ["credit_card", "paypal", "cash_on_delivery"],
+      enum: ["bkash", "nagod", "cash_on_delivery"],
       required: true,
+      default: "cash_on_delivery",
+    },
+    transactionId: {
+      type: String,
+      required: false,
+    },
+    transactionDate: {
+      type: Date,
+      required: false,
+    },
+    transactionStatus: {
+      type: String,
+      enum: ["success", "failed", "pending"],
+      default: "pending",
     },
     paymentStatus: {
       type: String,

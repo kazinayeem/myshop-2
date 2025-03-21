@@ -146,7 +146,13 @@ export default function EditProduct() {
         </div>
 
         {/* Price, Discount, Buying Price, Stock */}
-        {["price", "discountedPrice", "buyingPrice", "stock"].map((field) => (
+        {[
+          "price",
+          "discountedPrice",
+          "discountPercent",
+          "buyingPrice",
+          "stock",
+        ].map((field) => (
           <div key={field}>
             <label className="block text-gray-700 font-medium">
               {field.replace(/([A-Z])/g, " $1").trim()}
@@ -160,6 +166,68 @@ export default function EditProduct() {
             />
           </div>
         ))}
+
+        {/* show images */}
+        <div className="grid grid-cols-2 gap-4">
+          {formData.image.map((image, index) => (
+            <div key={index} className="relative">
+              <img
+                src={image}
+                alt={`Product Image ${index + 1}`}
+                className="w-full h-48 object-cover rounded"
+              />
+              <button
+                type="button"
+                onClick={() =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    image: prev.image.filter((_, i) => i !== index),
+                  }))
+                }
+                className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded"
+              >
+                Remove
+              </button>
+              {/* add more image */}
+            </div>
+          ))}
+
+          {/* add image from input url */}
+        </div>
+        {/* video url */}
+        <div className="mt-4">
+          <label className="block text-gray-700 font-medium">Video URL</label>
+          <input
+            type="text"
+            name="video"
+            value={formData.video}
+            onChange={handleChange}
+            className="w-full p-2 border rounded mt-1"
+          />
+        </div>
+        {/* show color , color is a array */}
+        <div className="grid grid-cols-2 gap-4">
+          {formData.color.map((color, index) => (
+            <div key={index} className="relative">
+              <div
+                className="w-16 h-16 rounded" // Made both width and height smaller
+                style={{ backgroundColor: color }}
+              ></div>
+              <button
+                type="button"
+                onClick={() =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    color: prev.color.filter((_, i) => i !== index),
+                  }))
+                }
+                className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded"
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+        </div>
 
         {/* Category & Subcategory */}
         <div className="grid grid-cols-2 gap-4">
