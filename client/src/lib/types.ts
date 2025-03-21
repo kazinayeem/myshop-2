@@ -12,14 +12,14 @@ export interface AuthState {
 }
 
 export interface cartItem {
-  id: string;
+  productId: string;
   name: string;
   price: number;
   quantity: number;
   size?: string;
   color?: string;
   image?: string;
-  variantsName?: string;
+  variant?: string;
 }
 
 export interface CartState {
@@ -27,6 +27,7 @@ export interface CartState {
   totalQuantity: number;
   totalPrice: number;
   discountPrice?: number;
+  shippingPrice?: number;
 }
 
 export interface Brand {

@@ -6,18 +6,7 @@ import User from "../model/user.model.js";
 //  create order
 export const createOrder = async (req, res) => {
   try {
-    const newOrder = new Order({
-      userId: req.body.userId,
-      products: req.body.products,
-      totalPrice: req.body.totalPrice,
-      paidAmount: req.body.paidAmount,
-      dueAmount: req.body.dueAmount,
-      paymentMethod: req.body.paymentMethod,
-      paymentStatus: req.body.paymentStatus,
-      deliveryCharge: req.body.deliveryCharge,
-      address: req.body.address,
-      status: req.body.status,
-    });
+    const newOrder = new Order(req.body);
 
     const savedOrder = await newOrder.save();
     const updatedUser = await User.findByIdAndUpdate(

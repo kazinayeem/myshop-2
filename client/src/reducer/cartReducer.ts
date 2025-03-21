@@ -6,6 +6,7 @@ const initialState: CartState = {
   totalQuantity: 0,
   totalPrice: 0,
   discountPrice: 0,
+  shippingPrice: 0,
 };
 
 const cartSlice = createSlice({
@@ -15,7 +16,7 @@ const cartSlice = createSlice({
     addItem(
       state,
       action: PayloadAction<{
-        id: string;
+        productId: string;
         name: string;
         image: string;
         price: number;
@@ -26,37 +27,50 @@ const cartSlice = createSlice({
       }>
     ) {
       const existingItem = state.items.find(
-        (item) => item.id === action.payload.id
+        (item) => item.productId === action.payload.productId
       );
       if (existingItem) {
         existingItem.quantity += action.payload.quantity;
       } else {
-        state.items.push(action.payload);
+        state.items.push({
+          productId: action.payload.productId,
+          name: action.payload.name,
+          image: action.payload.image,
+          price: action.payload.price,
+          quantity: action.payload.quantity,
+          size: action.payload.size,
+          color: action.payload.color || "",
+          variant: action.payload.variantsName,
+        });
       }
       state.totalQuantity += action.payload.quantity;
       state.totalPrice += action.payload.price * action.payload.quantity;
     },
     removeItem(state, action: PayloadAction<string>) {
       const itemToRemove = state.items.find(
-        (item) => item.id === action.payload
+        (item) => item.productId === action.payload
       );
       if (itemToRemove) {
         state.totalQuantity -= itemToRemove.quantity;
         state.totalPrice -= itemToRemove.price * itemToRemove.quantity;
-        state.items = state.items.filter((item) => item.id !== action.payload);
+        state.items = state.items.filter(
+          (item) => item.productId !== action.payload
+        );
       }
     },
     clearCart(state) {
       state.items = [];
       state.totalQuantity = 0;
       state.totalPrice = 0;
+      state.discountPrice = 0;
+      state.shippingPrice = 0;
     },
     updateItemQuantity(
       state,
       action: PayloadAction<{ id: string; quantity: number }>
     ) {
       const itemToUpdate = state.items.find(
-        (item) => item.id === action.payload.id
+        (item) => item.productId === action.payload.id
       );
       if (itemToUpdate) {
         const quantityDifference =
@@ -69,6 +83,9 @@ const cartSlice = createSlice({
     setDiscountPrice(state, action: PayloadAction<number>) {
       state.discountPrice = action.payload;
     },
+    setShippingPrice(state, action: PayloadAction<number>) {
+      state.shippingPrice = action.payload;
+    },
   },
 });
 
@@ -78,5 +95,6 @@ export const {
   clearCart,
   updateItemQuantity,
   setDiscountPrice,
+  setShippingPrice,
 } = cartSlice.actions;
 export default cartSlice.reducer;

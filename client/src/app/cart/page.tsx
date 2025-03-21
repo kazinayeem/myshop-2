@@ -1,21 +1,23 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { RootState } from "@/lib/store";
 import {
   removeItem,
   setDiscountPrice,
+  setShippingPrice,
   updateItemQuantity,
 } from "@/reducer/cartReducer";
-import Link from "next/link";
-import Image from "next/legacy/image";
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Minus, Plus } from "lucide-react";
+import Image from "next/legacy/image";
+import Link from "next/link";
+import React, { useState } from "react";
 import { CiSquareRemove } from "react-icons/ci";
 
 export default function Page() {
   const [copun, setCopun] = useState<string>("");
+  const [Shipping, setShipping] = useState<number>(0);
 
   const {
     items: cartItems,
@@ -77,10 +79,10 @@ export default function Page() {
               </tr>
             ) : (
               cartItems.map((item) => (
-                <tr key={item.id} className="border">
+                <tr key={item.productId} className="border">
                   <td className="p-3 border flex items-center gap-2">
                     {item.image && (
-                      <Link href={`/product/${item.id}`} passHref>
+                      <Link href={`/product/${item.productId}`} passHref>
                         <Image
                           src={item.image}
                           alt={item.name}
@@ -90,7 +92,7 @@ export default function Page() {
                         />
                       </Link>
                     )}
-                    <Link href={`/product/${item.id}`} passHref>
+                    <Link href={`/product/${item.productId}`} passHref>
                       <span className="cursor-pointer hover:underline">
                         {item.name.slice(0, 20)}...
                       </span>
@@ -104,7 +106,9 @@ export default function Page() {
                       <Button
                         variant="outline"
                         size="icon"
-                        onClick={() => updateCart(item.id, item.quantity - 1)}
+                        onClick={() =>
+                          updateCart(item.productId, item.quantity - 1)
+                        }
                       >
                         <Minus size={16} />
                       </Button>
@@ -114,7 +118,9 @@ export default function Page() {
                       <Button
                         variant="outline"
                         size="icon"
-                        onClick={() => updateCart(item.id, item.quantity + 1)}
+                        onClick={() =>
+                          updateCart(item.productId, item.quantity + 1)
+                        }
                       >
                         <Plus size={16} />
                       </Button>
@@ -128,7 +134,7 @@ export default function Page() {
                     <Button
                       variant="destructive"
                       size="icon"
-                      onClick={() => removeItemCart(item.id)}
+                      onClick={() => removeItemCart(item.productId)}
                     >
                       <CiSquareRemove size={16} />
                     </Button>
@@ -160,18 +166,49 @@ export default function Page() {
               Subtotal: ${totalPrice.toFixed(2)}
             </p>
             {/* if copund show this */}
-            {afterDiscountPrice !== undefined && afterDiscountPrice < totalPrice && (
-              <p className="text-lg font-semibold text-red-500">
-                 Discount: {afterDiscountPrice.toFixed(2)}
-              </p>
-            )}
-            <p className="text-gray-600">Shipping: Free</p>
+            {afterDiscountPrice !== undefined &&
+              afterDiscountPrice < totalPrice && (
+                <p className="text-lg font-semibold text-red-500">
+                  Discount: {afterDiscountPrice.toFixed(2)}
+                </p>
+              )}
+
+            {/* select shipping fees option if dhaka 60 and outside dhaak 120 */}
+            <select
+              className="border p-2 rounded mt-2"
+              value={Shipping}
+              onChange={(e) => {
+                setShipping(Number(e.target.value));
+                dispatch(setShippingPrice(Number(e.target.value)));
+              }}
+            >
+              <option value={0}>Select Shipping Fees</option>
+              <option value={60}>Inside Dhaka - 60</option>
+              <option value={120}>Outside Dhaka - 120</option>
+            </select>
+            <p className="text-lg font-semibold mt-2">Shipping: {Shipping}</p>
+
             <p className="text-xl font-bold">
-              Total: {afterDiscountPrice ? afterDiscountPrice.toFixed(2) : totalPrice.toFixed(2)}
+              Total:{" "}
+              {afterDiscountPrice
+                ? afterDiscountPrice.toFixed(2)
+                : totalPrice.toFixed(2)}
             </p>
-            <Button className="bg-red-500 text-white w-full md:w-auto mt-2">
-              Process to checkout
-            </Button>
+            {/* price with shipping charge */}
+            <p className="text-lg font-semibold mt-2">
+              Total with Shipping:{" "}
+              {afterDiscountPrice
+                ? (afterDiscountPrice + Shipping).toFixed(2)
+                : (totalPrice + Shipping).toFixed(2)}
+            </p>
+            <Link href="/cart/checkout" passHref>
+              <Button
+                disabled={cartItems.length === 0}
+                className="bg-red-500 text-white w-full md:w-auto mt-2"
+              >
+                Process to checkout
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

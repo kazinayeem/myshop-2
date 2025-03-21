@@ -2,7 +2,6 @@
 import { useGetOrdersQuery } from "@/api/orderApi";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Table,
   TableBody,
@@ -13,6 +12,8 @@ import {
 } from "@/components/ui/table";
 import { useAppSelector } from "@/lib/hooks";
 import { format } from "date-fns";
+import Link from "next/link";
+
 interface Order {
   _id: string;
   status: string;
@@ -24,54 +25,54 @@ interface Order {
 interface Product {
   _id: string;
   productId: {
+    _id: string;
     name: string;
   };
   quantity: number;
   price: number;
 }
+
 export default function Page() {
   const user = useAppSelector((state) => state.auth.user);
   const { data, isLoading, isError } = useGetOrdersQuery(user?.id);
 
-  // Loading state
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center items-center h-screen text-lg">
         Loading...
       </div>
     );
   }
 
-  // Error state
   if (isError) {
     return (
-      <div className="flex justify-center items-center h-screen text-red-500">
+      <div className="flex justify-center items-center h-screen text-red-500 text-lg">
         Error loading orders. Please try again later.
       </div>
     );
   }
 
-  // Ensure data is available
   if (!data || data.length === 0) {
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center items-center h-screen text-lg">
         No orders found.
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto p-6">
-      <h2 className="text-3xl font-bold mb-6">Order History</h2>
+    <div className="container mx-auto px-4 py-6">
+      <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center">
+        Order History
+      </h2>
 
-      {/* Orders Table */}
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle>Orders</CardTitle>
+          <CardTitle className="text-lg md:text-xl">Orders</CardTitle>
         </CardHeader>
         <CardContent>
-          <ScrollArea className="w-96 whitespace-nowrap rounded-md border">
-            <Table>
+          <div className="overflow-x-auto w-full">
+            <Table className="min-w-full">
               <TableHeader>
                 <TableRow>
                   <TableHead>Order ID</TableHead>
@@ -84,41 +85,47 @@ export default function Page() {
               </TableHeader>
               <TableBody>
                 {data.map((order: Order) => (
-                  <TableRow key={order._id}>
+                  <TableRow key={order._id} className="text-sm md:text-base">
                     <TableCell>{order._id}</TableCell>
                     <TableCell>
                       <Badge
-                        className={
+                        className={`px-2 py-1 text-xs md:text-sm ${
                           order.status === "pending"
                             ? "bg-yellow-500"
                             : order.status === "shipped"
                             ? "bg-blue-500"
                             : "bg-green-500"
-                        }
+                        }`}
                       >
                         {order.status}
                       </Badge>
                     </TableCell>
-                    <TableCell>${order.totalPrice}</TableCell>
+                    <TableCell>${order.totalPrice.toFixed(2)}</TableCell>
                     <TableCell>
-                      <ul className="list-disc pl-4">
+                      <ul className="list-disc pl-4 text-xs md:text-sm">
                         {order.products.map((prod) => (
-                          <li key={prod._id}>
-                            <span className="font-semibold">
-                              {prod.productId?.name ?? "Unknown Product"}
-                            </span>{" "}
-                            - ${prod.price} (x{prod.quantity})
-                          </li>
+                          <Link
+                            key={prod._id}
+                            href={`/product/${prod.productId._id}`}
+                          >
+                            <li key={prod._id}>
+                              <span className="font-semibold">
+                                {prod.productId?.name.slice(0, 30) ??
+                                  "Unknown Product"}
+                              </span>
+                              {"....."}- ${prod.price} (x{prod.quantity})
+                            </li>
+                          </Link>
                         ))}
                       </ul>
                     </TableCell>
                     <TableCell>
                       <Badge
-                        className={
+                        className={`px-2 py-1 text-xs md:text-sm ${
                           order.paymentStatus === "pending"
                             ? "bg-yellow-500"
                             : "bg-green-500"
-                        }
+                        }`}
                       >
                         {order.paymentStatus}
                       </Badge>
@@ -130,7 +137,7 @@ export default function Page() {
                 ))}
               </TableBody>
             </Table>
-          </ScrollArea>
+          </div>
         </CardContent>
       </Card>
     </div>

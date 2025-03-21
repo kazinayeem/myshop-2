@@ -42,11 +42,11 @@ const orderSchema = new mongoose.Schema(
     },
     dueAmount: {
       type: Number,
-      required: true,
+      required: false,
     },
     paymentMethod: {
       type: String,
-      enum: ["bkash", "nagod", "cash_on_delivery"],
+      enum: ["bkash", "nagad", "cash_on_delivery"],
       required: true,
       default: "cash_on_delivery",
     },

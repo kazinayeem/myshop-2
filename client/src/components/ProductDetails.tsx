@@ -89,7 +89,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
 
     dispatch(
       addItem({
-        id: product._id,
+        productId: product._id,
         name: product.name,
         price: finalPrice,
         quantity: quantity,

@@ -70,7 +70,7 @@ const AuthPage = () => {
             email: data.user.email,
           })
         );
-        router.push("/");
+        router.back();
       }
 
       toast.success(isLogin ? "Login successful!" : "Registration successful!");
