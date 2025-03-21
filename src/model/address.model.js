@@ -1,5 +1,6 @@
 // address model
 
+import { fa } from "@faker-js/faker";
 import mongoose from "mongoose";
 
 const addressSchema = new mongoose.Schema(
@@ -15,19 +16,37 @@ const addressSchema = new mongoose.Schema(
     },
     addressLine2: {
       type: String,
-      required: true,
+      required: false,
     },
-    city: {
+    division: {
       type: String,
       required: true,
     },
-    state: {
+    district: {
+      type: String,
+      required: true,
+    },
+    upazilla: {
+      type: String,
+      required: true,
+    },
+    union: {
       type: String,
       required: true,
     },
     zipCode: {
       type: String,
       required: true,
+    },
+    country: {
+      type: String,
+      required: false,
+      default: "Bangladesh",
+    },
+    phoneNumber: {
+      type: String,
+      required: true,
+      default: "+1",
     },
   },
   { timestamps: true }

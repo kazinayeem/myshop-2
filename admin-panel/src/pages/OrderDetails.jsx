@@ -130,7 +130,7 @@ const OrderDetails = () => {
           </span>
         </p>
         <p className="text-gray-600">
-          Phone:{" "}
+          User Phone:{" "}
           <span className="font-medium">
             {order?.userId?.mobileNumber || "N/A"}
           </span>
@@ -160,6 +160,12 @@ const OrderDetails = () => {
               Zip:{" "}
               <span className="font-medium">
                 {order.address.zipCode || "N/A"}
+              </span>
+            </p>
+            <p className="text-gray-600">
+              Order Number:{" "}
+              <span className="font-medium">
+                {order.address.phoneNumber || "N/A"}
               </span>
             </p>
           </div>

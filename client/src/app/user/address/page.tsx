@@ -17,8 +17,9 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner"; // For notifications
+
 type Address = {
   _id: string;
   addressLine1: string;
@@ -26,14 +27,85 @@ type Address = {
   city: string;
   state: string;
   zipCode: string;
+  phoneNumber?: string;
+  country?: string;
+  division?: string; // Added division property
+  district?: string; // Added district property
+  upazilla?: string; // Added upazilla property
+  union?: string; // Added union property
+  userId: string;
 };
 
 export default function AddressPage() {
-  const user = useAppSelector((state) => state.auth.user);
+  const [divisions, setDivisions] = useState<{ id: string; name: string }[]>(
+    []
+  );
+  const [selectedDivision, setSelectedDivision] = useState("");
+  const [districts, setDistricts] = useState<{ id: string; name: string }[]>(
+    []
+  );
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [upazillas, setUpazillas] = useState<{ id: string; name: string }[]>(
+    []
+  );
+  const [selectedUpazilla, setSelectedUpazilla] = useState("");
+  const [unions, setUnions] = useState<{ id: string; name: string }[]>([]);
+  const [selectedUnion, setSelectedUnion] = useState("");
 
+  // Fetch division data
+  useEffect(() => {
+    const fetchDivisions = async () => {
+      const response = await fetch("https://bdapi.vercel.app/api/v.1/division");
+      const data = await response.json();
+      setDivisions(data.data);
+    };
+    fetchDivisions();
+  }, []);
+
+  // Fetch districts based on selected division
+  useEffect(() => {
+    if (!selectedDivision) return;
+    const fetchDistricts = async () => {
+      const response = await fetch(
+        `https://bdapi.vercel.app/api/v.1/district/${selectedDivision}`
+      );
+      const data = await response.json();
+      setDistricts(data.data);
+    };
+    fetchDistricts();
+  }, [selectedDivision]);
+
+  // Fetch upazillas based on selected district
+  useEffect(() => {
+    if (!selectedDistrict) return;
+    const fetchUpazillas = async () => {
+      const response = await fetch(
+        `https://bdapi.vercel.app/api/v.1/upazilla/${selectedDistrict}`
+      );
+      const data = await response.json();
+      setUpazillas(data.data);
+    };
+    fetchUpazillas();
+  }, [selectedDistrict]);
+
+  // Fetch unions based on selected upazilla
+  useEffect(() => {
+    if (!selectedUpazilla) return;
+    const fetchUnions = async () => {
+      const response = await fetch(
+        `https://bdapi.vercel.app/api/v.1/union/${selectedUpazilla}`
+      );
+      const data = await response.json();
+      setUnions(data.data);
+    };
+    fetchUnions();
+  }, [selectedUpazilla]);
+
+  const user = useAppSelector((state) => state.auth.user);
   const { data: addresses, isLoading } = useGetAddressQuery(user?.id);
   const [addAddress, { isLoading: isAdding }] = useAddAddressMutation();
   const [deleteAddress] = useDeleteAddressMutation();
+
   const deleteAddressHandler = async (id: string) => {
     try {
       await deleteAddress(id).unwrap();
@@ -42,13 +114,18 @@ export default function AddressPage() {
       toast.error("Failed to delete address.");
     }
   };
+
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     addressLine1: "",
     addressLine2: "",
-    city: "",
-    state: "",
+    divisons: selectedDivision,
+    districts: selectedDistrict,
+    upazillas: selectedUpazilla,
+    unions: selectedUnion,
     zipCode: "",
+    country: "",
+    phoneNumber: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,7 +134,22 @@ export default function AddressPage() {
 
   const handleSubmit = async () => {
     try {
-      await addAddress({ userId: user?.id, ...formData }).unwrap();
+      // Prepare the data to be sent with only the name fields
+      const addressData = {
+        userId: user?.id,
+        addressLine1: formData.addressLine1,
+        addressLine2: formData.addressLine2,
+        zipCode: formData.zipCode,
+        country: formData.country,
+        phoneNumber: formData.phoneNumber,
+        division: selectedDivision,
+        district: selectedDistrict,
+        upazilla: selectedUpazilla,
+        union: selectedUnion,
+      };
+
+      // Send the addressData object with only the names
+      await addAddress(addressData).unwrap();
       toast.success("Address added successfully!");
       setOpen(false);
     } catch {
@@ -87,14 +179,31 @@ export default function AddressPage() {
               </CardHeader>
               <CardContent>
                 <p>
+                  <strong>Country:</strong> {addr.country || "Bangladesh"}
+                </p>
+                <p>
                   <strong>Street:</strong> {addr.addressLine1},{" "}
                   {addr.addressLine2}
                 </p>
                 <p>
-                  <strong>City:</strong> {addr.city}, {addr.state}
+                  <strong>Zip Code:</strong> {addr.zipCode}
+                </p>
+                {addr.phoneNumber && (
+                  <p>
+                    <strong>Phone:</strong> {addr.phoneNumber}
+                  </p>
+                )}
+                <p>
+                  <strong>Division:</strong> {addr.division}
                 </p>
                 <p>
-                  <strong>Zip Code:</strong> {addr.zipCode}
+                  <strong>District:</strong> {addr.district}
+                </p>
+                <p>
+                  <strong>Upazilla:</strong> {addr.upazilla}
+                </p>
+                <p>
+                  <strong>Union:</strong> {addr.union}
                 </p>
               </CardContent>
               {/* delete button */}
@@ -129,6 +238,14 @@ export default function AddressPage() {
             </DialogHeader>
             <div className="space-y-4">
               <div>
+                <Label>Phone Number</Label>
+                <Input
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
                 <Label>Address Line 1</Label>
                 <Input
                   name="addressLine1"
@@ -145,26 +262,7 @@ export default function AddressPage() {
                   onChange={handleChange}
                 />
               </div>
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <Label>City</Label>
-                  <Input
-                    name="city"
-                    value={formData.city}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div>
-                  <Label>State</Label>
-                  <Input
-                    name="state"
-                    value={formData.state}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-              </div>
+
               <div>
                 <Label>Zip Code</Label>
                 <Input
@@ -174,6 +272,74 @@ export default function AddressPage() {
                   required
                 />
               </div>
+
+              {/* Select Division, District, Upazilla, and Union */}
+              <div>
+                <Label>Division</Label>
+                <select
+                  value={selectedDivision}
+                  onChange={(e) => {
+                    setSelectedDivision(e.target.value);
+                  }}
+                  className="w-full p-2 border rounded"
+                >
+                  <option value="">Select Division</option>
+                  {divisions.map((division) => (
+                    <option key={division.id} value={division.id}>
+                      {division.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <Label>District</Label>
+                <select
+                  value={selectedDistrict}
+                  onChange={(e) => setSelectedDistrict(e.target.value)}
+                  className="w-full p-2 border rounded"
+                >
+                  <option value="">Select District</option>
+                  {districts.map((district) => (
+                    <option key={district.id} value={district.id}>
+                      {district.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <Label>Upazilla</Label>
+                <select
+                  value={selectedUpazilla}
+                  onChange={(e) => setSelectedUpazilla(e.target.value)}
+                  className="w-full p-2 border rounded"
+                >
+                  <option value="">Select Upazilla</option>
+                  {upazillas.map((upazilla) => (
+                    <option key={upazilla.id} value={upazilla.id}>
+                      {upazilla.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <Label>Union</Label>
+                <select
+                  value={selectedUnion}
+                  onChange={(e) => setSelectedUnion(e.target.value)}
+                  className="w-full p-2 border rounded"
+                >
+                  <option value="">Select Union</option>
+                  {unions.map((union) => (
+                    <option key={union.id} value={union.id}>
+                      {union.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <Button
                 onClick={handleSubmit}
                 disabled={isAdding}
