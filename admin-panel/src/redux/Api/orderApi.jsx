@@ -46,10 +46,9 @@ export const ordersApi = createApi({
         method: "PUT",
         body: updatedorders,
       }),
-      // Invalidate the updated order and refetch the list of orders
       invalidatesTags: (result, error, { id }) => [
-        { type: "Orders", id }, // Invalidate the specific updated order
-        "Orders", // Invalidate the list of orders so it's refetched
+        { type: "Orders", id },
+        "Orders",
       ],
     }),
 

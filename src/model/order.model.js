@@ -30,7 +30,6 @@ const orderSchema = new mongoose.Schema(
           type: String,
           required: false,
         },
-        
       },
     ],
     totalPrice: {
@@ -58,6 +57,11 @@ const orderSchema = new mongoose.Schema(
     transactionDate: {
       type: Date,
       required: false,
+    },
+    number: {
+      type: Number,
+      required: false,
+      default: +880000000000,
     },
     transactionStatus: {
       type: String,

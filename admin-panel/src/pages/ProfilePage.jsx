@@ -5,12 +5,16 @@ import TotalSaleandProfite from "../components/TotalSaleandProfite";
 import Loading from "../components/Loading";
 import { generateProfilePDF } from "../utils/pdfUtils";
 import DatetoDateFilter from "../components/DatetoDateFilter";
+import { useGetbrandsQuery } from "../redux/Api/brandApi";
 
 const ProfilePage = () => {
   const today = new Date().toISOString().split("T")[0];
   const [startDate, setStartDate] = useState(today);
   const [endDate, setEndDate] = useState("");
+  const { data: brands } = useGetbrandsQuery();
 
+  const logo = brands && brands.length > 0 ? brands[0].logo : null;
+  const brandName = brands && brands.length > 0 ? brands[0].name : null;
   const {
     data: orders,
     isLoading,
@@ -52,6 +56,8 @@ const ProfilePage = () => {
       orders || []
     );
     const reportData = {
+      logo,
+      brandName,
       startDate,
       endDate,
       totalAmount: totalSales,

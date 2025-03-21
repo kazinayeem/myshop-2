@@ -1,9 +1,10 @@
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
-const logoPath = "https://i.ibb.co/yGz1JpX/825159-preview.jpg"; // Ensure this is a valid image URL
 
 export const generateProfilePDF = ({
+  logo,
+  brandName,
   startDate,
   endDate,
   totalAmount,
@@ -18,9 +19,9 @@ export const generateProfilePDF = ({
   const margin = 14; // Left margin for text alignment
 
   // Add logo
-  doc.addImage(logoPath, "PNG", 10, 10, imgWidth, imgHeight);
+  doc.addImage(logo, "PNG", 10, 10, imgWidth, imgHeight);
   doc.setFontSize(20);
-  doc.text("MY SHOP - Sales Summary", 105, 15, { align: "center" });
+  doc.text(`${brandName} - Sales Summary`, 105, 15, { align: "center" });
 
   doc.setFontSize(12);
   doc.text(`Total Orders: ${orderCount}`, margin, 50);

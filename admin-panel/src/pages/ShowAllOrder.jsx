@@ -1,13 +1,13 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { useNavigate } from "react-router";
+import DatetoDateFilter from "../components/DatetoDateFilter";
 import Loading from "../components/Loading";
 import {
   useGetOrdersQuery,
   useUpdateordersMutation,
 } from "../redux/Api/orderApi";
-import { useNavigate } from "react-router";
 import { takaSign } from "../utils/Currency";
-import DatetoDateFilter from "../components/DatetoDateFilter";
 
 export default function ShowAllOrders() {
   const [startDate, setStartDate] = useState();
@@ -111,6 +111,7 @@ export default function ShowAllOrders() {
         <table className="w-full border-collapse rounded-lg shadow-md overflow-hidden">
           <thead>
             <tr className="bg-blue-500 text-white">
+              <th className="p-3 text-left">Date :</th>
               <th className="p-3 text-left">Order ID</th>
               <th className="p-3">User</th>
               <th className="p-3">Products</th>
@@ -129,17 +130,27 @@ export default function ShowAllOrders() {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3 }}
               >
+                <td className="p-3 text-gray-700 font-semibold">
+                  {new Date(order.createdAt).toLocaleString("en-US", {
+                    timeZone: "Asia/Dhaka",
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true,
+                  })}
+                </td>
                 <td className="p-3 text-gray-700 font-semibold">{order._id}</td>
                 <td className="p-3 text-center">{order.userId?.username}</td>
                 <td className="p-3 text-center">
                   {order.products.map((product) => (
                     <div
-                      key={product.productId?._id}
+                      key={product._id}
                       className="text-sm text-gray-700"
                     >
-                      {product.productId?.name} ({product.quantity}) -{" "} ({
-                      product.variant} - {product.color || "N/A"}) -{""}
-                     
+                      {product.productId?.name} ({product.quantity}) - (
+                      {product.variant} - {product.color || "N/A"}) -{""}
                     </div>
                   ))}
                 </td>

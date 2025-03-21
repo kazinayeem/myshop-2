@@ -2,9 +2,11 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { takaSign } from "./Currency";
 
-const logoPath = "https://i.ibb.co/yGz1JpX/825159-preview.jpg";
+// const logoPath = "https://i.ibb.co/yGz1JpX/825159-preview.jpg";
 
 export const generateInvoicePDF = ({
+  logo,
+  brandName,
   name,
   email,
   userPhone,
@@ -12,60 +14,61 @@ export const generateInvoicePDF = ({
   address,
   totalPrice,
   transactionId,
-  transactionStatus,
-  paymentStatus,
   paymentMethod,
-  dueAmount,
   paidAmount,
   date,
   deliveryCharge,
+  variant,
+  color,
 }) => {
   const doc = new jsPDF("p", "mm", "a4");
 
   // Add Logo
-  const imgWidth = 40;
-  const imgHeight = 20;
-  doc.addImage(logoPath, "PNG", 10, 10, imgWidth, imgHeight);
+  doc.addImage(logo, "PNG", 10, 10, 40, 20);
 
   // Shop Name
-  doc.setFontSize(20);
-  doc.text("MY SHOP", 105, 20, { align: "center" });
+  doc.setFontSize(18);
+  doc.text(brandName, 105, 20, { align: "center" });
 
   // Invoice Title
   doc.setFontSize(12);
   doc.text(`Invoice #${order._id}`, 14, 40);
 
-  // User & Order Details (Compact Format)
+  // User & Order Details
   doc.setFontSize(10);
-  doc.text(`User: ${name} | Email: ${email} | Phone: ${userPhone}`, 14, 50);
+  doc.text(`Customer: ${name} | ${email} | ${userPhone}`, 14, 50);
   doc.text(
     `Address: ${address?.addressLine1}, ${address?.city} - ${address?.zipCode}`,
     14,
     55
   );
   doc.text(
-    `Status: ${order.status} | Transaction: ${transactionId} (${transactionStatus})`,
+    `Transaction ID: ${transactionId} | Payment: ${paymentMethod} | Paid: ${takaSign()} ${paidAmount}`,
     14,
     60
   );
-  doc.text(
-    `Payment: ${paymentStatus} | Method: ${paymentMethod} | Paid: ${takaSign()} ${paidAmount} | Due: ${takaSign()} ${dueAmount}`,
-    14,
-    65
-  );
-  doc.text(`Order Date: ${new Date(date).toLocaleString()}`, 14, 70);
+  doc.text(`Date: ${new Date(date).toLocaleString()}`, 14, 65);
 
   // Table Headers
-  const tableColumn = ["Product", "Quantity", "Price", "Total"];
-  const tableRows = order.products.map((product) => [
+  const tableColumn = [
+    "Product",
+    "Size",
+    "Color",
+    "Quantity",
+    "Price",
+    "Total",
+  ];
+  const tableRows = order.products.map((product, index) => [
     product.productId?.name || "Unknown",
+    variant?.[index] || "N/A",
+    color?.[index] || "N/A",
     product.quantity,
-    `${takaSign()} ${product.price.toFixed(2) || "0.00"}`,
+    `${takaSign()} ${product.price.toFixed(2)}`,
     `${takaSign()} ${(product.quantity * product.price).toFixed(2)}`,
   ]);
 
   // Generate Table
-  let finalY = 80;
+  let finalY = 75;
   if (tableRows.length > 0) {
     autoTable(doc, {
       startY: finalY,
@@ -76,11 +79,9 @@ export const generateInvoicePDF = ({
     finalY = doc.lastAutoTable.finalY + 10;
   }
 
-  // Total Before Delivery Charge
+  // Total Amount
   doc.setFontSize(12);
   doc.text(`Subtotal: ${takaSign()} ${totalPrice.toFixed(2)}`, 14, finalY);
-
-  // Delivery Charge & Final Total
   finalY += 6;
   doc.text(
     `Delivery Charge: ${takaSign()} ${deliveryCharge.toFixed(2)}`,
@@ -89,29 +90,29 @@ export const generateInvoicePDF = ({
   );
   finalY += 6;
   doc.text(
-    `Total Amount: ${takaSign()} ${(totalPrice + deliveryCharge).toFixed(2)}`,
+    `Total: ${takaSign()} ${(totalPrice + deliveryCharge).toFixed(2)}`,
     14,
     finalY
   );
 
-  // Footer with generated date, time, and website
-  const pageHeight = doc.internal.pageSize.height;
-  const footerY = pageHeight - 40;
-  const generatedDate = new Date().toLocaleString();
+  // Footer
+  const footerY = doc.internal.pageSize.height - 30;
   doc.setFontSize(10);
   doc.text("Thank you for your purchase!", 105, footerY, { align: "center" });
-  doc.text("MY SHOP", 105, footerY + 5, { align: "center" });
-  doc.text("Contact: +91 9876543210", 105, footerY + 10, { align: "center" });
-  doc.text("Email: support@myshop.com", 105, footerY + 15, { align: "center" });
-  doc.text("Address: Dhaka, Bangladesh", 105, footerY + 20, {
+  doc.text("MY SHOP | Dhaka, Bangladesh", 105, footerY + 5, {
     align: "center",
   });
-  doc.text(`Generated on: ${generatedDate}`, 105, footerY + 30, {
+  doc.text("Website: www.nayeemsofr.com", 105, footerY + 10, {
     align: "center",
   });
-  doc.text("Website: www.nayeemsofr.com", 105, footerY + 35, {
-    align: "center",
-  });
+
+  // Bottom left corner - Invoice generated date/time
+  doc.setFontSize(8);
+  doc.text(
+    `Generated on: ${new Date().toLocaleString()}`,
+    14,
+    doc.internal.pageSize.height - 10
+  );
 
   // Save PDF
   doc.save(`Invoice_${order._id}.pdf`);

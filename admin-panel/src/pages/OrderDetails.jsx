@@ -1,17 +1,26 @@
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useState, useEffect } from "react";
 import ReactModal from "react-modal";
 import {
+  useDeleteordersMutation,
   useGetordersByIdQuery,
   useUpdateordersMutation,
 } from "../redux/Api/orderApi";
 import { takaSign } from "../utils/Currency";
 import { generateInvoicePDF } from "../utils/invoiceGenerator";
+import { useGetbrandsQuery } from "../redux/Api/brandApi";
 
 const OrderDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { data: order, isLoading, error } = useGetordersByIdQuery(id);
   const [updateOrder] = useUpdateordersMutation();
+  // delete order
+  const [deleteOrder] = useDeleteordersMutation();
+  const { data: brands } = useGetbrandsQuery();
+
+  const logo = brands && brands.length > 0 ? brands[0].logo : null;
+  const brandName = brands && brands.length > 0 ? brands[0].name : null;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newStatus, setNewStatus] = useState("");
@@ -22,6 +31,7 @@ const OrderDetails = () => {
   const [dueAmount, setDueAmount] = useState();
   const [paidAmount, setPaidAmount] = useState();
   const [deliveryCharge, setDeliveryCharge] = useState(0);
+  const [number, setNumber] = useState(0);
 
   useEffect(() => {
     if (order) {
@@ -33,6 +43,7 @@ const OrderDetails = () => {
       setDueAmount(order.dueAmount);
       setPaidAmount(order.paidAmount);
       setDeliveryCharge(order.deliveryCharge || 0);
+      setNumber(order.number || 0);
     }
   }, [order]);
 
@@ -48,6 +59,7 @@ const OrderDetails = () => {
         dueAmount,
         paidAmount,
         deliveryCharge,
+        number,
       }).unwrap();
       setIsModalOpen(false);
     } catch (error) {
@@ -55,8 +67,20 @@ const OrderDetails = () => {
     }
   };
 
+  const handleDeleteOrder = async () => {
+    try {
+      await deleteOrder(id).unwrap();
+      alert("Order deleted successfully");
+      navigate("/dashboard/orders");
+    } catch (error) {
+      console.error("Failed to delete order", error);
+    }
+  };
+
   const handleDownloadInvoice = () => {
     generateInvoicePDF({
+      logo,
+      brandName,
       name: order?.userId?.username || "N/A",
       email: order?.userId?.email || "N/A",
       userPhone: order?.userId?.mobileNumber || "N/A",
@@ -71,6 +95,10 @@ const OrderDetails = () => {
       paidAmount: order?.paidAmount || 0,
       date: order?.createdAt || new Date(),
       deliveryCharge: order?.deliveryCharge || 0,
+      payment_Number: order?.number || 0,
+      // size and color
+      variant: order?.products?.map((product) => product.variant),
+      color: order?.products?.map((product) => product.color),
     });
   };
 
@@ -110,13 +138,18 @@ const OrderDetails = () => {
             <p className="text-gray-600">
               Quantity: <span className="font-medium">{product.quantity}</span>
             </p>
-            {/* date */}
-            <p className="text-gray-600">
-              Date:{" "}
-              <span className="font-medium">
-                {new Date(order.createdAt).toLocaleString()}
-              </span>
-            </p>
+            {/* varient */}
+            {product?.variant && (
+              <p className="text-gray-600">
+                Variant: <span className="font-medium">{product.variant}</span>
+              </p>
+            )}
+            {/* color */}
+            {product?.color && (
+              <p className="text-gray-600">
+                Color: <span className="font-medium">{product.color}</span>
+              </p>
+            )}
           </div>
         ))}
       </div>
@@ -172,11 +205,71 @@ const OrderDetails = () => {
         )}
       </div>
 
+      {/* payment information */}
+      <div className="mb-4">
+        <h3 className="text-lg font-semibold mb-2">Payment Information</h3>
+        <p className="text-gray-600">
+          Transaction ID:{" "}
+          <span className="font-medium">{order.transactionId || "N/A"}</span>
+        </p>
+        <p className="text-gray-600">
+          Transaction Status:{" "}
+          <span className="font-medium">
+            {order.transactionStatus || "N/A"}
+          </span>
+        </p>
+        <p className="text-gray-600">
+          Payment Status:{" "}
+          <span className="font-medium">{order.paymentStatus || "N/A"}</span>
+        </p>
+        <p className="text-gray-600">
+          Payment Method:{" "}
+          <span className="font-medium">{order.paymentMethod || "N/A"}</span>
+        </p>
+        <p className="text-gray-600">
+          Delivery Charge:{" "}
+          <span className="font-medium">
+            {takaSign()} {order.deliveryCharge || 0}
+          </span>
+        </p>
+        <p className="text-gray-600">
+          Due Amount:{" "}
+          <span className="font-medium">
+            {takaSign()} {order.dueAmount || 0}
+          </span>
+        </p>
+        <p className="text-gray-600">
+          Paid Amount:{" "}
+          <span className="font-medium">
+            {takaSign()} {order.paidAmount || 0}
+          </span>
+        </p>
+        <p className="text-gray-600">
+          Order Status:{" "}
+          <span className="font-medium">{order.status || "N/A"}</span>
+        </p>
+        <p className="text-gray-600">
+          Payment Number:{" "}
+          <span className="font-medium">{order.number || "N/A"}</span>
+        </p>
+        <p className="text-gray-600">
+          Order Date:{" "}
+          <span className="font-medium">
+            {new Date(order.createdAt).toLocaleString()}
+          </span>
+        </p>
+      </div>
       <button
         onClick={() => setIsModalOpen(true)}
         className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition"
       >
         Edit Order
+      </button>
+      <button
+        onClick={handleDeleteOrder}
+        className="bg-red-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-600 transition"
+      >
+        Delete Order
       </button>
 
       <ReactModal
@@ -266,6 +359,16 @@ const OrderDetails = () => {
             type="number"
             value={paidAmount}
             onChange={(e) => setPaidAmount(e.target.value)}
+            className="p-2 border rounded-md w-full"
+          />
+        </label>
+        {/* payment for number */}
+        <label>
+          Payment Number:
+          <input
+            type="number"
+            value={number}
+            onChange={(e) => setNumber(e.target.value)}
             className="p-2 border rounded-md w-full"
           />
         </label>

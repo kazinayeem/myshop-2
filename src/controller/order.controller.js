@@ -105,6 +105,16 @@ export const updateOrder = async (req, res) => {
 export const deleteOrder = async (req, res) => {
   try {
     const deletedOrder = await Order.findByIdAndDelete(req.params.id);
+    if (!deletedOrder) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    // remove order id from user order history
+    await User.findByIdAndUpdate(
+      deletedOrder.userId,
+      { $pull: { orderhistory: deletedOrder._id } },
+      { new: true }
+    );
+
     res.status(200).json(deletedOrder);
   } catch (error) {
     res.status(500).json({ message: error.message });
