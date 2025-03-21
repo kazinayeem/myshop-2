@@ -1,9 +1,7 @@
 "use client";
 import { useGetOrdersQuery } from "@/api/orderApi";
-import { useAppSelector } from "@/lib/hooks";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { format } from "date-fns";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Table,
@@ -13,6 +11,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useAppSelector } from "@/lib/hooks";
+import { format } from "date-fns";
 interface Order {
   _id: string;
   status: string;
@@ -70,7 +70,7 @@ export default function Page() {
           <CardTitle>Orders</CardTitle>
         </CardHeader>
         <CardContent>
-          <ScrollArea className="max-h-96">
+          <ScrollArea className="w-96 whitespace-nowrap rounded-md border">
             <Table>
               <TableHeader>
                 <TableRow>
