@@ -1,13 +1,12 @@
 "use client";
 
 import {
-  useGetAddressQuery,
   useAddAddressMutation,
   useDeleteAddressMutation,
+  useGetAddressQuery,
 } from "@/api/addressApi";
-import { useAppSelector } from "@/lib/hooks";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -17,6 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAppSelector } from "@/lib/hooks";
 import { useEffect, useState } from "react";
 import { toast } from "sonner"; // For notifications
 
@@ -102,7 +102,7 @@ export default function AddressPage() {
   }, [selectedUpazilla]);
 
   const user = useAppSelector((state) => state.auth.user);
-  const { data: addresses, isLoading } = useGetAddressQuery(user?.id);
+  const { data: addresses, isLoading, refetch } = useGetAddressQuery(user?.id);
   const [addAddress, { isLoading: isAdding }] = useAddAddressMutation();
   const [deleteAddress] = useDeleteAddressMutation();
 
@@ -110,6 +110,7 @@ export default function AddressPage() {
     try {
       await deleteAddress(id).unwrap();
       toast.success("Address deleted successfully!");
+      refetch();
     } catch {
       toast.error("Failed to delete address.");
     }
@@ -140,15 +141,19 @@ export default function AddressPage() {
         addressLine1: formData.addressLine1,
         addressLine2: formData.addressLine2,
         zipCode: formData.zipCode,
-        country: formData.country,
+        country: formData.country || "Bangladesh",
         phoneNumber: formData.phoneNumber,
-        division: selectedDivision,
-        district: selectedDistrict,
-        upazilla: selectedUpazilla,
-        union: selectedUnion,
+        division:
+          divisions.find((division) => division.id === selectedDivision)
+            ?.name || "",
+        district:
+          districts.find((district) => district.id === selectedDistrict)
+            ?.name || "",
+        upazilla:
+          upazillas.find((upazilla) => upazilla.id === selectedUpazilla)
+            ?.name || "",
+        union: unions.find((union) => union.id === selectedUnion)?.name || "",
       };
-
-      // Send the addressData object with only the names
       await addAddress(addressData).unwrap();
       toast.success("Address added successfully!");
       setOpen(false);

@@ -7,14 +7,11 @@ import User from "../model/user.model.js";
 
 export const addAddress = async (req, res) => {
   try {
-   
-    console.log(req.body);
-
     const newAddress = new Address(req.body);
 
     const savedAddress = await newAddress.save();
     await User.findByIdAndUpdate(
-      userId,
+      req.body.userId,
       { $push: { address: savedAddress._id } },
       { new: true }
     );

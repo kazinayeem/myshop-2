@@ -21,9 +21,9 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    mobileNumber : {
+    mobileNumber: {
       type: String,
-      required: true,
+      required: false,
     },
     isUser: {
       type: Boolean,

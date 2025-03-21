@@ -7,7 +7,6 @@ import {
   useGetOrdersQuery,
   useUpdateordersMutation,
 } from "../redux/Api/orderApi";
-import { takaSign } from "../utils/Currency";
 
 export default function ShowAllOrders() {
   const [startDate, setStartDate] = useState();
@@ -17,6 +16,7 @@ export default function ShowAllOrders() {
     data: orders,
     isLoading,
     isError,
+    refetch,
   } = useGetOrdersQuery(startDate && endDate ? { startDate, endDate } : {});
   const [updateOrder] = useUpdateordersMutation();
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -30,6 +30,7 @@ export default function ShowAllOrders() {
       await updateOrder({ id: orderId, status: newStatus }).unwrap();
       setSelectedOrder(null);
       setNewStatus("");
+      refetch(); 
     } catch (error) {
       console.error("Failed to update order", error);
     }
@@ -38,13 +39,8 @@ export default function ShowAllOrders() {
   if (isLoading) return <Loading />;
   if (isError)
     return <p className="text-center text-red-500">Failed to fetch orders.</p>;
-
-  // Filter orders based on selected status
   const filteredOrders = orders?.filter((order) => {
-    // Apply status filter if provided
     const statusFilter = !filterStatus || order.status === filterStatus;
-
-    // Apply orderId search filter
     const idFilter =
       !searchId || order._id.toLowerCase().includes(searchId.toLowerCase());
 
@@ -136,26 +132,19 @@ export default function ShowAllOrders() {
                     year: "numeric",
                     month: "2-digit",
                     day: "2-digit",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hour12: true,
                   })}
                 </td>
                 <td className="p-3 text-gray-700 font-semibold">{order._id}</td>
                 <td className="p-3 text-center">{order.userId?.username}</td>
                 <td className="p-3 text-center">
                   {order.products.map((product) => (
-                    <div
-                      key={product._id}
-                      className="text-sm text-gray-700"
-                    >
-                      {product.productId?.name} ({product.quantity}) - (
-                      {product.variant} - {product.color || "N/A"}) -{""}
+                    <div key={product._id} className="text-sm text-gray-700">
+                      {product.productId?.name.slice(0, 20)} ({product.quantity}
+                      ) - ({product.variant} - {product.color || "N/A"}) -{""}
                     </div>
                   ))}
                 </td>
                 <td className="p-3 text-center font-semibold">
-                  {takaSign()}
                   {order.totalPrice.toFixed(3)}
                 </td>
                 <td className="p-3 text-center text-blue-600 font-medium">

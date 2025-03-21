@@ -5,11 +5,11 @@ import Loading from "../components/Loading";
 import UserAnalysisCharts from "../components/UserAnalysisCharts";
 import { useUpdateordersMutation } from "../redux/Api/orderApi";
 import { useGetUserByIdQuery } from "../redux/Api/userApi";
-import { generateInvoicePDF } from "../utils/invoiceGenerator";
 import { takaSign } from "../utils/Currency";
 
 const ViewSingleUserDetails = () => {
   const { userId } = useParams();
+
   const {
     data: userDetails,
     isLoading,
@@ -89,7 +89,9 @@ const ViewSingleUserDetails = () => {
                 {userDetails.address.map((address, index) => (
                   <li key={index} className="text-gray-600">
                     {address.addressLine1}, {address.addressLine2},{" "}
-                    {address.state}, {address.zipCode}, {address.city}
+                    {address.division}, {address.district}, {address.upazilla},{" "}
+                    {address.union}, {address.country}, {address.zipCode} ,
+                    {address.phoneNumber},{" "}
                   </li>
                 ))}
               </ul>
@@ -183,18 +185,6 @@ const ViewSingleUserDetails = () => {
                       Change Status
                     </button>
                   )}
-                  <button
-                    className="text-blue-500 hover:underline ml-4"
-                    onClick={() =>
-                      generateInvoicePDF({
-                        name: userDetails.username,
-                        email: userDetails.email,
-                        order,
-                      })
-                    }
-                  >
-                    Download Invoice
-                  </button>
                 </div>
               ))}
             </div>

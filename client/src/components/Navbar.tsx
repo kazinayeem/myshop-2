@@ -69,13 +69,15 @@ export default function Navbar() {
           menuOpen ? "flex" : "hidden"
         }`}
       >
-        <li className="border-b-2 border-black pb-1 px-6 md:px-0">Home</li>
-        <li className="hover:text-black cursor-pointer px-6 md:px-0">
-          Contact
-        </li>
+        <li className="hover:text-black cursor-pointer px-6 md:px-0">Home</li>
+        <Link href="/product">
+          <li className="hover:text-black cursor-pointer px-6 md:px-0">
+            All Products
+          </li>
+        </Link>
         <li className="hover:text-black cursor-pointer px-6 md:px-0">About</li>
         <li className="hover:text-black cursor-pointer px-6 md:px-0">
-          Sign Up
+          Hot Deals
         </li>
       </ul>
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { useLoginMutation, useRegisterMutation } from "@/api/userApi";
 import { create } from "@/app/actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -31,50 +32,69 @@ const AuthPage = () => {
   };
 
   const dispatch = useAppDispatch();
+  const [
+    login,
+    {
+      error: loginError,
+
+      isError: loginIsError,
+    },
+  ] = useLoginMutation();
+
+  const [
+    register,
+    {
+      error: registerError,
+
+      isError: registerIsError,
+    },
+  ] = useRegisterMutation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
-    const url = isLogin
-      ? "https://myshop-2-production.up.railway.app/api/users/login"
-      : "https://myshop-2-production.up.railway.app/api/users/register";
 
     const body = isLogin
       ? { email: form.email, password: form.password }
       : { email: form.email, username: form.username, password: form.password };
 
     try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-      const data = await response.json();
-
-      if (!response.ok) throw new Error(data.message || "Something went wrong");
-
+      let data;
       if (isLogin) {
-        create({
-          token: data.token,
-          user: {
-            id: data.user.id,
-            username: data.user.username,
-            email: data.user.email,
-          },
-        });
-        dispatch(
-          loginSuccess({
-            id: data.user.id,
-            username: data.user.username,
-            email: data.user.email,
-          })
-        );
-        router.back();
+        // Perform login using RTK query hook
+        const response = await login(body).unwrap();
+        data = response;
+      } else {
+        // Perform registration using RTK query hook
+        const response = await register(body).unwrap();
+        data = response;
       }
 
-      toast.success(isLogin ? "Login successful!" : "Registration successful!");
-    } catch (error: unknown) {
+      if (data) {
+        if (isLogin) {
+          create({
+            token: data.token,
+            user: {
+              id: data.user.id,
+              username: data.user.username,
+              email: data.user.email,
+            },
+          });
+          dispatch(
+            loginSuccess({
+              id: data.user.id,
+              username: data.user.username,
+              email: data.user.email,
+            })
+          );
+          router.back();
+        }
+
+        toast.success(
+          isLogin ? "Login successful!" : "Registration successful!"
+        );
+      }
+    } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message);
       } else {
@@ -128,6 +148,20 @@ const AuthPage = () => {
                 required
               />
             </div>
+            {loginIsError && (
+              <p className="text-red-500 text-sm">
+                {loginError &&
+                  "data" in loginError &&
+                  (loginError.data as { message: string })?.message}
+              </p>
+            )}
+            {registerIsError && (
+              <p className="text-red-500 text-sm">
+                {"data" in registerError &&
+                  (registerError.data as { message: string })?.message}
+              </p>
+            )}
+
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Processing..." : isLogin ? "Login" : "Register"}
             </Button>

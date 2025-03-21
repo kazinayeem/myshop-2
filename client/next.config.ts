@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
       "plus.unsplash.com",
       "cdn-icons-png.flaticon.com",
       "via.placeholder.com",
+      "www.techlandbd.com",
     ],
   },
 };
