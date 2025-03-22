@@ -137,11 +137,17 @@ export default function Page() {
                       <TableCell>
                         <Badge
                           className={`px-2 py-1 text-xs md:text-sm ${
-                            order.status === "pending"
-                              ? "bg-yellow-500"
-                              : order.status === "shipped"
-                              ? "bg-blue-500"
-                              : "bg-green-500"
+                            {
+                              pending: "bg-yellow-500",
+                              shipped: "bg-blue-500",
+                              delivered: "bg-green-500",
+                              cancelled: "bg-red-500",
+                              returned: "bg-orange-500",
+                              refunded: "bg-purple-500",
+                              failed: "bg-gray-500",
+                              completed: "bg-teal-500",
+                              processing: "bg-indigo-500",
+                            }[order.status] || "bg-gray-400"
                           }`}
                         >
                           {order.status}
@@ -169,9 +175,11 @@ export default function Page() {
                       <TableCell>
                         <Badge
                           className={`px-2 py-1 text-xs md:text-sm ${
-                            order.paymentStatus === "pending"
-                              ? "bg-yellow-500"
-                              : "bg-green-500"
+                            {
+                              paid: "bg-green-500",
+                              pending: "bg-yellow-500",
+                              failed: "bg-red-500",
+                            }[order.paymentStatus] || "bg-gray-400"
                           }`}
                         >
                           {order.paymentStatus}

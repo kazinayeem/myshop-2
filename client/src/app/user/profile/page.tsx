@@ -1,6 +1,6 @@
 "use client";
 import { useGetUserByIdQuery } from "@/api/userApi";
-import { useAppSelector } from "@/lib/hooks";
+import {  useAppSelector } from "@/lib/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
@@ -8,7 +8,7 @@ import { format } from "date-fns";
 export default function ProfilePage() {
   const user = useAppSelector((state) => state.auth.user);
   const { data, isLoading, isError } = useGetUserByIdQuery(user?.id);
-
+  
   // Show a loading message while the data is loading
   if (isLoading) {
     return (
@@ -20,6 +20,7 @@ export default function ProfilePage() {
 
   // Show an error message if there is an issue fetching data
   if (isError) {
+    
     return (
       <div className="flex justify-center items-center h-screen text-red-500">
         Error loading profile data. Please try again later.
@@ -29,6 +30,7 @@ export default function ProfilePage() {
 
   // Ensure data is available before trying to destructure it
   if (!data) {
+    
     return (
       <div className="flex justify-center items-center h-screen">
         No user data found.

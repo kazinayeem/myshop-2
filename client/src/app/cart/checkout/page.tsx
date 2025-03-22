@@ -291,6 +291,11 @@ export default function CheckoutPage() {
               ).toFixed(2)}
             </p>
             <Button
+              disabled={
+                (!selectAddress && addresses?.length === 0) || 
+                !paymentMethod ||
+                (["bkash", "nagad"].includes(paymentMethod) && !transactionId)
+              }
               onClick={() => setIsOpen(true)}
               className="bg-green-500 text-white w-full md:w-auto mt-2"
             >

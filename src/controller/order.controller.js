@@ -128,7 +128,7 @@ export const deleteOrder = async (req, res) => {
 // get order by id
 export const getOrderById = async (req, res) => {
   try {
-    console.log(req.params.id);
+  
     const order = await Order.findById(req.params.id)
 
       .populate("userId", "username email mobileNumber")

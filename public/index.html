@@ -3,119 +3,29 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://cdn.jsdelivr.net;">
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'nonce-randomString';">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product List</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script nonce="randomString"
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-</head>
-
-<body class="bg-light">
-    <div class="container py-5">
-        <h1 class="text-center mb-4">Product List</h1>
-
-        <!-- Loading Skeleton -->
-        <div id="loading-skeleton" class="row g-4">
-            <div class="col-md-4">
-                <div class="card p-3 shadow-sm">
-                    <div class="bg-secondary placeholder-glow rounded" style="height: 200px;"></div>
-                    <div class="mt-2 placeholder-glow">
-                        <span class="placeholder col-6"></span>
-                    </div>
-                    <div class="mt-2 placeholder-glow">
-                        <span class="placeholder col-8"></span>
-                    </div>
-                    <div class="mt-2 placeholder-glow">
-                        <span class="placeholder col-4"></span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card p-3 shadow-sm">
-                    <div class="bg-secondary placeholder-glow rounded" style="height: 200px;"></div>
-                    <div class="mt-2 placeholder-glow">
-                        <span class="placeholder col-6"></span>
-                    </div>
-                    <div class="mt-2 placeholder-glow">
-                        <span class="placeholder col-8"></span>
-                    </div>
-                    <div class="mt-2 placeholder-glow">
-                        <span class="placeholder col-4"></span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card p-3 shadow-sm">
-                    <div class="bg-secondary placeholder-glow rounded" style="height: 200px;"></div>
-                    <div class="mt-2 placeholder-glow">
-                        <span class="placeholder col-6"></span>
-                    </div>
-                    <div class="mt-2 placeholder-glow">
-                        <span class="placeholder col-8"></span>
-                    </div>
-                    <div class="mt-2 placeholder-glow">
-                        <span class="placeholder col-4"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Product Grid -->
-        <div id="product-container" class="row g-4" style="display: none;"></div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="bg-dark text-white py-3 mt-5 text-center">
-        <p class="mb-0">&copy; 2023 Your Company. All rights reserved.</p>
-    </footer>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script nonce="randomString"
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-
-    <!-- JavaScript to fetch and display products -->
-    <script>
-        async function fetchProducts() {
-            try {
-                const response = await fetch("https://myshop-2-production.up.railway.app/api/products");
-                const { products } = await response.json();
-                const productContainer = document.getElementById("product-container");
-                const loadingSkeleton = document.getElementById("loading-skeleton");
-
-                productContainer.innerHTML = "";
-                loadingSkeleton.style.display = "none";
-                productContainer.style.display = "flex";
-
-                products.forEach(product => {
-                    const productCard = `
-                        <div class="col-md-4">
-                            <div class="card shadow-sm">
-                                <img loading="lazy" src="${product.image[0]}" alt="${product.name}" class="card-img-top" style="height: 200px; object-fit: cover;">
-                                <div class="card-body">
-                                    <h5 class="card-title">${product.name}</h5>
-                                    <p class="card-text">${product.description.substring(0, 60)}...</p>
-                                    <p class="text-success fw-bold">$${product.price}</p>
-                                    <a href="/${product._id}" class="btn btn-primary">View Details</a>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    productContainer.innerHTML += productCard;
-                });
-            } catch (error) {
-                console.error("Error fetching products:", error);
-            }
+    <title>API Home</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
         }
 
-        fetchProducts(); // Call the function on page load
-    </script>
+        h1 {
+            color: #333;
+        }
+
+        p {
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Welcome to MyShop API</h1>
+    <p>Your backend server is running successfully.</p>
+    <p>Use the API endpoints to fetch data.</p>
 </body>
 
 </html>

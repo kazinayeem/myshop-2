@@ -9,9 +9,6 @@ import User from "../model/user.model.js";
 export const register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
-    console.log(req.body);
-
-    // Use findOne to check for a single user with the given email
     const existingUser = await User.findOne({ email: email });
 
     if (existingUser) {

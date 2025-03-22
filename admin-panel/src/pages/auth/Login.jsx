@@ -9,7 +9,7 @@ const LoginPage = () => {
   const [login, { isLoading, isError, error }] = useLoginMutation();
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("user1@gmail.com");
+  const [email, setEmail] = useState("user@gmail.com");
   const [password, setPassword] = useState("password123");
 
   const handleSubmit = async (e) => {

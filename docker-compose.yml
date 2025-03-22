@@ -60,5 +60,5 @@ services:
     environment:
       - NEXT_PUBLIC_SERVER_PORT=http://localhost:8080/api
 
-volumes:
+volumes: 
   mongodb_data:

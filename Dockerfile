@@ -10,6 +10,6 @@ COPY . .
 
 EXPOSE 8080
 
-# CMD ["sh", "-c", "npm run seed && npm start"] 
+CMD ["sh", "-c", "npm run seed && npm start"] 
 
-CMD ["npm", "start"]
+# CMD ["npm", "start"]
