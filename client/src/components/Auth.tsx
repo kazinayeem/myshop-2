@@ -10,8 +10,7 @@ import { useAppDispatch } from "@/lib/hooks";
 import { loginSuccess } from "@/reducer/authReducer";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { toast } from "sonner";
-
+import Swal from "sweetalert2";
 const AuthPage = () => {
   const router = useRouter();
   const [isLogin, setIsLogin] = useState(true);
@@ -89,16 +88,48 @@ const AuthPage = () => {
           );
           router.back();
         }
+        // if reg istration is successful, redirect to login page
+        else {
+          setIsLogin(true);
+          setForm({ email: "", username: "", password: "" });
+        }
 
-        toast.success(
-          isLogin ? "Login successful!" : "Registration successful!"
-        );
+        // Show success message
+        Swal.fire({
+          icon: "success",
+          title: isLogin ? "Login Successful" : "Registration Successful",
+          text: isLogin
+            ? "Welcome back!"
+            : "Your account has been created successfully.",
+          confirmButtonText: "OK",
+        });
       }
     } catch (error) {
       if (error instanceof Error) {
-        toast.error(error.message);
+        // Handle specific error messages based on the error type
+        if ("data" in error) {
+          const errorData = error.data as { message: string };
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: errorData.message,
+            confirmButtonText: "OK",
+          });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "An unexpected error occurred.",
+            confirmButtonText: "OK",
+          });
+        }
       } else {
-        toast.error("An unexpected error occurred");
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "An unexpected error occurred.",
+          confirmButtonText: "OK",
+        });
       }
     } finally {
       setLoading(false);
