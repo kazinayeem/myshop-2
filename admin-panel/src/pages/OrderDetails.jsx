@@ -69,6 +69,12 @@ const OrderDetails = () => {
 
   const handleDeleteOrder = async () => {
     try {
+      // show confirmation dialog
+      const confirmDelete = window.confirm(
+        "Are you sure you want to delete this order?"
+      );
+      if (!confirmDelete) return;
+      // delete order
       await deleteOrder(id).unwrap();
       alert("Order deleted successfully");
       navigate("/dashboard/orders");
@@ -141,7 +147,8 @@ const OrderDetails = () => {
             {/* varient */}
             {product?.variant && (
               <p className="text-gray-600">
-               Size / Variant: <span className="font-medium">{product.variant}</span>
+                Size / Variant:{" "}
+                <span className="font-medium">{product.variant}</span>
               </p>
             )}
             {/* color */}
