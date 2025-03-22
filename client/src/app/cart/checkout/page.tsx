@@ -178,22 +178,30 @@ export default function CheckoutPage() {
           <label htmlFor="address" className="block text-lg font-semibold mb-2">
             Select Address:
           </label>
-          <select
-            onChange={(e) => setSelectAddress(e.target.value)}
-            id="address"
-            className="w-full p-2 border border-gray-300 rounded-md"
-          >
-            <option value="">Select Address</option>
-            {addresses?.map((address: Address) => (
-              <option key={address._id} value={address._id}>
-                {address.addressLine1}{" "}
-                {address.addressLine2 && `, ${address.addressLine2}`}
-                {`, ${address.division}, ${address.district}, ${address.upazilla}`}
-                {`, ${address.zipCode}`} {address.phoneNumber} ,{" "}
-                {address.country || "Bangladesh"}
-              </option>
-            ))}
-          </select>
+          {addresses?.length > 0 ? (
+            <select
+              id="address"
+              className="w-full p-2 border border-gray-300 rounded-md"
+              onChange={(e) => setSelectAddress(e.target.value)}
+            >
+              <option value="">Select Address</option>
+              {addresses.map((address: Address) => (
+                <option key={address._id} value={address._id}>
+                  {`${address.addressLine1}, ${address.division}, ${address.district}, ${address.upazilla}`}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <div className="flex justify-between items-center p-4 border border-red-500 rounded-md bg-red-50 text-red-700">
+              No address found. add address first.
+              <span
+                className="text-blue-500 cursor-pointer"
+                onClick={() => router.push("/user/address")}
+              >
+                Add Address
+              </span>
+            </div>
+          )}
         </div>
         {/* payment method */}
         <div className="mt-6">

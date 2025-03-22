@@ -5,6 +5,7 @@ import { useAppDispatch } from "@/lib/hooks";
 import { addItem } from "@/reducer/cartReducer";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/legacy/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 interface Variant {
@@ -31,6 +32,7 @@ interface Product {
 
 export default function ProductDetails({ params }: { params: { id: string } }) {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const [product, setProduct] = useState<Product | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [currentImage, setCurrentImage] = useState<string | null>(null);
@@ -96,6 +98,15 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
         color: selectedColor || selectedVariants?.Color?.value,
       })
     );
+  };
+
+  const buynow = () => {
+    if (selectedStock <= 0) {
+      alert("Out of stock");
+      return;
+    }
+    addToCart();
+    router.push("/cart");
   };
 
   return (
@@ -226,13 +237,21 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
           </Button>
         </div>
         <div className="mt-4 flex items-center space-x-4">
-          <Button variant={"destructive"} onClick={addToCart}>
+          <Button variant={"destructive"} onClick={buynow}>
             Buy Now
           </Button>
           <Button variant={"secondary"} onClick={addToCart}>
             Add to cart
           </Button>
         </div>
+        {/* product description as a html parse */}
+      </div>
+      <div className="mt-4 text-gray-700">
+        <h2 className="text-lg font-semibold">Description:</h2>
+        <p
+          className="mt-2"
+          dangerouslySetInnerHTML={{ __html: product.description }}
+        ></p>
       </div>
     </div>
   );

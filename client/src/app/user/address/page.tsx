@@ -1,5 +1,11 @@
 "use client";
-
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   useAddAddressMutation,
   useDeleteAddressMutation,
@@ -109,7 +115,6 @@ export default function AddressPage() {
   const deleteAddressHandler = async (id: string) => {
     try {
       await deleteAddress(id).unwrap();
-      toast.success("Address deleted successfully!");
       refetch();
     } catch {
       toast.error("Failed to delete address.");
@@ -135,6 +140,15 @@ export default function AddressPage() {
 
   const handleSubmit = async () => {
     try {
+      // Validate the form data here if needed
+      if (
+        !formData.addressLine1 ||
+        !formData.zipCode ||
+        formData.addressLine2 === ""
+      ) {
+        alert("Please fill in all required fields.");
+        return;
+      }
       // Prepare the data to be sent with only the name fields
       const addressData = {
         userId: user?.id,
@@ -248,6 +262,7 @@ export default function AddressPage() {
                   name="phoneNumber"
                   value={formData.phoneNumber}
                   onChange={handleChange}
+                  required
                 />
               </div>
               <div>
@@ -281,68 +296,100 @@ export default function AddressPage() {
               {/* Select Division, District, Upazilla, and Union */}
               <div>
                 <Label>Division</Label>
-                <select
-                  value={selectedDivision}
-                  onChange={(e) => {
-                    setSelectedDivision(e.target.value);
+                <Select
+                  onValueChange={(value) => {
+                    setSelectedDivision(value);
+                    setSelectedDistrict("");
+                    setSelectedUpazilla("");
+                    setSelectedUnion("");
                   }}
-                  className="w-full p-2 border rounded"
+                  value={selectedDivision}
+                  defaultValue="select"
                 >
-                  <option value="">Select Division</option>
-                  {divisions.map((division) => (
-                    <option key={division.id} value={division.id}>
-                      {division.name}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="select">Select Division</SelectItem>
+                    {divisions.map((division) => (
+                      <SelectItem key={division.id} value={division.id}>
+                        {division.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div>
                 <Label>District</Label>
-                <select
+                <Select
+                  onValueChange={(value) => {
+                    setSelectedDistrict(value);
+                    setSelectedUpazilla("");
+                    setSelectedUnion("");
+                  }}
+                  defaultValue="select"
                   value={selectedDistrict}
-                  onChange={(e) => setSelectedDistrict(e.target.value)}
-                  className="w-full p-2 border rounded"
                 >
-                  <option value="">Select District</option>
-                  {districts.map((district) => (
-                    <option key={district.id} value={district.id}>
-                      {district.name}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="select">Select District</SelectItem>
+                    {districts.map((district) => (
+                      <SelectItem key={district.id} value={district.id}>
+                        {district.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div>
                 <Label>Upazilla</Label>
-                <select
+                <Select
+                  onValueChange={(value) => {
+                    setSelectedUpazilla(value);
+                    setSelectedUnion("");
+                  }}
+                  defaultValue="select"
                   value={selectedUpazilla}
-                  onChange={(e) => setSelectedUpazilla(e.target.value)}
-                  className="w-full p-2 border rounded"
                 >
-                  <option value="">Select Upazilla</option>
-                  {upazillas.map((upazilla) => (
-                    <option key={upazilla.id} value={upazilla.id}>
-                      {upazilla.name}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="select">Select Upazilla</SelectItem>
+                    {upazillas.map((upazilla) => (
+                      <SelectItem key={upazilla.id} value={upazilla.id}>
+                        {upazilla.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div>
                 <Label>Union</Label>
-                <select
+                <Select
+                  onValueChange={(value) => {
+                    setSelectedUnion(value);
+                  }}
+                  defaultValue="select"
                   value={selectedUnion}
-                  onChange={(e) => setSelectedUnion(e.target.value)}
-                  className="w-full p-2 border rounded"
                 >
-                  <option value="">Select Union</option>
-                  {unions.map((union) => (
-                    <option key={union.id} value={union.id}>
-                      {union.name}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="select">Select Union</SelectItem>
+                    {unions.map((union) => (
+                      <SelectItem key={union.id} value={union.id}>
+                        {union.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               <Button

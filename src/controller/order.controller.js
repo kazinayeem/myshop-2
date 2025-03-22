@@ -67,7 +67,8 @@ export const getOrderByUserId = async (req, res) => {
     const orders = await Order.find({ userId: req.params.id }).populate(
       "products.productId",
       "name price buyingPrice"
-    );
+    ).populate("address");
+   
 
     res.status(200).json(orders);
   } catch (error) {

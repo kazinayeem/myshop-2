@@ -1,6 +1,8 @@
 "use client";
+import { useGetBrandsQuery } from "@/api/BrandApi";
 import { useGetOrdersQuery } from "@/api/orderApi";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -10,6 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { generateInvoicePDF } from "@/lib/generateInvoice";
 import { useAppSelector } from "@/lib/hooks";
 import { format } from "date-fns";
 import Link from "next/link";
@@ -22,6 +25,16 @@ interface Order {
   paymentStatus: string;
   createdAt: string;
   paymentMethod: string;
+  address: {
+    addressLine1: string;
+    division: string;
+    district: string;
+    upazilla: string;
+    union: string;
+    zipCode: string;
+    country: string;
+    phoneNumber: string;
+  };
 }
 interface Product {
   _id: string;
@@ -35,7 +48,33 @@ interface Product {
 
 export default function Page() {
   const user = useAppSelector((state) => state.auth.user);
-  const { data, isLoading, isError } = useGetOrdersQuery(user?.id);
+  const { data: userdata, isLoading, isError } = useGetOrdersQuery(user?.id);
+
+  const { data = [] } = useGetBrandsQuery({});
+  const downloadInvoice = (order: Order) => {
+    if (!order.address) {
+      alert("Order address is missing!");
+      return;
+    }
+
+    generateInvoicePDF({
+      logo: data[0]?.logo || "",
+      brandName: data[0]?.name || "My Shop",
+      name: user?.username || "Customer",
+      email: user?.email || "",
+      userPhone: order.address.phoneNumber || "",
+      order,
+      address: order.address,
+      totalPrice: order.totalPrice,
+      transactionId: "N/A",
+      paymentMethod: order.paymentMethod || "Unknown",
+      paidAmount: order.totalPrice,
+      date: order.createdAt,
+      deliveryCharge: 0,
+      variant: order.products.map(() => "N/A"),
+      color: order.products.map(() => "N/A"),
+    });
+  };
 
   if (isLoading) {
     return (
@@ -53,7 +92,7 @@ export default function Page() {
     );
   }
 
-  if (!data || data.length === 0) {
+  if (!userdata || userdata.length === 0) {
     return (
       <div className="flex justify-center items-center h-screen text-lg">
         No orders found.
@@ -83,65 +122,73 @@ export default function Page() {
                   <TableHead>Payment Status</TableHead>
                   <TableHead>Payment Method</TableHead>
                   <TableHead>Created At</TableHead>
+                  <TableHead>Download Invoice</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {data.map((order: Order) => (
-                  <TableRow key={order._id} className="text-sm md:text-base">
-                    <TableCell>{order._id}</TableCell>
-                    <TableCell>
-                      <Badge
-                        className={`px-2 py-1 text-xs md:text-sm ${
-                          order.status === "pending"
-                            ? "bg-yellow-500"
-                            : order.status === "shipped"
-                            ? "bg-blue-500"
-                            : "bg-green-500"
-                        }`}
-                      >
-                        {order.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>${order.totalPrice.toFixed(2)}</TableCell>
-                    <TableCell>
-                      <ul className="list-disc pl-4 text-xs md:text-sm">
-                        {order.products.map((prod) => (
-                          <Link
-                            key={prod._id}
-                            href={`/product/${prod.productId._id}`}
-                          >
-                            <li key={prod._id}>
-                              <span className="font-semibold">
-                                {prod.productId?.name.slice(0, 30) ??
-                                  "Unknown Product"}
-                              </span>
-                              {"....."}- ${prod.price} (x{prod.quantity})
-                            </li>
-                          </Link>
-                        ))}
-                      </ul>
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        className={`px-2 py-1 text-xs md:text-sm ${
-                          order.paymentStatus === "pending"
-                            ? "bg-yellow-500"
-                            : "bg-green-500"
-                        }`}
-                      >
-                        {order.paymentStatus}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Badge className="px-2 py-1 text-xs md:text-sm bg-gray-500">
-                        {order.paymentMethod}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      {format(new Date(order.createdAt), "PPP")}
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {userdata.map((order: Order) => {
+                  return (
+                    <TableRow key={order._id} className="text-sm md:text-base">
+                      <TableCell>{order._id}</TableCell>
+                      <TableCell>
+                        <Badge
+                          className={`px-2 py-1 text-xs md:text-sm ${
+                            order.status === "pending"
+                              ? "bg-yellow-500"
+                              : order.status === "shipped"
+                              ? "bg-blue-500"
+                              : "bg-green-500"
+                          }`}
+                        >
+                          {order.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>{order.totalPrice.toFixed(2)}</TableCell>
+                      <TableCell>
+                        <ul className="list-disc pl-4 text-xs md:text-sm">
+                          {order.products.map((prod) => (
+                            <Link
+                              key={prod._id}
+                              href={`/product/${prod.productId._id}`}
+                            >
+                              <li key={prod._id}>
+                                <span className="font-semibold">
+                                  {prod.productId?.name.slice(0, 20) ??
+                                    "Unknown Product"}
+                                </span>
+                                {"....."}- {prod.price} (x{prod.quantity})
+                              </li>
+                            </Link>
+                          ))}
+                        </ul>
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          className={`px-2 py-1 text-xs md:text-sm ${
+                            order.paymentStatus === "pending"
+                              ? "bg-yellow-500"
+                              : "bg-green-500"
+                          }`}
+                        >
+                          {order.paymentStatus}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge className="px-2 py-1 text-xs md:text-sm bg-gray-500">
+                          {order.paymentMethod}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        {format(new Date(order.createdAt), "PPP")}
+                      </TableCell>
+                      <TableCell>
+                        <Button onClick={() => downloadInvoice(order)}>
+                          Download
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           </div>

@@ -26,7 +26,7 @@ export const addressApi = createApi({
         url: `addresses/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: (result, error, id) => [{ type: "address", id }],
+      invalidatesTags: ["address"],
     }),
     updateAddress: builder.mutation({
       query: ({ id, ...updatedAddress }) => ({

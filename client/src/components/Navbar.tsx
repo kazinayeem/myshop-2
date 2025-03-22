@@ -2,12 +2,13 @@
 import { Search } from "lucide-react";
 import { FaHeart, FaShoppingCart, FaBars } from "react-icons/fa";
 import { CiLogin } from "react-icons/ci";
-import { CgProfile } from "react-icons/cg";
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/legacy/image";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { logout } from "@/reducer/authReducer";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,6 +34,10 @@ export default function Navbar() {
     router.push("/");
   };
 
+  const changeAllproducts = () => {
+    setMenuOpen(false);
+    router.push("/product");
+  };
   return (
     <nav className="flex justify-between items-center px-10 py-4 shadow-md bg-white relative">
       <div className="flex items-center space-x-2">
@@ -85,6 +90,9 @@ export default function Navbar() {
       <div className="flex items-center space-x-4">
         <div className="relative hidden md:block">
           <input
+            onFocus={changeAllproducts}
+            onBlur={() => setMenuOpen(false)}
+            onChange={changeAllproducts}
             type="text"
             placeholder="What are you looking for?"
             className="border px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-gray-300 w-64"
@@ -96,7 +104,10 @@ export default function Navbar() {
         {isLoggedIn ? (
           <DropdownMenu>
             <DropdownMenuTrigger className="focus:outline-none">
-              <CgProfile size={30} className="cursor-pointer" />
+              <Avatar>
+                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="end"

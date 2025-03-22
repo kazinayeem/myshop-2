@@ -1,6 +1,14 @@
 "use client";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { RootState } from "@/lib/store";
 import {
@@ -79,7 +87,7 @@ export default function Page() {
             <tr className="bg-gray-100">
               <th className="p-3 border">Product</th>
               <th className="p-3 border">Price</th>
-              <th className="p-3 border">Size</th>
+              <th className="p-3 border">Size/Variant</th>
               <th className="p-3 border">Color</th>
               <th className="p-3 border">Quantity</th>
               <th className="p-3 border">Subtotal</th>
@@ -144,7 +152,7 @@ export default function Page() {
                   </td>
 
                   <td className="p-3 border">
-                    ${(item.price * item.quantity).toFixed(2)}
+                    {(item.price * item.quantity).toFixed(2)}
                   </td>
                   <td className="text-center">
                     <Button
@@ -162,7 +170,7 @@ export default function Page() {
         </table>
         <div className="flex flex-col md:flex-row justify-between mt-6 border-t pt-4 gap-4">
           <div className="flex flex-col md:flex-row gap-2 md:items-center">
-            <input
+            <Input
               value={copun}
               onChange={handleCouponChange}
               type="text"
@@ -170,12 +178,15 @@ export default function Page() {
               className="border p-2 rounded flex-grow md:max-w-xs"
             />
             <Button
+              disabled={cartItems.length === 0 || copun.length === 0}
+              variant="outline"
               onClick={handleApplyCoupon}
               className="bg-red-500 text-white w-full md:w-auto"
             >
               Apply Coupon
             </Button>
           </div>
+          {/* give ints copun */}
 
           <div className="text-right">
             <p className="text-lg font-semibold">
@@ -190,19 +201,23 @@ export default function Page() {
               )}
 
             {/* select shipping fees option if dhaka 60 and outside dhaak 120 */}
-            <select
-              className="border p-2 rounded mt-2"
-              value={Shipping}
-              required
-              onChange={(e) => {
-                setShipping(Number(e.target.value));
-                dispatch(setShippingPrice(Number(e.target.value)));
+            <Select
+              defaultValue="0"
+              onValueChange={(value) => {
+                setShipping(Number(value));
+                dispatch(setShippingPrice(Number(value)));
               }}
             >
-              <option value={0}>Select Shipping Fees</option>
-              <option value={60}>Inside Dhaka - 60</option>
-              <option value={120}>Outside Dhaka - 120</option>
-            </select>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Theme" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="0">Select Shipping</SelectItem>
+                <SelectItem value="60">Inside Dhaka - 60</SelectItem>
+                <SelectItem value="120">Outside Dhaka - 120</SelectItem>
+              </SelectContent>
+            </Select>
+
             <p className="text-lg font-semibold mt-2">Shipping: {Shipping}</p>
 
             <p className="text-xl font-bold">

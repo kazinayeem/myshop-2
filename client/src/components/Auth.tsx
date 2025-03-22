@@ -16,9 +16,9 @@ const AuthPage = () => {
   const router = useRouter();
   const [isLogin, setIsLogin] = useState(true);
   const [form, setForm] = useState({
-    email: "user1@gmail.com",
+    email: "",
     username: "",
-    password: "password123",
+    password: "",
   });
   const [loading, setLoading] = useState(false);
 
