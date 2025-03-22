@@ -13,7 +13,6 @@ export default function TotalSaleandProfite({ startDate, endDate }) {
   if (isError)
     return <p className="text-center text-red-500">Error loading orders.</p>;
 
-  // Ensure orders is an array and has data
   const calculateFinancials = (orders) => {
     if (!Array.isArray(orders))
       return { totalSales: 0, totalProfit: 0, totalLoss: 0 };
@@ -26,11 +25,23 @@ export default function TotalSaleandProfite({ startDate, endDate }) {
       if (Array.isArray(order.products)) {
         order.products.forEach((product) => {
           if (product.productId) {
-            const costPrice = product.productId.buyingPrice * product.quantity;
-            const sellingPrice = product.price * product.quantity;
-            const profitOrLoss = sellingPrice - costPrice;
+            let costPrice = product.productId.buyingPrice * product.quantity;
+            let sellingPrice = product.price * product.quantity;
 
+            // Check if the product has a selected price variant
+            if (product.productId.priceByVariant && product.variant) {
+              const selectedVariant = product.productId.priceByVariant.find(
+                (v) => v.value === product.variant
+              );
+              if (selectedVariant) {
+                costPrice = selectedVariant.buyingPrice * product.quantity;
+                sellingPrice = selectedVariant.price * product.quantity;
+              }
+            }
+
+            const profitOrLoss = sellingPrice - costPrice;
             totalSales += sellingPrice;
+
             if (profitOrLoss > 0) {
               totalProfit += profitOrLoss;
             } else {

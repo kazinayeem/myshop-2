@@ -21,6 +21,7 @@ interface Order {
   products: Product[];
   paymentStatus: string;
   createdAt: string;
+  paymentMethod: string;
 }
 interface Product {
   _id: string;
@@ -80,6 +81,7 @@ export default function Page() {
                   <TableHead>Total Price</TableHead>
                   <TableHead>Products</TableHead>
                   <TableHead>Payment Status</TableHead>
+                  <TableHead>Payment Method</TableHead>
                   <TableHead>Created At</TableHead>
                 </TableRow>
               </TableHeader>
@@ -128,6 +130,11 @@ export default function Page() {
                         }`}
                       >
                         {order.paymentStatus}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge className="px-2 py-1 text-xs md:text-sm bg-gray-500">
+                        {order.paymentMethod}
                       </Badge>
                     </TableCell>
                     <TableCell>

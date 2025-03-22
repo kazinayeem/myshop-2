@@ -7,7 +7,6 @@ import User from "../model/user.model.js";
 export const createOrder = async (req, res) => {
   try {
     const newOrder = new Order(req.body);
-
     const savedOrder = await newOrder.save();
     const updatedUser = await User.findByIdAndUpdate(
       req.body.userId,
@@ -53,7 +52,7 @@ export const getAllOrders = async (req, res) => {
     const orders = await Order.find(filter)
       .sort({ createdAt: -1 })
       .populate("userId", "username email")
-      .populate("products.productId", "name price buyingPrice")
+      .populate("products.productId")
       .populate("address");
 
     res.status(200).json(orders);

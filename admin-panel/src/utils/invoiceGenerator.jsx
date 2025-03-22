@@ -38,7 +38,7 @@ export const generateInvoicePDF = ({
   doc.setFontSize(10);
   doc.text(`Customer: ${name} | ${email} | ${userPhone}`, 14, 50);
   doc.text(
-    `Address: ${address?.addressLine1}, ${address?.city} - ${address?.zipCode}`,
+    `Address: ${address?.addressLine1}, ${address?.division} - ${address?.district} - ${address?.upazilla} - ${address?.union} - ${address?.zipCode} - ${address?.country} - ${address?.phoneNumber}`,
     14,
     55
   );
@@ -63,8 +63,8 @@ export const generateInvoicePDF = ({
     variant?.[index] || "N/A",
     color?.[index] || "N/A",
     product.quantity,
-    `${takaSign()} ${product.price.toFixed(2)}`,
-    `${takaSign()} ${(product.quantity * product.price).toFixed(2)}`,
+    `${product.price.toFixed(2)}`,
+    `${(product.quantity * product.price).toFixed(2)}`,
   ]);
 
   // Generate Table
@@ -81,19 +81,16 @@ export const generateInvoicePDF = ({
 
   // Total Amount
   doc.setFontSize(12);
-  doc.text(`Subtotal: ${takaSign()} ${totalPrice.toFixed(2)}`, 14, finalY);
+  doc.text(`Subtotal: ${totalPrice.toFixed(2)}`, 14, finalY);
   finalY += 6;
-  doc.text(
-    `Delivery Charge: ${takaSign()} ${deliveryCharge.toFixed(2)}`,
-    14,
-    finalY
-  );
+  doc.text(`Delivery Charge: ${deliveryCharge.toFixed(2)}`, 14, finalY);
   finalY += 6;
-  doc.text(
-    `Total: ${takaSign()} ${(totalPrice + deliveryCharge).toFixed(2)}`,
-    14,
-    finalY
-  );
+  doc.text(`Total: ${(totalPrice + deliveryCharge).toFixed(2)}`, 14, finalY);
+  // if due amount is there
+  if (order.dueAmount) {
+    finalY += 6;
+    doc.text(`Due Amount:${order.dueAmount.toFixed(2)}`, 14, finalY);
+  }
 
   // Footer
   const footerY = doc.internal.pageSize.height - 30;

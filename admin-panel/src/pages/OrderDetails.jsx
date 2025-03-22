@@ -180,21 +180,36 @@ const OrderDetails = () => {
               </span>
             </p>
             <p className="text-gray-600">
-              City:{" "}
-              <span className="font-medium">{order.address.city || "N/A"}</span>
-            </p>
-            <p className="text-gray-600">
-              State:{" "}
+              division:{" "}
               <span className="font-medium">
-                {order.address.state || "N/A"}
+                {order.address.division || "N/A"}
               </span>
             </p>
             <p className="text-gray-600">
-              Zip:{" "}
+              district:{" "}
+              <span className="font-medium">
+                {order.address.district || "N/A"}
+              </span>
+            </p>
+            <p className="text-gray-600">
+              upazilla:{" "}
+              <span className="font-medium">
+                {order.address.upazilla || "N/A"}
+              </span>
+            </p>
+            <p className="text-gray-600">
+              union:{" "}
+              <span className="font-medium">
+                {order.address.union || "N/A"}
+              </span>
+            </p>
+            <p className="text-gray-600">
+              zipCode:{" "}
               <span className="font-medium">
                 {order.address.zipCode || "N/A"}
               </span>
             </p>
+
             <p className="text-gray-600">
               Order Number:{" "}
               <span className="font-medium">

@@ -1,5 +1,5 @@
-import PropTypes from "prop-types";
 import { Disclosure } from "@headlessui/react";
+import PropTypes from "prop-types";
 import { takaSign } from "../utils/Currency";
 
 const OrderDetails = ({ orders }) => {
@@ -25,7 +25,7 @@ const OrderDetails = ({ orders }) => {
                 <Disclosure.Panel className="p-4 bg-gray-50 rounded-lg">
                   <h3 className="font-semibold mb-2">Products:</h3>
                   <ul className="list-disc list-inside ml-4">
-                    {order.products.map((product) => (
+                    {order?.products?.map((product) => (
                       <li
                         key={product._id}
                         className="mt-2 list-none flex flex-row justify-between items-center bg-white p-2 rounded-lg shadow-md border border-gray-200"
@@ -34,13 +34,12 @@ const OrderDetails = ({ orders }) => {
                           <>
                             <p>Product ID: {product.productId._id}</p>
                             <p className="font-semibold">
-                              {product.productId.name}
+                              {product.productId.name.slice(0, 20)}...
                             </p>
                             <p>Quantity: {product.quantity}</p>
-                            <p>
-                              Buying Price: {takaSign()}
-                              {product.productId.buyingPrice.toFixed(2)}
-                            </p>
+                            <p>Size: {product.variant}</p>
+                            <p>Color: {product.color || "N/A"}</p>
+                            <p>{product.productId.buyingPrice.toFixed(2)}</p>
                             <p>
                               Selling Price: {takaSign()}
                               {product.price.toFixed(2)}

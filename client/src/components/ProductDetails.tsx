@@ -38,6 +38,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
     [key: string]: Variant;
   }>({});
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const [selectedStock, setSelectedStock] = useState<number>(0);
 
   useEffect(() => {
     if (params.id) {
@@ -55,9 +56,12 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
               }
             });
             setSelectedVariants(initialVariants);
+            setSelectedStock(Object.values(initialVariants)[0]?.stock || 0);
             setCurrentImage(
               Object.values(initialVariants)[0]?.image || data.image[0]
             );
+          } else {
+            setSelectedStock(data.stock);
           }
         })
         .catch((error) => console.error("Error fetching product:", error));
@@ -72,21 +76,14 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
   );
   const finalPrice =
     selectedVariantPrice > 0 ? selectedVariantPrice : product.discountedPrice;
-  const selectedStock = Object.values(selectedVariants).reduce(
-    (minStock, v) => Math.min(minStock, v.stock),
-    product.stock
-  );
 
-  const addtoCart = () => {
-    const variantKey = Object.keys(selectedVariants)[0];
-    const variantValue = selectedVariants[variantKey]?.value;
-    console.log("Selected Variants:", variantValue);
-
+  const addToCart = () => {
     if (selectedStock <= 0) {
       alert("Out of stock");
       return;
     }
-
+    const variantKey = Object.keys(selectedVariants)[0];
+    const variantValue = selectedVariants[variantKey]?.value;
     dispatch(
       addItem({
         productId: product._id,
@@ -101,21 +98,8 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
     );
   };
 
-  const buyNow = () => {
-    const productToBuy = {
-      productId: product._id,
-      quantity,
-      selectedVariants,
-      color: selectedColor,
-    };
-    console.log("Product to buy:", productToBuy);
-
-    alert(JSON.stringify(productToBuy, null, 2));
-  };
-
   return (
     <div className="container mx-auto p-4 md:p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-      {/* Left Side - Product Images */}
       <div className="flex flex-col items-center w-full">
         <div className="border rounded-lg p-4 w-full max-w-[400px]">
           {currentImage && (
@@ -149,12 +133,10 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
           ))}
         </div>
       </div>
-
-      {/* Right Side - Product Details */}
       <div className="w-full">
         <h1 className="text-2xl font-bold">{product.name}</h1>
         <div className="text-2xl font-semibold text-gray-900">
-          ${finalPrice}{" "}
+          {finalPrice}{" "}
           {product.discountPercent > 0 && selectedVariantPrice === 0 && (
             <span className="text-gray-500 line-through text-lg">
               ${product.price}
@@ -162,7 +144,6 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
           )}
         </div>
 
-        {/* Color Selection */}
         {product.color && product.color.length > 0 && (
           <div className="mt-4">
             <label className="block font-medium text-gray-700">COLOR:</label>
@@ -183,7 +164,6 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
           </div>
         )}
 
-        {/* Dynamic Variant Selection */}
         {product.priceByVariant && product.priceByVariant.length > 0 && (
           <div className="mt-4 space-y-4">
             {Array.from(new Set(product.priceByVariant.map((v) => v.name))).map(
@@ -204,6 +184,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
                                 ...prev,
                                 [variant.name]: variant,
                               }));
+                              setSelectedStock(variant.stock);
                               setCurrentImage(
                                 variant.image || product.image[0]
                               );
@@ -225,6 +206,13 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
           </div>
         )}
 
+        <p
+          className={`mt-2 ${
+            selectedStock > 0 ? "text-green-500" : "text-red-500"
+          }`}
+        >
+          In stock: {selectedStock} items
+        </p>
         <div className="flex items-center justify-center border p-2 rounded-lg w-40">
           <Button
             variant="ghost"
@@ -237,20 +225,15 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
             <ChevronRight size={18} />
           </Button>
         </div>
-
         <div className="mt-4 flex items-center space-x-4">
-          <Button variant={"destructive"} onClick={buyNow}>
+          <Button variant={"destructive"} onClick={addToCart}>
             Buy Now
           </Button>
-          <Button variant={"secondary"} onClick={addtoCart}>
+          <Button variant={"secondary"} onClick={addToCart}>
             Add to cart
           </Button>
         </div>
       </div>
-      <div
-        className="mt-4 text-gray-700"
-        dangerouslySetInnerHTML={{ __html: product.description }}
-      />
     </div>
   );
 }

@@ -12,6 +12,7 @@ import {
 import { Minus, Plus } from "lucide-react";
 import Image from "next/legacy/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { CiSquareRemove } from "react-icons/ci";
 
@@ -53,6 +54,21 @@ export default function Page() {
     } else {
       alert("Invalid coupon code");
     }
+  };
+
+  const router = useRouter();
+  const processToCheckout = () => {
+    if (cartItems.length === 0) {
+      alert(
+        "Your cart is empty. Please add items to your cart before checking out."
+      );
+      return;
+    }
+    if (Shipping === 0) {
+      alert("Please select a shipping option.");
+      return;
+    }
+    router.push("/cart/checkout");
   };
   return (
     <div className="container mx-auto px-4 py-8">
@@ -163,7 +179,7 @@ export default function Page() {
 
           <div className="text-right">
             <p className="text-lg font-semibold">
-              Subtotal: ${totalPrice.toFixed(2)}
+              Subtotal: {totalPrice.toFixed(2)}
             </p>
             {/* if copund show this */}
             {afterDiscountPrice !== undefined &&
@@ -177,6 +193,7 @@ export default function Page() {
             <select
               className="border p-2 rounded mt-2"
               value={Shipping}
+              required
               onChange={(e) => {
                 setShipping(Number(e.target.value));
                 dispatch(setShippingPrice(Number(e.target.value)));
@@ -201,14 +218,14 @@ export default function Page() {
                 ? (afterDiscountPrice + Shipping).toFixed(2)
                 : (totalPrice + Shipping).toFixed(2)}
             </p>
-            <Link href="/cart/checkout" passHref>
-              <Button
-                disabled={cartItems.length === 0}
-                className="bg-red-500 text-white w-full md:w-auto mt-2"
-              >
-                Process to checkout
-              </Button>
-            </Link>
+
+            <Button
+              onClick={processToCheckout}
+              disabled={cartItems.length === 0}
+              className="bg-red-500 text-white w-full md:w-auto mt-2"
+            >
+              Process to checkout
+            </Button>
           </div>
         </div>
       </div>

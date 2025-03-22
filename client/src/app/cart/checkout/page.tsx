@@ -78,7 +78,7 @@ export default function CheckoutPage() {
         });
         setTimeout(() => {
           router.push("/user/order");
-        }, 2000);
+        }, 3000);
       }
     } catch (error) {
       console.error("Error placing order:", error);
@@ -133,7 +133,7 @@ export default function CheckoutPage() {
             <tr className="bg-gray-100">
               <th className="p-3 border">Product</th>
               <th className="p-3 border">Price</th>
-              <th className="p-3 border">Size</th>
+              <th className="p-3 border">Size/Variant</th>
               <th className="p-3 border">Color</th>
               <th className="p-3 border">Quantity</th>
               <th className="p-3 border">Subtotal</th>
@@ -161,12 +161,12 @@ export default function CheckoutPage() {
                     )}
                     <span>{item.name.slice(0, 20)}...</span>
                   </td>
-                  <td className="p-3 border">${item.price.toFixed(2)}</td>
+                  <td className="p-3 border">{item.price.toFixed(2)}</td>
                   <td className="p-3 border">{item.size}</td>
                   <td className="p-3 border">{item.color || "NO"}</td>
                   <td className="p-3 border">{item.quantity}</td>
                   <td className="p-3 border">
-                    ${(item.price * item.quantity).toFixed(2)}
+                    {(item.price * item.quantity).toFixed(2)}
                   </td>
                 </tr>
               ))
