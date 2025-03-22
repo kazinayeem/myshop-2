@@ -12,8 +12,8 @@ console.log("MongoDB URL:", mongoURL);
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(mongoURL);
-    console.log(`MongoDB Connected: ${mongoURL}`);
+    await mongoose.connect(atlasUrl);
+    console.log(`MongoDB Connected: ${atlasUrl}`);
   } catch (error) {
     console.error("MongoDB Connection Failed:", error);
     process.exit(1);
