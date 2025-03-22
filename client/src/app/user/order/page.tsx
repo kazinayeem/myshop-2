@@ -25,6 +25,8 @@ interface Order {
   paymentStatus: string;
   createdAt: string;
   paymentMethod: string;
+  deliveryCharge: number;
+  transactionId?: string;
   address: {
     addressLine1: string;
     division: string;
@@ -42,6 +44,8 @@ interface Product {
     _id: string;
     name: string;
   };
+  variant?: string;
+  color?: string;
   quantity: number;
   price: number;
 }
@@ -66,13 +70,13 @@ export default function Page() {
       order,
       address: order.address,
       totalPrice: order.totalPrice,
-      transactionId: "N/A",
+      transactionId: order.transactionId || "N/A",
       paymentMethod: order.paymentMethod || "Unknown",
       paidAmount: order.totalPrice,
       date: order.createdAt,
-      deliveryCharge: 0,
-      variant: order.products.map(() => "N/A"),
-      color: order.products.map(() => "N/A"),
+      deliveryCharge: order.deliveryCharge || 0,
+      variant: order.products.map((product) => product.variant || "N/A"),
+      color: order.products.map((product) => product.color || "N/A"),
     });
   };
 

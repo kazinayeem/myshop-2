@@ -4,10 +4,11 @@ import PropTypes from "prop-types";
 
 export default function TotalSaleandProfite({ startDate, endDate }) {
   const {
-    data: orders,
+    data: order,
     isLoading,
     isError,
   } = useGetOrdersQuery(startDate && endDate ? { startDate, endDate } : {});
+  const orders = order && order.orders ? order.orders : [];
 
   if (isLoading) return <p className="text-center text-gray-600">Loading...</p>;
   if (isError)

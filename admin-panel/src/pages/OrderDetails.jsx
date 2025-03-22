@@ -141,7 +141,7 @@ const OrderDetails = () => {
             {/* varient */}
             {product?.variant && (
               <p className="text-gray-600">
-                Variant: <span className="font-medium">{product.variant}</span>
+               Size / Variant: <span className="font-medium">{product.variant}</span>
               </p>
             )}
             {/* color */}

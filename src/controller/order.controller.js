@@ -1,5 +1,6 @@
 import Order from "../model/order.model.js";
 import User from "../model/user.model.js";
+import mongoose from "mongoose";
 
 // order controller
 
@@ -30,45 +31,60 @@ export const createOrder = async (req, res) => {
 export const getAllOrders = async (req, res) => {
   try {
     const { startDate, endDate, orderId } = req.query;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 50;
+    const skip = (page - 1) * limit;
+
     let filter = {};
 
+    // Date filtering
     if (startDate && endDate) {
       filter.createdAt = {
         $gte: new Date(startDate),
         $lte: new Date(endDate),
       };
     } else {
+      // Default: Show only this month's orders
       const now = new Date();
-      const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-      filter.createdAt = { $gte: firstDayOfMonth };
+      filter.createdAt = {
+        $gte: new Date(now.getFullYear(), now.getMonth(), 1),
+      };
     }
 
+    // Order ID search (supports both exact and partial search)
     if (orderId) {
-      filter._id = orderId;
+      if (mongoose.Types.ObjectId.isValid(orderId)) {
+        filter._id = orderId;
+      } else {
+        filter._id = { $regex: orderId, $options: "i" }; 
+      }
     }
 
-    // new order filter
-
+    // Fetch orders
     const orders = await Order.find(filter)
       .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
       .populate("userId", "username email")
       .populate("products.productId")
       .populate("address");
 
-    res.status(200).json(orders);
+    // Count total matching orders
+    const totalOrders = await Order.countDocuments();
+
+    res.status(200).json({ orders, totalOrders });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Error fetching orders:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
 // order by user id
 export const getOrderByUserId = async (req, res) => {
   try {
-    const orders = await Order.find({ userId: req.params.id }).populate(
-      "products.productId",
-      "name price buyingPrice"
-    ).populate("address");
-   
+    const orders = await Order.find({ userId: req.params.id })
+      .populate("products.productId", "name price buyingPrice")
+      .populate("address");
 
     res.status(200).json(orders);
   } catch (error) {

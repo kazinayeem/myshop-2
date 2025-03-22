@@ -5,7 +5,7 @@ import { takaSign } from "../utils/Currency";
 const OrderDetails = ({ orders }) => {
   return (
     <div className="bg-white shadow-lg rounded-lg p-6 w-full min-w-full max-w-3xl mx-auto">
-      <h2 className="text-xl font-bold mb-4">Order Details</h2>
+      <h2 className="text-xl font-bold mb-4">Order Details {orders?.length}</h2>
       {orders.map((order) => (
         <Disclosure key={order._id} as="div">
           {({ open }) => (
@@ -15,9 +15,7 @@ const OrderDetails = ({ orders }) => {
                   <div className="flex justify-between w-full">
                     <p className="font-semibold">Order ID: {order._id}</p>
                     <p className="text-blue-600 font-medium">{order.status}</p>
-                    <p className="font-medium">
-                      {takaSign()} {order.totalPrice.toFixed(2)}
-                    </p>
+                    <p className="font-medium">{order.totalPrice.toFixed(2)}</p>
                   </div>
                 </Disclosure.Button>
               </div>
@@ -39,7 +37,10 @@ const OrderDetails = ({ orders }) => {
                             <p>Quantity: {product.quantity}</p>
                             <p>Size: {product.variant}</p>
                             <p>Color: {product.color || "N/A"}</p>
-                            <p>{product.productId.buyingPrice.toFixed(2)}</p>
+                            <p>
+                              Buying Price :{" "}
+                              {product.productId.buyingPrice.toFixed(2)}
+                            </p>
                             <p>
                               Selling Price: {takaSign()}
                               {product.price.toFixed(2)}

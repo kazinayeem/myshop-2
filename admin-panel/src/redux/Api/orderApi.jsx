@@ -6,24 +6,28 @@ export const ordersApi = createApi({
   tagTypes: ["Orders"],
   endpoints: (builder) => ({
     getOrders: builder.query({
-      query: ({ startDate, endDate, orderId } = {}) => {
-        let queryParams = "";
+      query: ({ startDate, endDate, orderId, limit , page  } = {}) => {
+        const queryParams = new URLSearchParams();
 
         if (startDate && endDate) {
-          queryParams = `?startDate=${startDate}&endDate=${endDate}`;
+          queryParams.append("startDate", startDate);
+          queryParams.append("endDate", endDate);
         }
         if (orderId) {
-          queryParams = queryParams
-            ? `${queryParams}&orderId=${orderId}`
-            : `?orderId=${orderId}`;
+          queryParams.append("orderId", orderId);
         }
+        queryParams.append("limit", limit);
+        queryParams.append("page", page);
 
-        return `orders${queryParams}`;
+        return `orders?${queryParams.toString()}`;
       },
       providesTags: (result) =>
-        result
-          ? [...result.map(({ _id }) => ({ type: "Order", id: _id })), "Order"]
-          : ["Order"],
+        result?.orders
+          ? [
+              ...result.orders.map(({ _id }) => ({ type: "Orders", id: _id })),
+              "Orders",
+            ]
+          : ["Orders"],
     }),
 
     getordersById: builder.query({
@@ -37,7 +41,7 @@ export const ordersApi = createApi({
         method: "POST",
         body: neworders,
       }),
-      invalidatesTags: ["Orders"], // Ensure case consistency
+      invalidatesTags: ["Orders"],
     }),
 
     updateorders: builder.mutation({

@@ -3,49 +3,33 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import DatetoDateFilter from "../components/DatetoDateFilter";
 import Loading from "../components/Loading";
-import {
-  useGetOrdersQuery,
-  useUpdateordersMutation,
-} from "../redux/Api/orderApi";
+import { useGetOrdersQuery } from "../redux/Api/orderApi";
 
 export default function ShowAllOrders() {
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
+  const [limit, setLimit] = useState(20);
+  const [page, setPage] = useState(1);
+  const [searchId, setSearchId] = useState("");
   const navigate = useNavigate();
+
   const {
     data: orders,
     isLoading,
     isError,
     refetch,
-  } = useGetOrdersQuery(startDate && endDate ? { startDate, endDate } : {});
-  const [updateOrder] = useUpdateordersMutation();
-  const [selectedOrder, setSelectedOrder] = useState(null);
-  const [newStatus, setNewStatus] = useState("");
-  const [filterStatus, setFilterStatus] = useState("");
-  const [searchId, setSearchId] = useState("");
-
-  const handleUpdateStatus = async (orderId) => {
-    if (!newStatus) return;
-    try {
-      await updateOrder({ id: orderId, status: newStatus }).unwrap();
-      setSelectedOrder(null);
-      setNewStatus("");
-      refetch(); 
-    } catch (error) {
-      console.error("Failed to update order", error);
-    }
-  };
+  } = useGetOrdersQuery({
+    page,
+    limit,
+    ...(startDate && endDate ? { startDate, endDate } : {}),
+    ...(searchId ? { orderId: searchId } : {}),
+  });
 
   if (isLoading) return <Loading />;
   if (isError)
     return <p className="text-center text-red-500">Failed to fetch orders.</p>;
-  const filteredOrders = orders?.filter((order) => {
-    const statusFilter = !filterStatus || order.status === filterStatus;
-    const idFilter =
-      !searchId || order._id.toLowerCase().includes(searchId.toLowerCase());
 
-    return statusFilter && idFilter;
-  });
+  const totalPages = Math.ceil((orders?.totalOrders || 1) / limit);
 
   return (
     <motion.div
@@ -58,26 +42,8 @@ export default function ShowAllOrders() {
         All Orders
       </h2>
 
-      {/* Filter and Search */}
-      <div className="flex justify-between mb-4 ">
-        {/* Filter Dropdown */}
-        <select
-          value={filterStatus}
-          onChange={(e) => setFilterStatus(e.target.value)}
-          className="p-2 border rounded-md focus:ring focus:ring-blue-300"
-        >
-          <option value="">All Orders</option>
-          <option value="delivered">Delivered</option>
-          <option value="pending">Pending</option>
-          <option value="shipped">Shipped</option>
-          <option value="cancelled">Cancelled</option>
-          <option value="returned">Returned</option>
-          <option value="refunded">Refunded</option>
-          <option value="failed">Failed</option>
-          <option value="completed">Completed</option>
-          <option value="processing">Processing</option>
-        </select>
-
+      {/* Search & Filters */}
+      <div className="flex justify-between mb-4">
         {/* Search by Order ID */}
         <div className="flex items-center">
           <input
@@ -88,14 +54,40 @@ export default function ShowAllOrders() {
             className="p-2 border rounded-md mr-2"
           />
           <motion.button
-            className="bg-gray-500 text-white px-3 py-2 rounded-lg shadow-md hover:bg-gray-600 transition"
+            className="bg-blue-500 text-white px-3 py-2 rounded-lg shadow-md hover:bg-blue-600 transition"
             whileTap={{ scale: 0.95 }}
-            onClick={() => setSearchId("")}
+            onClick={() => refetch()}
           >
-            Clear Search
+            Search
           </motion.button>
+          <motion.button
+            className="bg-gray-500 text-white px-3 py-2 rounded-lg shadow-md hover:bg-gray-600 transition ml-2"
+            whileTap={{ scale: 0.95 }}
+            onClick={() => {
+              setSearchId("");
+              refetch();
+            }}
+          >
+            Clear
+          </motion.button>
+          {/* set limit */}
+          <select
+            value={limit}
+            onChange={(e) => {
+              setLimit(e.target.value);
+              setPage(1);
+              refetch();
+            }}
+            className="ml-4 p-2 border rounded-md"
+          >
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+            <option value={100}>100</option>
+          </select>
         </div>
       </div>
+
       <DatetoDateFilter
         endDate={endDate}
         setEndDate={setEndDate}
@@ -103,11 +95,12 @@ export default function ShowAllOrders() {
         setStartDate={setStartDate}
       />
 
+      {/* Orders Table */}
       <div className="overflow-x-auto">
         <table className="w-full border-collapse rounded-lg shadow-md overflow-hidden">
           <thead>
             <tr className="bg-blue-500 text-white">
-              <th className="p-3 text-left">Date :</th>
+              <th className="p-3 text-left">Date</th>
               <th className="p-3 text-left">Order ID</th>
               <th className="p-3">User</th>
               <th className="p-3">Products</th>
@@ -118,7 +111,7 @@ export default function ShowAllOrders() {
             </tr>
           </thead>
           <tbody>
-            {filteredOrders?.map((order) => (
+            {orders?.orders?.map((order) => (
               <motion.tr
                 key={order._id}
                 className="border-b transition hover:bg-gray-100"
@@ -126,80 +119,26 @@ export default function ShowAllOrders() {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3 }}
               >
-                <td className="p-3 text-gray-700 font-semibold">
-                  {new Date(order.createdAt).toLocaleString("en-US", {
-                    timeZone: "Asia/Dhaka",
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "2-digit",
-                  })}
+                <td className="p-3">
+                  {new Date(order.createdAt).toLocaleDateString()}
                 </td>
-                <td className="p-3 text-gray-700 font-semibold">{order._id}</td>
-                <td className="p-3 text-center">{order.userId?.username}</td>
-                <td className="p-3 text-center">
+                <td className="p-3">{order._id}</td>
+                <td className="p-3">{order.userId?.username}</td>
+                <td className="p-3">
                   {order.products.map((product) => (
-                    <div key={product._id} className="text-sm text-gray-700">
-                      {product.productId?.name.slice(0, 20)} ({product.quantity}
-                      ) - ({product.variant} - {product.color || "N/A"}) -{""}
+                    <div key={product._id}>
+                      {product.productId?.name.slice(0,25)}.. ({product.quantity})
                     </div>
                   ))}
                 </td>
-                <td className="p-3 text-center font-semibold">
-                  {order.totalPrice.toFixed(3)}
-                </td>
-                <td className="p-3 text-center text-blue-600 font-medium">
-                  {order.status}
-                </td>
-                <td className="p-3 text-center text-green-600 font-medium">
-                  {order.paymentStatus}
-                </td>
-                <td className="p-3 text-center">
-                  {selectedOrder === order._id ? (
-                    <div className="flex justify-center items-center gap-2">
-                      <select
-                        value={newStatus}
-                        onChange={(e) => setNewStatus(e.target.value)}
-                        className="p-2 border rounded-md focus:ring focus:ring-blue-300"
-                      >
-                        <option value="">Select Status</option>
-                        {[
-                          "pending",
-                          "shipped",
-                          "delivered",
-                          "cancelled",
-                          "returned",
-                          "refunded",
-                          "failed",
-                          "completed",
-                          "processing",
-                        ].map((status) => (
-                          <option key={status} value={status}>
-                            {status}
-                          </option>
-                        ))}
-                      </select>
-                      <motion.button
-                        onClick={() => handleUpdateStatus(order._id)}
-                        className="bg-blue-500 text-white px-3 py-2 rounded-lg shadow-md hover:bg-blue-600 transition"
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        Update
-                      </motion.button>
-                    </div>
-                  ) : (
-                    <motion.button
-                      onClick={() => setSelectedOrder(order._id)}
-                      className="bg-gray-500 text-white px-3 py-2 rounded-lg shadow-md hover:bg-gray-600 transition"
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      Change Status
-                    </motion.button>
-                  )}
-                  {/* See more */}
+                <td className="p-3">{order.totalPrice.toFixed(2)}</td>
+                <td className="p-3 text-blue-600">{order.status}</td>
+                <td className="p-3 text-green-600">{order.paymentStatus}</td>
+                <td className="p-3">
                   <motion.button
+                    onClick={() => navigate(`/dashboard/orders/${order._id}`)}
                     className="bg-green-500 text-white px-3 py-2 rounded-lg shadow-md hover:bg-green-600 transition ml-2"
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => navigate(`/dashboard/orders/${order._id}`)}
                   >
                     See More
                   </motion.button>
@@ -208,6 +147,35 @@ export default function ShowAllOrders() {
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Pagination */}
+      <div className="flex justify-between items-center mt-4">
+        <button
+          disabled={page <= 1}
+          onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+          className={`px-4 py-2 rounded-lg ${
+            page > 1
+              ? "bg-blue-500 text-white hover:bg-blue-600"
+              : "bg-gray-300 text-gray-600 cursor-not-allowed"
+          }`}
+        >
+          Previous
+        </button>
+        <span className="text-gray-700">
+          Page {page} of {totalPages}
+        </span>
+        <button
+          disabled={page >= totalPages}
+          onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+          className={`px-4 py-2 rounded-lg ${
+            page < totalPages
+              ? "bg-blue-500 text-white hover:bg-blue-600"
+              : "bg-gray-300 text-gray-600 cursor-not-allowed"
+          }`}
+        >
+          Next
+        </button>
       </div>
     </motion.div>
   );

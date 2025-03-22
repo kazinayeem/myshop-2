@@ -93,7 +93,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
         price: finalPrice,
         quantity: quantity,
         image: currentImage || product.image[0],
-        variantsName: variantKey,
+        variantsName: variantValue,
         size: variantValue,
         color: selectedColor || selectedVariants?.Color?.value,
       })

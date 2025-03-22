@@ -3,7 +3,8 @@ import { useGetOrdersQuery } from "../redux/Api/orderApi";
 import Loading from "./Loading";
 
 const OrderChart = () => {
-  const { data: orders, isLoading, isError } = useGetOrdersQuery();
+  const { data: order, isLoading, isError } = useGetOrdersQuery();
+  const orders = order && order.orders ? order.orders : [];
 
   if (isLoading) return <Loading />;
   if (isError) return <div>Error loading orders</div>;
