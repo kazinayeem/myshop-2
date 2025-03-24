@@ -1,11 +1,17 @@
+import Category from "../model/category.model.js";
 import SubCategory from "../model/subcategory.model.js";
 // create subcategory
 export const createSubCategory = async (req, res) => {
-
   try {
     const { name, image, categoryid } = req.body;
     const subcategory = new SubCategory({ category: categoryid, image, name });
     await subcategory.save();
+    // push category
+    await Category.findByIdAndUpdate(
+      categoryid,
+      { $push: { subcategories: subcategory._id } },
+      { new: true }
+    );
     return res.status(201).json(subcategory);
   } catch (error) {
     return res.status(500).json({ message: "Server Error" });
@@ -63,6 +69,12 @@ export const deleteSubCategory = async (req, res) => {
     if (!subcategory) {
       return res.status(404).json({ message: "SubCategory not found" });
     }
+    // remove subcategory from category
+    await Category.findByIdAndUpdate(
+      subcategory.category,
+      { $pull: { subcategories: req.params.id } },
+      { new: true }
+    );
     return res
       .status(200)
       .json({ message: "SubCategory deleted successfully" });
