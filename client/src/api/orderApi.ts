@@ -1,8 +1,21 @@
+import { get } from "@/app/actions";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const ordersApi = createApi({
   reducerPath: "ordersApi",
-  baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_SERVER_PORT }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: process.env.NEXT_PUBLIC_SERVER_PORT,
+
+    credentials: "same-origin",
+    headers: { "Content-Type": "application/json" },
+    prepareHeaders: async (headers) => {
+      const { token } = await get();
+      if (token) {
+        headers.set("Authorization", `${token}`);
+      }
+      return headers;
+    },
+  }),
   tagTypes: ["Orders"],
   endpoints: (builder) => ({
     getOrders: builder.query({

@@ -34,7 +34,7 @@ export default async function page({
     }
   );
   const data = await response.json();
-  console.log(data);
+
   if (!data) {
     return <div>Category not found</div>;
   }

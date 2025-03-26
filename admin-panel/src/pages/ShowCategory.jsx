@@ -5,16 +5,18 @@ import {
   useUpdateCategoryMutation,
 } from "../redux/Api/categoryApi";
 import { AgGridReact } from "ag-grid-react";
+import Swal from "sweetalert2";
 import CategoryModal from "../components/ShowporductModal";
 import Loading from "../components/Loading";
 
 export default function ShowCategory() {
-  const { data: categories, isLoading, isError } = useGetCategoriesQuery();
+  const {
+    data: categories,
+    isLoading,
+    isError,
+    refetch,
+  } = useGetCategoriesQuery(); 
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [editingCategory, setEditingCategory] = useState(null);
-  const [deletingCategory, setDeletingCategory] = useState(null);
-
-  // Using the update and delete mutations
   const [deleteCategory] = useDeleteCategoryMutation();
   const [updateCategory] = useUpdateCategoryMutation();
 
@@ -22,41 +24,87 @@ export default function ShowCategory() {
     setSelectedCategory(category);
   }, []);
 
-  const handleEditClick = (category) => {
-    setEditingCategory(category); // Open the edit modal with the selected category
-  };
 
-  const handleDeleteClick = (category) => {
-    setDeletingCategory(category); // Trigger delete confirmation
-  };
+  const handleEditClick = async (category) => {
+    const { value: formValues } = await Swal.fire({
+      title: "Edit Category",
+      html: `
+        <input id="swal-input-name" class="swal2-input" placeholder="Category Name" value="${
+          category.name
+        }">
+        <input id="swal-input-image" class="swal2-input" placeholder="Image URL" value="${
+          category.image || ""
+        }">
+      `,
+      showCancelButton: true,
+      confirmButtonText: "Update",
+      cancelButtonText: "Cancel",
+      preConfirm: () => {
+        const name = document.getElementById("swal-input-name").value;
+        const image = document.getElementById("swal-input-image").value;
 
-  const handleDeleteConfirm = async () => {
-    try {
-      await deleteCategory(deletingCategory.id); // Perform delete operation
-      setDeletingCategory(null); // Close the delete confirmation
-    } catch (error) {
-      console.error("Error deleting category:", error);
+        if (!name) {
+          Swal.showValidationMessage("Category name is required");
+          return false;
+        }
+
+        return { id: category._id, name, image };
+      },
+    });
+
+    if (formValues) {
+      try {
+        await updateCategory(formValues);
+        Swal.fire("Updated!", "Category has been updated.", "success");
+        refetch(); 
+      } catch (error) {
+        Swal.fire(
+          "Error!",
+          "Failed to update category.",
+          error.message,
+          "error"
+        );
+      }
     }
   };
 
-  const handleUpdateCategory = async (updatedCategory) => {
-    try {
-      await updateCategory(updatedCategory); // Update the category
-      setEditingCategory(null); // Close the edit modal
-    } catch (error) {
-      console.error("Error updating category:", error);
+ 
+  const handleDeleteClick = async (category) => {
+    const isConfirmed = await Swal.fire({
+      title: "Are you sure?",
+      text: `Delete category: ${category.name}?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (isConfirmed.isConfirmed) {
+      try {
+        await deleteCategory(category._id);
+        Swal.fire("Deleted!", "Category has been deleted.", "success"); 
+        refetch(); 
+      } catch (error) {
+        Swal.fire(
+          "Error!",
+          "Failed to delete category.",
+          error.message,
+          "error"
+        ); 
+      }
     }
   };
 
   const columnDefs = [
     {
       field: "name",
-      headerName: "Category Name", // Header for the category name column
+      headerName: "Category Name",
       sortable: true,
       filter: true,
     },
     {
-      headerName: "View Products", // Header for the view products column
+      headerName: "View Products",
       cellRenderer: (params) => (
         <button
           onClick={() => handleCategoryClick(params.data)}
@@ -81,9 +129,7 @@ export default function ShowCategory() {
       headerName: "Delete",
       cellRenderer: (params) => (
         <button
-          onClick={() => {
-            handleDeleteClick(params.data);
-          }}
+          onClick={() => handleDeleteClick(params.data)}
           className="bg-red-500 text-white px-3 py-1 rounded"
         >
           Delete
@@ -109,56 +155,6 @@ export default function ShowCategory() {
         onClose={() => setSelectedCategory(null)}
         category={selectedCategory}
       />
-      {/* Edit Modal */}
-      {editingCategory && (
-        <div className="modal">
-          <div className="modal-content">
-            <h2>Edit Category</h2>
-            <input
-              type="text"
-              defaultValue={editingCategory.name}
-              onChange={(e) =>
-                setEditingCategory({ ...editingCategory, name: e.target.value })
-              }
-            />
-            <button
-              onClick={() => {
-                handleUpdateCategory(editingCategory?._id);
-              }}
-              className="bg-green-500 text-white px-3 py-1 rounded"
-            >
-              Save
-            </button>
-            <button
-              onClick={() => setEditingCategory(null)}
-              className="bg-gray-500 text-white px-3 py-1 rounded"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
-      {/* Delete Confirmation */}
-      {deletingCategory && (
-        <div className="modal">
-          <div className="modal-content">
-            <h2>Are you sure you want to delete this category?</h2>
-            <p>{deletingCategory.name}</p>
-            <button
-              onClick={handleDeleteConfirm}
-              className="bg-red-500 text-white px-3 py-1 rounded"
-            >
-              Confirm
-            </button>
-            <button
-              onClick={() => setDeletingCategory(null)}
-              className="bg-gray-500 text-white px-3 py-1 rounded"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

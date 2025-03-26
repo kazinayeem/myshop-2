@@ -3,13 +3,12 @@ import jwt from "jsonwebtoken";
 import User from "../model/user.model.js";
 const checkLogin = async (req, res, next) => {
   try {
-    const token = req.cookies.token || req.headers.authorization.split(" ")[1];
+    const token = req.cookies.token || req.headers.authorization;
     if (!token) {
       return res.status(401).json({ message: "Unauthorized" });
     }
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, "3433erwrewrwr");
     const user = await User.findById(decoded.id);
-
     if (!user) {
       return res.status(401).json({ message: "Unauthorized" });
     }

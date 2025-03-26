@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 import { useLoginMutation } from "../../redux/Api/userApi";
 import { setUser } from "../../redux/slice/authSclice";
-import { useNavigate } from "react-router";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
   const [login, { isLoading, isError, error }] = useLoginMutation();
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("user@gmail.com");
-  const [password, setPassword] = useState("password123");
+  const [email, setEmail] = useState("admin@gmail.com");
+  const [password, setPassword] = useState("123456");
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -10,7 +10,7 @@ export const createOrder = async (req, res) => {
     const newOrder = new Order(req.body);
     const savedOrder = await newOrder.save();
     const updatedUser = await User.findByIdAndUpdate(
-      req.body.userId,
+      req.user._id,
       { $push: { orderhistory: savedOrder._id } },
       { new: true }
     );
@@ -56,7 +56,7 @@ export const getAllOrders = async (req, res) => {
       if (mongoose.Types.ObjectId.isValid(orderId)) {
         filter._id = orderId;
       } else {
-        filter._id = { $regex: orderId, $options: "i" }; 
+        filter._id = { $regex: orderId, $options: "i" };
       }
     }
 
@@ -128,7 +128,6 @@ export const deleteOrder = async (req, res) => {
 // get order by id
 export const getOrderById = async (req, res) => {
   try {
-  
     const order = await Order.findById(req.params.id)
 
       .populate("userId", "username email mobileNumber")

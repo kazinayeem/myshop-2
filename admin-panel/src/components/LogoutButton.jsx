@@ -7,13 +7,8 @@ const LogoutButton = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Dispatch the logout action to clear Redux state
     dispatch(logout());
-
-    // Remove the token from localStorage
     localStorage.removeItem("token");
-
-    // Redirect the user to the login page
     navigate("/login");
   };
 

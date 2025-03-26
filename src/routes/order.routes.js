@@ -12,13 +12,15 @@ import {
   getOrderByUserId,
   updateOrder,
 } from "../controller/order.controller.js";
+import checkLogin from "../middleware/checkLogin.js";
+import checkAdmin from "../middleware/checkAdmin.js";
 
 const router = express.Router();
 router.get("/", getAllOrders);
 router.get("/:id", getOrderById);
-router.post("/", createOrder);
-router.put("/:id", updateOrder);
-router.delete("/:id", deleteOrder);
+router.post("/", checkLogin, createOrder);
+router.put("/:id", checkAdmin, updateOrder);
+router.delete("/:id", checkAdmin, deleteOrder);
 router.get("/user/:id", getOrderByUserId);
 router.get("/status/:status", getOrderByStatus);
 router.get("/amount/:amount", getOrderByAmount);

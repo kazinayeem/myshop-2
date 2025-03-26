@@ -2,7 +2,18 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const productApi = createApi({
   reducerPath: "productApi",
-  baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_API_URL }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: import.meta.env.VITE_API_URL,
+    credentials: "same-origin",
+    headers: { "Content-Type": "application/json" },
+    prepareHeaders: (headers) => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        headers.set("Authorization", `${token}`);
+      }
+      return headers;
+    },
+  }),
   tagTypes: ["Products"],
   endpoints: (builder) => ({
     getProducts: builder.query({
@@ -13,11 +24,11 @@ const productApi = createApi({
         }
         return query;
       },
-      providesTags: ["Products"], 
+      providesTags: ["Products"],
     }),
     getProductById: builder.query({
       query: (id) => `/products/${id}`,
-      providesTags: (result, error, id) => [{ type: "Products", id }], 
+      providesTags: (result, error, id) => [{ type: "Products", id }],
     }),
     addProduct: builder.mutation({
       query: (newProduct) => ({
@@ -33,7 +44,7 @@ const productApi = createApi({
         method: "PUT",
         body: updatedProduct,
       }),
-      invalidatesTags: ["Products"], 
+      invalidatesTags: ["Products"],
     }),
     deleteProduct: builder.mutation({
       query: (id) => ({

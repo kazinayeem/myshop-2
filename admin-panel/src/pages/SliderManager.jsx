@@ -7,7 +7,13 @@ import {
 } from "../redux/Api/sliderApi";
 
 export default function SliderManager() {
-  const { data: sliders, isLoading, refetch } = useGetSlidersQuery();
+  const {
+    data: sliders,
+    isLoading,
+    refetch,
+    isError,
+    error,
+  } = useGetSlidersQuery();
   const [addSlider] = useAddSliderMutation();
   const [updateSlider] = useUpdateSliderMutation();
   const [deleteSlider] = useDeleteSliderMutation();
@@ -30,14 +36,18 @@ export default function SliderManager() {
 
   // Handle Form Submit (Add / Update)
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (form.id) {
-      await updateSlider(form);
-    } else {
-      await addSlider(form);
+    try {
+      e.preventDefault();
+      if (form.id) {
+        await updateSlider(form);
+      } else {
+        await addSlider(form);
+      }
+      refetch();
+      resetForm();
+    } catch (error) {
+      console.error("Error submitting form:", error);
     }
-    refetch();
-    resetForm();
   };
 
   // Handle Edit
@@ -83,7 +93,12 @@ export default function SliderManager() {
   return (
     <div className="container mx-auto p-6">
       <h2 className="text-2xl font-bold mb-4">Slider Manager</h2>
-
+      {isError && (
+        <div className="bg-red-100 text-red-700 p-4 rounded mb-4">
+          <p>Error fetching sliders. Please try again later.</p>
+          <p>{error.message}</p>
+        </div>
+      )}
       {/* Add New Slider Button */}
       {form.id && (
         <button

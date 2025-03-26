@@ -1,19 +1,47 @@
 import Category from "../model/category.model.js";
 import SubCategory from "../model/subcategory.model.js";
 // create subcategory
+// export const createSubCategory = async (req, res) => {
+//   try {
+//     const { name, image, categoryid } = req.body;
+//     const newsubcategory = new SubCategory({
+//       category: categoryid,
+//       image,
+//       name,
+//     });
+//     await newsubcategory.save();
+//     await Category.findByIdAndUpdate(
+//       categoryid,
+//       { $push: { subcategory: newsubcategory._id } },
+//       { new: true }
+//     );
+//     return res.status(201).json(subcategory);
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({ message: "Server Error" });
+//   }
+// };
 export const createSubCategory = async (req, res) => {
   try {
     const { name, image, categoryid } = req.body;
-    const subcategory = new SubCategory({ category: categoryid, image, name });
-    await subcategory.save();
-    // push category
+
+    // Create a new subcategory instance
+    const newsubcategory = new SubCategory({
+      category: categoryid,
+      image,
+      name,
+    });
+    await newsubcategory.save();
     await Category.findByIdAndUpdate(
       categoryid,
-      { $push: { subcategories: subcategory._id } },
+      { $push: { subcategory: newsubcategory._id } },
       { new: true }
     );
-    return res.status(201).json(subcategory);
+
+    // Return the created subcategory object in the response
+    return res.status(201).json(newsubcategory);
   } catch (error) {
+    console.error(error);
     return res.status(500).json({ message: "Server Error" });
   }
 };
@@ -72,7 +100,7 @@ export const deleteSubCategory = async (req, res) => {
     // remove subcategory from category
     await Category.findByIdAndUpdate(
       subcategory.category,
-      { $pull: { subcategories: req.params.id } },
+      { $pull: { subcategory: req.params.id } },
       { new: true }
     );
     return res

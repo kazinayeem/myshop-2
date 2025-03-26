@@ -5,6 +5,7 @@ import {
   getAllBrands,
   updateBrand,
 } from "../controller/brand.controller.js";
+import checkAdmin from "../middleware/checkAdmin.js";
 
 const router = express.Router();
 
@@ -12,10 +13,10 @@ const router = express.Router();
 router.get("/", getAllBrands);
 
 // Create a new brand
-router.post("/", createBrand);
+router.post("/", checkAdmin, createBrand);
 // Update a brand by ID
-router.put("/:id", updateBrand);
+router.put("/:id", checkAdmin, updateBrand);
 // Delete a brand by ID
-router.delete("/:id", deleteBrand);
+router.delete("/:id", checkAdmin, deleteBrand);
 
 export default router;

@@ -2,12 +2,23 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const brandsApi = createApi({
   reducerPath: "brandsApi",
-  baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_API_URL }),
-  tagTypes: ["Brand"], 
+  baseQuery: fetchBaseQuery({
+    baseUrl: import.meta.env.VITE_API_URL,
+    credentials: "same-origin",
+    headers: { "Content-Type": "application/json" },
+    prepareHeaders: (headers) => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        headers.set("Authorization", `${token}`);
+      }
+      return headers;
+    },
+  }),
+  tagTypes: ["Brand"],
   endpoints: (builder) => ({
     getbrands: builder.query({
       query: () => "brands",
-      providesTags: ["Brand"], 
+      providesTags: ["Brand"],
     }),
 
     addbrands: builder.mutation({
@@ -16,7 +27,7 @@ export const brandsApi = createApi({
         method: "POST",
         body: newbrands,
       }),
-      invalidatesTags: ["Brand"], 
+      invalidatesTags: ["Brand"],
     }),
     updatebrands: builder.mutation({
       query: ({ id, ...updatedbrands }) => ({
@@ -24,14 +35,14 @@ export const brandsApi = createApi({
         method: "PUT",
         body: updatedbrands,
       }),
-      invalidatesTags: ["Brand"], 
+      invalidatesTags: ["Brand"],
     }),
     deletebrands: builder.mutation({
       query: (id) => ({
         url: `brands/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Brand"], 
+      invalidatesTags: ["Brand"],
     }),
   }),
 });

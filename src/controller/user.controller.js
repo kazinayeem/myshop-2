@@ -26,7 +26,55 @@ export const register = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+// admin login
+export const adminLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+    // check if user exists
+    const user = await User.findOne({ email });
 
+    if (!user) {
+      return res.status(400).json({ message: "user not found" });
+    }
+    // check if user is admin
+    if (user.role !== "admin") {
+      return res.status(403).json({ message: "Forbidden" });
+    }
+    // check if password is correct
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+    // create token
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET || "3433erwrewrwr",
+      {
+        expiresIn: "30d",
+      }
+    );
+    // set cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      sameSite: "strict",
+    });
+    res.status(200).json({
+      message: "Login successful",
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+      },
+      token,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 // login user
 export const login = async (req, res) => {
   try {
@@ -59,7 +107,6 @@ export const login = async (req, res) => {
     });
     res.status(200).json({
       message: "Login successful",
-
       user: {
         id: user._id,
         username: user.username,

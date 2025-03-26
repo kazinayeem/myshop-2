@@ -14,14 +14,14 @@ export async function create(data: {
 
   cookieStore.set("token", data.token, {
     httpOnly: true,
-    expires: new Date(Date.now() + 60 * 60 * 24 * 1000),
+    expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
     priority: "high",
   });
   cookieStore.set("user", JSON.stringify(data.user), {
     httpOnly: true,
-    expires: new Date(Date.now() + 60 * 60 * 24 * 1000),
+    expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
     priority: "high",

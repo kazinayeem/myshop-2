@@ -78,13 +78,15 @@ export default function CheckoutPage() {
         });
         setTimeout(() => {
           router.push("/user/order");
-        }, 3000);
+        }, 1000);
       }
     } catch (error) {
       console.error("Error placing order:", error);
       Swal.fire({
         title: "Error!",
-        text: "There was an error placing your order.",
+        text:
+          (error as { data: { message: string } }).data.message +
+          " Please Login again.",
         icon: "error",
       });
     }
@@ -292,7 +294,7 @@ export default function CheckoutPage() {
             </p>
             <Button
               disabled={
-                (!selectAddress && addresses?.length === 0) || 
+                (!selectAddress && addresses?.length === 0) ||
                 !paymentMethod ||
                 (["bkash", "nagad"].includes(paymentMethod) && !transactionId)
               }

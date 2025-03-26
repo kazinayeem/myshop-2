@@ -17,17 +17,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    isAdmin: {
-      type: Boolean,
-      default: false,
-    },
     mobileNumber: {
       type: String,
       required: false,
     },
-    isUser: {
-      type: Boolean,
-      default: true,
+    role: {
+      type: String,
+      enum: ["user", "admin"],
+      default: "user",
     },
     isBanned: {
       type: Boolean,

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import Reactquill from "react-quill-new";
 import { useAddProductMutation } from "../redux/Api/porductApi";
 import { useGetCategoriesQuery } from "../redux/Api/categoryApi";
@@ -14,15 +14,16 @@ const AddProduct = () => {
     useGetCategoriesQuery();
   const { data: subcategories, isLoading: isSubCategoriesLoading } =
     useGetSubCategoriesQuery();
-
+  const [isVariant, setIsVariant] = useState(false);
+  const [iscolor, setIsColor] = useState(false);
   const [product, setProduct] = useState({
     name: "",
     description: "",
     section: [],
-    buyingPrice: "",
-    price: "",
-    discountedPrice: "",
-    discountPercent: "",
+    buyingPrice: 0,
+    price: 0,
+    discountedPrice: 0,
+    discountPercent: 0,
     priceByVariant: [],
     image: [],
     video: "",
@@ -33,11 +34,8 @@ const AddProduct = () => {
     stock: 0,
     brand: "",
     rating: 0,
-    numReviews: 0,
     isFeatured: false,
     color: [],
-    isDeleted: false,
-    isBlocked: false,
     warranty: "",
     returnable: false,
     returnableDays: "",
@@ -177,70 +175,81 @@ const AddProduct = () => {
           />
         </div>
 
-        {/* stock */}
-        <div>
-          <label className="block text-sm font-medium">Stock</label>
+        <div className="flex items-center mb-4">
           <input
-            type="number"
-            name="stock"
-            value={product.stock}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border rounded-md"
+            type="checkbox"
+            name="isVariant"
+            checked={isVariant}
+            onChange={(e) => {
+              setIsVariant(e.target.checked);
+            }}
+            className="mr-2"
           />
+          <label className="text-sm font-medium">Is Variant</label>
         </div>
 
-        {/* buying price */}
-        <div>
-          <label className="block text-sm font-medium">Buying Price</label>
-          <input
-            type="number"
-            name="buyingPrice"
-            value={product.buyingPrice}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border rounded-md"
-          />
-        </div>
+        {!isVariant && (
+          <React.Fragment>
+            <div>
+              <label className="block text-sm font-medium">Stock</label>
+              <input
+                type="number"
+                name="stock"
+                value={product.stock}
+                onChange={handleChange}
+                className="w-full p-2 border rounded-md"
+              />
+            </div>
 
-        {/* Price & Discount */}
-        <div className="grid grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm font-medium">Price</label>
-            <input
-              type="number"
-              name="price"
-              value={product.price}
-              onChange={handleChange}
-              required
-              className="w-full p-2 border rounded-md"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">
-              Discounted Price
-            </label>
-            <input
-              type="number"
-              name="discountedPrice"
-              value={product.discountedPrice}
-              onChange={handleChange}
-              className="w-full p-2 border rounded-md"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">
-              Discount Percent
-            </label>
-            <input
-              type="number"
-              name="discountPercent"
-              value={product.discountPercent}
-              onChange={handleChange}
-              className="w-full p-2 border rounded-md"
-            />
-          </div>
-        </div>
+            <div>
+              <label className="block text-sm font-medium">Buying Price</label>
+              <input
+                type="number"
+                name="buyingPrice"
+                value={product.buyingPrice}
+                onChange={handleChange}
+                className="w-full p-2 border rounded-md"
+              />
+            </div>
+
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium">Price</label>
+                <input
+                  type="number"
+                  name="price"
+                  value={product.price}
+                  onChange={handleChange}
+                  className="w-full p-2 border rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">
+                  Discounted Price
+                </label>
+                <input
+                  type="number"
+                  name="discountedPrice"
+                  value={product.discountedPrice}
+                  onChange={handleChange}
+                  className="w-full p-2 border rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">
+                  Discount Percent
+                </label>
+                <input
+                  type="number"
+                  name="discountPercent"
+                  value={product.discountPercent}
+                  onChange={handleChange}
+                  className="w-full p-2 border rounded-md"
+                />
+              </div>
+            </div>
+          </React.Fragment>
+        )}
 
         {/* Image */}
         <div>
@@ -271,99 +280,120 @@ const AddProduct = () => {
         </div>
 
         {/* Variants */}
-        <div>
-          <label className="block text-sm font-medium">Price by Variant</label>
-          {product.priceByVariant.map((variant, index) => (
-            <div key={index} className="flex space-x-2 mb-2">
-              <input
-                type="text"
-                name="name"
-                value={variant.name}
-                onChange={(e) => handleVariantChange(index, e)}
-                placeholder="Variant Name"
-                className="p-2 border rounded-md w-1/4"
-                required
-              />
-              <input
-                type="text"
-                name="value"
-                value={variant.value}
-                onChange={(e) => handleVariantChange(index, e)}
-                placeholder="Value"
-                className="p-2 border rounded-md w-1/4"
-                required
-              />
-              <input
-                type="number"
-                name="price"
-                value={variant.price}
-                onChange={(e) => handleVariantChange(index, e)}
-                placeholder="Price"
-                className="p-2 border rounded-md w-1/4"
-                required
-              />
-              <input
-                type="number"
-                name="buyingPrice"
-                value={variant.buyingPrice}
-                onChange={(e) => handleVariantChange(index, e)}
-                placeholder="Buying Price"
-                className="p-2 border rounded-md w-1/4"
-                required
-              />
-              <input
-                type="text"
-                name="image"
-                value={variant.image}
-                onChange={(e) => handleVariantChange(index, e)}
-                placeholder="Image URL"
-                className="p-2 border rounded-md w-1/4"
-                required
-              />
-              <input
-                type="number"
-                name="stock"
-                value={variant.stock}
-                onChange={(e) => handleVariantChange(index, e)}
-                placeholder="Stock"
-                className="p-2 border rounded-md w-1/4"
-                required
-              />
+        {isVariant && (
+          <>
+            {" "}
+            <div>
+              <label className="block text-sm font-medium">
+                Price by Variant
+              </label>
+              {product.priceByVariant.map((variant, index) => (
+                <div key={index} className="flex space-x-2 mb-2">
+                  <input
+                    type="text"
+                    name="name"
+                    value={variant.name}
+                    onChange={(e) => handleVariantChange(index, e)}
+                    placeholder="Variant Name"
+                    className="p-2 border rounded-md w-1/4"
+                    required
+                  />
+                  <input
+                    type="text"
+                    name="value"
+                    value={variant.value}
+                    onChange={(e) => handleVariantChange(index, e)}
+                    placeholder="Value"
+                    className="p-2 border rounded-md w-1/4"
+                    required
+                  />
+                  <input
+                    type="number"
+                    name="price"
+                    value={variant.price}
+                    onChange={(e) => handleVariantChange(index, e)}
+                    placeholder="Price"
+                    className="p-2 border rounded-md w-1/4"
+                    required
+                  />
+                  <input
+                    type="number"
+                    name="buyingPrice"
+                    value={variant.buyingPrice}
+                    onChange={(e) => handleVariantChange(index, e)}
+                    placeholder="Buying Price"
+                    className="p-2 border rounded-md w-1/4"
+                    required
+                  />
+                  <input
+                    type="text"
+                    name="image"
+                    value={variant.image}
+                    onChange={(e) => handleVariantChange(index, e)}
+                    placeholder="Image URL"
+                    className="p-2 border rounded-md w-1/4"
+                    required
+                  />
+                  <input
+                    type="number"
+                    name="stock"
+                    value={variant.stock}
+                    onChange={(e) => handleVariantChange(index, e)}
+                    placeholder="Stock"
+                    className="p-2 border rounded-md w-1/4"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeVariant(index)}
+                    className="bg-red-500 text-white px-2 rounded"
+                  >
+                    X
+                  </button>
+                </div>
+              ))}
               <button
                 type="button"
-                onClick={() => removeVariant(index)}
-                className="bg-red-500 text-white px-2 rounded"
+                onClick={addVariant}
+                className="bg-blue-500 text-white px-3 py-1 rounded"
               >
-                X
+                + Add Variant
               </button>
             </div>
-          ))}
-          <button
-            type="button"
-            onClick={addVariant}
-            className="bg-blue-500 text-white px-3 py-1 rounded"
-          >
-            + Add Variant
-          </button>
-        </div>
+          </>
+        )}
 
         {/* color */}
-        <div>
-          <label className="block text-sm font-medium">Color</label>
+        <div className="flex items-center mb-4">
           <input
-            type="text"
-            name="color"
-            value={product.color.join(",")}
-            onChange={(e) =>
-              setProduct({
-                ...product,
-                color: e.target.value.split(","),
-              })
-            }
-            className="w-full p-2 border rounded-md"
-            placeholder="Comma-separated colors"
+            type="checkbox"
+            name="iscolor"
+            checked={iscolor}
+            onChange={(e) => {
+              setIsColor(e.target.checked);
+            }}
+            className="mr-2"
           />
+          <label className="text-sm font-medium">Is Color</label>
         </div>
+        {iscolor && (
+          <div>
+            <label className="block text-sm font-medium">Color</label>
+            <input
+              type="text"
+              name="color"
+              value={product.color.join(",")}
+              onChange={(e) =>
+                setProduct({
+                  ...product,
+                  color: e.target.value.split(","),
+                })
+              }
+              className="w-full p-2 border rounded-md"
+              placeholder="Comma-separated colors"
+            />
+          </div>
+        )}
 
         {/* Bulk Order */}
         <div>

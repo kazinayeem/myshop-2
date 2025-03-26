@@ -1,28 +1,26 @@
-import helmet from "helmet";
 import cors from "cors";
-import rateLimit from "express-rate-limit";
-import xssClean from "xss-clean";
-import hpp from "hpp";
 import dotenv from "dotenv";
+import rateLimit from "express-rate-limit";
+import helmet from "helmet";
+import hpp from "hpp";
+import xssClean from "xss-clean";
 
 dotenv.config();
 
 import cookieParser from "cookie-parser";
 import express from "express";
 import morgan from "morgan";
-import CategoryRoutes from "./routes/category.routes.js";
-import productRoutes from "./routes/product.routes.js";
 import addressRoutes from "./routes/address.routes.js";
-import SubCategoryRoutes from "./routes/subcategory.routes.js";
-import orderRoutes from "./routes/order.routes.js";
-import userRoutes from "./routes/user.routes.js";
-import SliderRoutes from "./routes/slider.routes.js";
-import logger from "./lib/logger.js";
 import Brand from "./routes/brand.routes.js";
+import CategoryRoutes from "./routes/category.routes.js";
+import orderRoutes from "./routes/order.routes.js";
+import productRoutes from "./routes/product.routes.js";
+import SliderRoutes from "./routes/slider.routes.js";
+import SubCategoryRoutes from "./routes/subcategory.routes.js";
+import userRoutes from "./routes/user.routes.js";
 
 // initialize express
 const app = express();
-// 🛡️ Security Middleware
 app.use(helmet());
 app.use(
   cors({
@@ -30,20 +28,21 @@ app.use(
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
 );
-app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }));
+app.use(rateLimit({ windowMs: 30 * 60 * 1000, max: 100 }));
 app.use(xssClean());
 app.use(hpp());
 
 // middlewares
 app.use(cookieParser());
 app.use(cors());
-app.use(
-  morgan("combined", {
-    stream: {
-      write: (message) => logger.info(message.trim()), // Log HTTP requests
-    },
-  })
-);
+app.use(morgan("dev"));
+// app.use(
+//   morgan("combined", {
+//     stream: {
+//       write: (message) => logger.info(message.trim()), 
+//     },
+//   })
+// );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));

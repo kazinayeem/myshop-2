@@ -6,12 +6,13 @@ import User from "../model/user.model.js";
 // add address
 
 export const addAddress = async (req, res) => {
+  const { _id } = req.user;
   try {
     const newAddress = new Address(req.body);
 
     const savedAddress = await newAddress.save();
     await User.findByIdAndUpdate(
-      req.body.userId,
+      _id,
       { $push: { address: savedAddress._id } },
       { new: true }
     );
@@ -72,8 +73,10 @@ export const deleteAddress = async (req, res) => {
 
 // get address by user id
 export const getAddressByUserId = async (req, res) => {
+  const { _id } = req.user;
+
   try {
-    const addresses = await Address.find({ userId: req.params.userId });
+    const addresses = await Address.find({ userId: _id });
     res.status(200).json(addresses);
   } catch (error) {
     res.status(500).json({ message: error.message });

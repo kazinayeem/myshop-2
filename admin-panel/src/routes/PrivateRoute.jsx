@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { setUser } from "../redux/slice/authSclice";
-
+import { jwtDecode } from "jwt-decode";
 const PrivateRoute = ({ element: Component, ...rest }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -11,9 +11,16 @@ const PrivateRoute = ({ element: Component, ...rest }) => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    const decodedToken = token ? jwtDecode(token) : null;
+    const currentTime = Date.now() / 1000;
+    if (decodedToken && decodedToken.exp < currentTime) {
+      localStorage.removeItem("token");
+      navigate("/login");
+      return;
+    }
 
     if (token) {
-      dispatch(setUser({ user: { name: "Test User",  }, token }));
+      dispatch(setUser({ user: { name: "Test User" }, token }));
     } else {
       navigate("/login");
     }

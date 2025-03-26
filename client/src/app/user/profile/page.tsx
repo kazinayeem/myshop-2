@@ -1,14 +1,14 @@
 "use client";
 import { useGetUserByIdQuery } from "@/api/userApi";
-import {  useAppSelector } from "@/lib/hooks";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useAppSelector } from "@/lib/hooks";
 import { format } from "date-fns";
 
 export default function ProfilePage() {
   const user = useAppSelector((state) => state.auth.user);
   const { data, isLoading, isError } = useGetUserByIdQuery(user?.id);
-  
+
   // Show a loading message while the data is loading
   if (isLoading) {
     return (
@@ -20,7 +20,6 @@ export default function ProfilePage() {
 
   // Show an error message if there is an issue fetching data
   if (isError) {
-    
     return (
       <div className="flex justify-center items-center h-screen text-red-500">
         Error loading profile data. Please try again later.
@@ -30,7 +29,6 @@ export default function ProfilePage() {
 
   // Ensure data is available before trying to destructure it
   if (!data) {
-    
     return (
       <div className="flex justify-center items-center h-screen">
         No user data found.
@@ -38,7 +36,7 @@ export default function ProfilePage() {
     );
   }
 
-  const { username, email, mobileNumber, isAdmin, createdAt, updatedAt } = data;
+  const { username, email, mobileNumber, role, createdAt, updatedAt } = data;
 
   return (
     <div className="container mx-auto p-6">
@@ -65,11 +63,7 @@ export default function ProfilePage() {
             </div>
             <div>
               <strong>Role:</strong>
-              <Badge
-                className={`ml-2 ${isAdmin ? "bg-red-500" : "bg-blue-500"}`}
-              >
-                {isAdmin ? "Admin" : "User"}
-              </Badge>
+              <Badge className={`ml-2 bg-blue-500`}>{role}</Badge>
             </div>
             <div>
               <strong>Created At:</strong> {format(new Date(createdAt), "PPP")}
