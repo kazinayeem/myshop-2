@@ -62,6 +62,7 @@ export const deleteAddress = async (req, res) => {
       { $pull: { address: savedAddress._id } },
       { new: true }
     );
+
     if (!deletedAddress) {
       return res.status(404).json({ message: "Address not found" });
     }
