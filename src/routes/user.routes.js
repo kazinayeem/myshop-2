@@ -6,6 +6,7 @@ import {
   getUsers,
   getUserById,
   adminLogin,
+  updateUser,
 } from "../controller/user.controller.js";
 import checkAdmin from "../middleware/checkAdmin.js";
 
@@ -18,5 +19,7 @@ router.post("/admin/login", adminLogin);
 router.get("/", getUsers);
 // get user by id
 router.get("/:id", getUserById);
+// update user by id
+router.put("/:id", updateUser);
 
 export default router;

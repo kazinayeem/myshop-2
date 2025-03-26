@@ -166,3 +166,19 @@ export const getUserById = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
+// udate user
+export const updateUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { username, email, password } = req.body;
+    const user = await User.findByIdAndUpdate(
+      id,
+      { username, email, password },
+      { new: true }
+    );
+    return res.status(200).json(user);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
