@@ -129,7 +129,7 @@ export default function CheckoutPage() {
         </AlertDialogContent>
       </AlertDialog>
       <h1 className="text-3xl font-bold text-center mb-6">Checkout</h1>
-      <div className="w-full max-w-3xl mx-auto bg-white p-6 shadow-md rounded-lg overflow-x-auto">
+      <div className="w-full max-w-4xl mx-auto bg-white p-6 shadow-md rounded-lg overflow-x-auto">
         <table className="w-full border-collapse border border-gray-200 text-left">
           <thead>
             <tr className="bg-gray-100">
@@ -163,12 +163,20 @@ export default function CheckoutPage() {
                     )}
                     <span>{item.name.slice(0, 20)}...</span>
                   </td>
-                  <td className="p-3 border">{item.price.toFixed(2)}</td>
+                  <td className="p-3 border">
+                    {"\u09F3"}
+                    {item.price
+                      .toString()
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                  </td>
                   <td className="p-3 border">{item.size}</td>
                   <td className="p-3 border">{item.color || "NO"}</td>
                   <td className="p-3 border">{item.quantity}</td>
                   <td className="p-3 border">
-                    {(item.price * item.quantity).toFixed(2)}
+                    {"\u09F3"}
+                    {(item.price * item.quantity)
+                      .toString()
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                   </td>
                 </tr>
               ))
@@ -276,21 +284,23 @@ export default function CheckoutPage() {
         <div className="flex flex-col md:flex-row justify-between mt-6 border-t pt-4 gap-4">
           <div className="text-right w-full">
             <p className="text-lg font-semibold">
-              Subtotal: {totalPrice.toFixed(2)}
+              Subtotal:{"\u09F3"}{" "}
+              {totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
             </p>
             {discountPrice !== undefined && discountPrice < totalPrice && (
               <p className="text-lg font-semibold text-red-500">
-                Discount: {discountPrice.toFixed(2)}
+                Discount: {"\u09F3"}{" "}
+                {discountPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
               </p>
             )}
-            <p className="text-gray-600">Shipping: {shippingPrice}</p>
+            <p className="text-gray-600">
+              Shipping: {"\u09F3"} {shippingPrice}
+            </p>
             <p className="text-xl font-bold">
-              Total:
-              {(
-                totalPrice -
-                (discountPrice || 0) +
-                (shippingPrice || 0)
-              ).toFixed(2)}
+              Total:{"\u09F3"}{" "}
+              {(totalPrice - (discountPrice || 0) + (shippingPrice || 0))
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
             </p>
             <Button
               disabled={

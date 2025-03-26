@@ -93,9 +93,23 @@ export default function ProductsList() {
                 </Link>
                 <div className="flex justify-between items-center mt-2">
                   <p className="text-red-500 font-bold">
-                    ${product.discountedPrice.toFixed(2)}{" "}
+                    {"\u09F3"}{" "}
+                    {product?.priceByVariant?.[0]?.price
+                      ? product.priceByVariant[0].price
+                          .toString()
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                      : product.price
+                          .toString()
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                     <span className="line-through text-gray-400">
-                      ${product.price.toFixed(2)}
+                      {"\u09F3"}{" "}
+                      {product?.priceByVariant?.[0]?.price
+                        ? product.priceByVariant[0].price
+                            .toString()
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                        : product.price
+                            .toString()
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                     </span>
                   </p>
                   <p className="text-sm">⭐ {product.rating} / 5</p>

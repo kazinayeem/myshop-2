@@ -147,10 +147,12 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
       <div className="w-full">
         <h1 className="text-2xl font-bold">{product.name}</h1>
         <div className="text-2xl font-semibold text-gray-900">
-          {finalPrice}{" "}
+          {"\u09F3"}{" "}
+          {finalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
           {product.discountPercent > 0 && selectedVariantPrice === 0 && (
             <span className="text-gray-500 line-through text-lg">
-              ${product.price}
+              {"\u09F3"}{" "}
+              {product.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
             </span>
           )}
         </div>

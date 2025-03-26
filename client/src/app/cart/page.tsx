@@ -81,7 +81,7 @@ export default function Page() {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold text-center mb-6">Shopping Cart</h1>
-      <div className="w-full max-w-3xl mx-auto bg-white p-6 shadow-md rounded-lg overflow-x-auto">
+      <div className="w-full max-w-4xl mx-auto bg-white p-6 shadow-md rounded-lg overflow-x-auto">
         <table className="w-full border-collapse border border-gray-200 text-left">
           <thead>
             <tr className="bg-gray-100">
@@ -122,9 +122,14 @@ export default function Page() {
                       </span>
                     </Link>
                   </td>
-                  <td className="p-3 border">{item.price}</td>
-                  <td className="p-3 border">{item.size}</td>
-                  <td className="p-3 border">{item.color || "NO"}</td>
+                  <td className="p-3 border">
+                    {"\u09F3"}{" "}
+                    {item.price
+                      .toString()
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                  </td>
+                  <td className="p-3 border">{item.size || ""} </td>
+                  <td className="p-3 border">{item.color || ""}</td>
                   <td className="p-3 border">
                     <div className="flex items-center gap-2">
                       <Button
@@ -152,7 +157,10 @@ export default function Page() {
                   </td>
 
                   <td className="p-3 border">
-                    {(item.price * item.quantity).toFixed(2)}
+                    {"\u09F3"}{" "}
+                    {(item.price * item.quantity)
+                      .toString()
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                   </td>
                   <td className="text-center">
                     <Button
@@ -190,13 +198,17 @@ export default function Page() {
 
           <div className="text-right">
             <p className="text-lg font-semibold">
-              Subtotal: {totalPrice.toFixed(2)}
+              Subtotal: {"\u09F3"}{" "}
+              {totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
             </p>
             {/* if copund show this */}
             {afterDiscountPrice !== undefined &&
               afterDiscountPrice < totalPrice && (
                 <p className="text-lg font-semibold text-red-500">
-                  Discount: {afterDiscountPrice.toFixed(2)}
+                  Discount: {"\u09F3"}{" "}
+                  {afterDiscountPrice
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                 </p>
               )}
 
@@ -223,20 +235,26 @@ export default function Page() {
             <p className="text-xl font-bold">
               Total:{" "}
               {afterDiscountPrice
-                ? afterDiscountPrice.toFixed(2)
-                : totalPrice.toFixed(2)}
+                ? afterDiscountPrice
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                : totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
             </p>
             {/* price with shipping charge */}
             <p className="text-lg font-semibold mt-2">
               Total with Shipping:{" "}
               {afterDiscountPrice
-                ? (afterDiscountPrice + Shipping).toFixed(2)
-                : (totalPrice + Shipping).toFixed(2)}
+                ? (afterDiscountPrice + Shipping)
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                : (totalPrice + Shipping)
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
             </p>
 
             <Button
               onClick={processToCheckout}
-              disabled={cartItems.length === 0}
+              disabled={cartItems.length === 0 || Shipping === 0}
               className="bg-red-500 text-white w-full md:w-auto mt-2"
             >
               Process to checkout

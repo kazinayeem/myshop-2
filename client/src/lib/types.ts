@@ -49,6 +49,11 @@ export interface Product {
   discountedPrice: number;
   discountPercent: number;
   image: string[];
+  priceByVariant: {
+    _id: string;
+    variant: string;
+    price: number;
+  }[];
   category: {
     _id: string;
     name: string;
