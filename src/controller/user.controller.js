@@ -2,8 +2,8 @@
 
 // register user
 
-import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import User from "../model/user.model.js";
 // register user
 export const register = async (req, res) => {
@@ -151,7 +151,7 @@ export const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
     const user = await User.findById(id)
-      .select("-password")
+      // .select("-password")
       .populate("address")
       .populate({
         path: "orderhistory",
