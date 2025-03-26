@@ -59,7 +59,7 @@ export const deleteAddress = async (req, res) => {
     const deletedAddress = await Address.findByIdAndDelete(req.params.id);
     await User.findByIdAndUpdate(
       deletedAddress.userId,
-      { $push: { address: savedAddress._id } },
+      { $pull: { address: savedAddress._id } },
       { new: true }
     );
     if (!deletedAddress) {
