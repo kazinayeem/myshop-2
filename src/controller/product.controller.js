@@ -1,8 +1,10 @@
 // get all products
+import mongoose from "mongoose";
+import slugify from "slugify";
 import Category from "../model/category.model.js";
 import Product from "../model/product.model.js";
 import SubCategory from "../model/subcategory.model.js";
-import slugify from "slugify";
+
 // Add a new product
 export const AddProduct = async (req, res) => {
   try {
@@ -104,7 +106,6 @@ export const UpdateProduct = async (req, res) => {
   }
 };
 
-import mongoose from "mongoose";
 
 export const GetAllProducts = async (req, res) => {
   // Pagination
@@ -112,6 +113,7 @@ export const GetAllProducts = async (req, res) => {
   const limit = parseInt(req.query.limit) || 30;
   const skip = (page - 1) * limit;
   const category = req.query.category;
+  const subcategory = req.query.subcategory;
   const search = req.query.search || "";
 
   try {
@@ -119,15 +121,18 @@ export const GetAllProducts = async (req, res) => {
 
     if (search) {
       query.$or = [
-        { name: { $regex: search, $options: "i" } }, // Case-insensitive search in name
+        { name: { $regex: search, $options: "i" } },
       ];
       if (mongoose.Types.ObjectId.isValid(search)) {
-        query.$or.push({ _id: search }); // If search input is a valid ObjectId, search by _id
+        query.$or.push({ _id: search }); 
       }
     }
 
     if (category) {
       query.category = category;
+    }
+    if (subcategory) {
+      query.subcategory = subcategory;
     }
 
     const productcount = await Product.countDocuments(query);
