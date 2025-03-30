@@ -8,7 +8,7 @@ const Loading = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1, repeat: Infinity, repeatType: "reverse" }}
-      >
+      > 
         <motion.div
           className="w-4 h-4 bg-blue-500 rounded-full"
           animate={{ y: [0, -10, 0] }}

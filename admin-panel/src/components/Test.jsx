@@ -53,7 +53,7 @@ export default function Test() {
 
       {/* Sidebar */}
       <div
-        className={`fixed md:relative z-50 h-full transition-all duration-300 bg-gray-800 text-white shadow-lg
+        className={`fixed md:relative z-49 h-full transition-all duration-300 bg-gray-800 text-white shadow-lg
         ${isCollapsed ? "w-16" : "w-64"}`}
       >
         <button

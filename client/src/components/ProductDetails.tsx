@@ -248,12 +248,16 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
         </div>
         {/* product description as a html parse */}
       </div>
-      <div className="mt-4 text-gray-700">
-        <h2 className="text-lg font-semibold">Description:</h2>
-        <p
-          className="mt-2"
-          dangerouslySetInnerHTML={{ __html: product.description }}
-        ></p>
+      <div className="mt-4 text-gray-700 w-full flex justify-center items-center">
+        <div className="w-full max-w-3xl px-4 sm:px-6 md:px-8">
+          <h2 className="text-lg font-semibold text-center">Description:</h2>
+          <div className="w-full flex justify-center">
+            <p
+              className="m-auto text-sm text-gray-600 text-justify max-w-3xl"
+              dangerouslySetInnerHTML={{ __html: product.description }}
+            ></p>
+          </div>
+        </div>
       </div>
     </div>
   );
