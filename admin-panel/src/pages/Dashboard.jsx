@@ -1,7 +1,7 @@
 import { Outlet, useLocation } from "react-router";
-import SideBar from "../components/SideBar";
-import ProductList from "../components/ProductList";
 import OrderChart from "../components/OrderChart";
+import ProductList from "../components/ProductList";
+import Test from "../components/Test";
 import TotalSaleandProfite from "../components/TotalSaleandProfite";
 
 export default function Dashboard() {
@@ -10,11 +10,12 @@ export default function Dashboard() {
 
   return (
     <div className="flex">
-      <SideBar />
+      {/* <SideBar /> */}
+      <Test/>
       <div className="flex-1 p-6">
         {isMainDashboard && (
           <>
-          <TotalSaleandProfite/>
+            <TotalSaleandProfite />
             <ProductList />
             <OrderChart />
           </>
