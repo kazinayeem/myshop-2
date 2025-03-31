@@ -234,15 +234,35 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
             <ChevronLeft size={18} />
           </Button>
           <span className="px-4">{quantity}</span>
-          <Button variant="ghost" onClick={() => setQuantity(quantity + 1)}>
+          <Button
+            variant="ghost"
+            onClick={() => {
+              setQuantity((prev) => {
+                if (prev < 10) {
+                  return prev + 1;
+                } else {
+                  alert("Maximum quantity is 10!");
+                  return prev;
+                }
+              });
+            }}
+          >
             <ChevronRight size={18} />
           </Button>
         </div>
         <div className="mt-4 flex items-center space-x-4">
-          <Button variant={"destructive"} onClick={buynow}>
+          <Button
+            variant={"destructive"}
+            onClick={buynow}
+            disabled={selectedStock <= 0}
+          >
             Buy Now
           </Button>
-          <Button variant={"secondary"} onClick={addToCart}>
+          <Button
+            variant={"secondary"}
+            onClick={addToCart}
+            disabled={selectedStock <= 0}
+          >
             Add to cart
           </Button>
         </div>
