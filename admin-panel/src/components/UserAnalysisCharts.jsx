@@ -1,19 +1,10 @@
+import PropTypes from "prop-types";
 import { Chart } from "react-google-charts";
-import PropTypes from 'prop-types';
 
 const UserAnalysisCharts = ({ userDetails }) => {
-  
   const totalSales = userDetails.orderhistory?.reduce(
     (sum, order) => sum + order.totalPrice,
     0
-  );
-
- 
-  const productQuantities = userDetails.orderhistory?.flatMap((order) =>
-    order.products.map((product) => ({
-      productId: product.productId,
-      quantity: product.quantity,
-    }))
   );
 
   // Prepare chart data
@@ -51,15 +42,15 @@ const UserAnalysisCharts = ({ userDetails }) => {
     ],
     [
       "In Progress",
-      userDetails.orderhistory?.filter((order) => order.status === "in progress")
-        .length || 0,
+      userDetails.orderhistory?.filter(
+        (order) => order.status === "in progress"
+      ).length || 0,
     ],
     [
       "Shipped",
       userDetails.orderhistory?.filter((order) => order.status === "shipped")
         .length || 0,
     ],
-
   ];
 
   const salesChartData = [
@@ -76,15 +67,6 @@ const UserAnalysisCharts = ({ userDetails }) => {
     ["Oct", totalSales],
     ["Nov", totalSales],
     ["Dec", totalSales],
-  ];
-
-  const productChartData = [
-    ["Product ID", "Quantity"],
-    ...(productQuantities || []).map((product) => [
-      product.productId,
-      product.quantity,
-      
-    ]),
   ];
 
   return (
@@ -112,17 +94,6 @@ const UserAnalysisCharts = ({ userDetails }) => {
           height="400px"
         />
       </div>
-
-      {/* Product Quantity Chart */}
-      <div className="bg-white shadow-lg rounded-lg p-6">
-        <h3 className="text-xl font-semibold">Product Quantities</h3>
-        <Chart
-          chartType="BarChart"
-          data={productChartData}
-          width="100%"
-          height="400px"
-        />
-      </div>
     </div>
   );
 };
@@ -144,4 +115,3 @@ UserAnalysisCharts.propTypes = {
 };
 
 export default UserAnalysisCharts;
-
