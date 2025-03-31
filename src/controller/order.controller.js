@@ -1,12 +1,47 @@
 import Order from "../model/order.model.js";
+import Product from "../model/product.model.js";
 import User from "../model/user.model.js";
-import mongoose from "mongoose";
-
 // order controller
 
 //  create order
 export const createOrder = async (req, res) => {
   try {
+    const { products } = req.body;
+
+    for (const product of products) {
+      const { productId, quantity, variant } = product;
+
+      const checkStock = await Product.findById(productId).select(
+        "stock priceByVariant"
+      );
+      if (!checkStock) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+
+      if (checkStock.priceByVariant && checkStock.priceByVariant.length > 0) {
+        const variantData = checkStock.priceByVariant.find(
+          (v) => v.value === variant
+        );
+
+        if (!variantData) {
+          return res.status(400).json({ message: "Variant not found" });
+        }
+
+        if (variantData.stock < quantity) {
+          return res
+            .status(400)
+            .json({ message: `Insufficient stock for variant: ${variant}` });
+        }
+        variantData.stock -= quantity;
+      } else {
+        if (checkStock.stock < quantity) {
+          return res.status(400).json({ message: "Insufficient stock" });
+        }
+        checkStock.stock -= quantity;
+      }
+      await checkStock.save();
+    }
+
     const newOrder = new Order(req.body);
     const savedOrder = await newOrder.save();
     const updatedUser = await User.findByIdAndUpdate(

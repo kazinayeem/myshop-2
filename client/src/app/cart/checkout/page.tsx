@@ -86,7 +86,7 @@ export default function CheckoutPage() {
         title: "Error!",
         text:
           (error as { data: { message: string } }).data.message +
-          " Please Login again.",
+          "  try again later.",
         icon: "error",
       });
     }
