@@ -17,10 +17,15 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    profilePic: {
+      type: String,
+      required: false,
+      default: "https://randomuser.me/api/portraits/men/81.jpg",
+    },
+
     mobileNumber: {
       type: String,
       required: false,
-      default: 8801700000000,
     },
     role: {
       type: String,
@@ -52,6 +57,38 @@ const userSchema = new mongoose.Schema(
         ref: "Address",
       },
     ],
+    wishlist: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+      },
+    ],
+    cart: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Cart",
+      },
+    ],
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+    otp: {
+      type: String,
+      required: false,
+    },
+    otpExpire: {
+      type: Date,
+      required: false,
+    },
+    accessToken: {
+      type: String,
+      required: false,
+    },
+    refreshToken: {
+      type: String,
+      required: false,
+    },
   },
   { timestamps: true }
 );

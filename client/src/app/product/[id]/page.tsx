@@ -7,7 +7,7 @@ export default function Page() {
   if (!id) {
     return (
       <div className="flex justify-center items-center h-screen text-2xl font-bold text-red-500">
-        Product Loading{" "}
+        Product Loading
       </div>
     );
   }

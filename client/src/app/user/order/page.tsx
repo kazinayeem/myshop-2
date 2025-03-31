@@ -4,6 +4,7 @@ import { useGetOrdersQuery } from "@/api/orderApi";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -82,16 +83,30 @@ export default function Page() {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen text-lg">
-        Loading...
+      <div className="flex flex-col space-y-3">
+        <Skeleton className="h-[125px] w-[250px] rounded-xl" />
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-full" />
+        </div>
       </div>
     );
   }
 
   if (isError) {
     return (
-      <div className="flex justify-center items-center h-screen text-red-500 text-lg">
-        Error loading orders. Please try again later.
+      <div className="flex flex-col space-y-3">
+        <h2 className="text-3xl font-bold mb-6">Profile</h2>
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle>User Information</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex justify-center items-center h-screen">
+              <p className="text-red-500">Error fetching user data.</p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }
@@ -105,7 +120,7 @@ export default function Page() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-6">
+    <div className="container mx-auto max-w-screen-xl px-4">
       <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center">
         Order History
       </h2>
@@ -116,7 +131,7 @@ export default function Page() {
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto w-full">
-            <Table className="min-w-full">
+            <Table className="w-full">
               <TableHeader>
                 <TableRow>
                   <TableHead>Order ID</TableHead>
@@ -125,7 +140,7 @@ export default function Page() {
                   <TableHead>Products</TableHead>
                   <TableHead>Payment Status</TableHead>
                   <TableHead>Payment Method</TableHead>
-                  <TableHead>Created At</TableHead>
+                  <TableHead>Order Date</TableHead>
                   <TableHead>Download Invoice</TableHead>
                 </TableRow>
               </TableHeader>
@@ -133,7 +148,11 @@ export default function Page() {
                 {userdata.map((order: Order) => {
                   return (
                     <TableRow key={order._id} className="text-sm md:text-base">
-                      <TableCell>{order._id}</TableCell>
+                      <TableCell className="font-semibold hover:text-blue-500 hover:underline">
+                        <Link href={`/user/order/${order._id}`}>
+                          {order._id.slice(0, 10)}...
+                        </Link>
+                      </TableCell>
                       <TableCell>
                         <Badge
                           className={`px-2 py-1 text-xs md:text-sm ${
@@ -163,10 +182,10 @@ export default function Page() {
                             >
                               <li key={prod._id}>
                                 <span className="font-semibold">
-                                  {prod.productId?.name.slice(0, 20) ??
+                                  {prod.productId?.name.slice(0, 15) ??
                                     "Unknown Product"}
                                 </span>
-                                {"....."}- {prod.price} (x{prod.quantity})
+                                {".."}- {prod.price} (x{prod.quantity})
                               </li>
                             </Link>
                           ))}
