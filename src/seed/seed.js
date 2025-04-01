@@ -9,7 +9,7 @@ import Product from "../model/product.model.js";
 import SubCategory from "../model/subcategory.model.js";
 import User from "../model/user.model.js";
 import Slider from "../model/slider.model.js";
-import Brand from "../model/brand.model.js"; // ✅ Import Brand model
+import Brand from "../model/brand.model.js"; 
 const createCategoryAndSubCategories = async () => {
   try {
     const categories = [
