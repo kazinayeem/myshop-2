@@ -160,7 +160,7 @@ export const getOrderById = async (req, res) => {
     const order = await Order.findById(req.params.id)
 
       .populate("userId", "username email mobileNumber")
-      .populate("products.productId", "name price buyingPrice")
+      .populate("products.productId", "name price buyingPrice image")
       .populate("address");
     res.status(200).json(order);
   } catch (error) {
