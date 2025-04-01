@@ -111,6 +111,7 @@ export const getAllOrders = async (req, res) => {
 export const getOrderByUserId = async (req, res) => {
   try {
     const orders = await Order.find({ userId: req.params.id })
+      .sort({ createdAt: -1 })
       .populate("products.productId", "name price buyingPrice")
       .populate("address");
 
