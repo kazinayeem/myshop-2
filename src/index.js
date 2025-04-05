@@ -23,7 +23,8 @@ import userRoutes from "./routes/user.routes.js";
 const store_id = process.env.STORE_ID || "kazi67f0c67596ef9";
 const store_passwd = process.env.STORE_PASSWORD || "kazi67f0c67596ef9@ssl";
 const is_live = false;
-const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+const frontendUrl =
+  process.env.FRONTEND_URL || "https://myshop-2-x9hr.vercel.app/";
 // initialize express
 const app = express();
 app.use(helmet());
