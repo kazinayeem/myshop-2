@@ -1,9 +1,8 @@
-// pages/success.tsx
 "use client";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-const Success = () => {
+const SuccessContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const tranId = searchParams.get("tran_id");
@@ -42,6 +41,14 @@ const Success = () => {
         </button>
       </div>
     </div>
+  );
+};
+
+const Success = () => {
+  return (
+    <Suspense fallback={<div className="text-center p-4">Loading...</div>}>
+      <SuccessContent />
+    </Suspense>
   );
 };
 
