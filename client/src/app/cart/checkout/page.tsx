@@ -36,8 +36,6 @@ export default function CheckoutPage() {
   const [isOpen, setIsOpen] = useState(false);
   const [selectAddress, setSelectAddress] = useState<string>("");
   const [paymentMethod, setPaymentMethod] = useState<string>("");
-  const [transactionId, setTransactionId] = useState<string>("");
-  const [senderNumber, setSenderNumber] = useState<number>(0);
   const dispatch = useAppDispatch();
   const router = useRouter();
   const {
@@ -61,16 +59,17 @@ export default function CheckoutPage() {
         deliveryCharge: shippingPrice || 0,
         paidAmount: paymentMethod === "cash_on_delivery" ? 0 : totalPrice,
         paymentMethod: paymentMethod,
-        dueAmount: paymentMethod === "bkash" && "nagad" ? 0 : totalPrice,
-        transactionId: transactionId,
-        number: senderNumber,
+        dueAmount: paymentMethod === "online" ? 0 : totalPrice,
       };
 
       const response = await addorders(oderData).unwrap();
-
+      if (response?.GatewayPageURL) {
+        // Redirect to payment page
+        window.location.href = response.GatewayPageURL;
+        return;
+      }
       if (response) {
         dispatch(clearCart());
-
         Swal.fire({
           title: "Order Placed!",
           text: "Your order has been placed successfully.",
@@ -80,6 +79,7 @@ export default function CheckoutPage() {
           router.push("/user/order");
         }, 1000);
       }
+      console.log("Order response:", response);
     } catch (error) {
       console.error("Error placing order:", error);
       Swal.fire({
@@ -224,62 +224,10 @@ export default function CheckoutPage() {
             onChange={(e) => setPaymentMethod(e.target.value)}
           >
             <option value="">Select Payment Method</option>
-            <option value="bkash">bkash</option>
 
-            <option value="nagad">nagad</option>
+            <option value="online">Online</option>
             <option value="cash_on_delivery">cash_on_delivery</option>
           </select>
-          {/* if select bkash or nagod show a two input box sender number and transtion id */}
-          {paymentMethod === "bkash" && (
-            <div className="mt-4">
-              <label className="block text-lg font-semibold mb-2">
-                Sender Account Number:
-              </label>
-              <input
-                value={senderNumber}
-                onChange={(e) => setSenderNumber(Number(e.target.value))}
-                type="number"
-                className="w-full p-2 border border-gray-300 rounded-md"
-                placeholder="Sender Number"
-              />
-
-              <label className="block text-lg font-semibold mb-2">
-                Transaction ID:
-              </label>
-              <input
-                value={transactionId}
-                onChange={(e) => setTransactionId(e.target.value)}
-                type="text"
-                className="w-full p-2 border border-gray-300 rounded-md"
-                placeholder="Sender Number"
-              />
-            </div>
-          )}
-          {paymentMethod === "nagad" && (
-            <div className="mt-4">
-              <label className="block text-lg font-semibold mb-2">
-                Sender Account Number:
-              </label>
-              <input
-                value={senderNumber}
-                onChange={(e) => setSenderNumber(Number(e.target.value))}
-                type="number"
-                className="w-full p-2 border border-gray-300 rounded-md"
-                placeholder="Sender Number"
-              />
-
-              <label className="block text-lg font-semibold mb-2">
-                Transaction ID:
-              </label>
-              <input
-                value={transactionId}
-                onChange={(e) => setTransactionId(e.target.value)}
-                type="text"
-                className="w-full p-2 border border-gray-300 rounded-md"
-                placeholder="Sender Number"
-              />
-            </div>
-          )}
         </div>
         <div className="flex flex-col md:flex-row justify-between mt-6 border-t pt-4 gap-4">
           <div className="text-right w-full">
@@ -303,11 +251,7 @@ export default function CheckoutPage() {
                 .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
             </p>
             <Button
-              disabled={
-                (!selectAddress && addresses?.length === 0) ||
-                !paymentMethod ||
-                (["bkash", "nagad"].includes(paymentMethod) && !transactionId)
-              }
+              disabled={!selectAddress && addresses?.length === 0}
               onClick={() => setIsOpen(true)}
               className="bg-green-500 text-white w-full md:w-auto mt-2"
             >

@@ -48,13 +48,13 @@ export default function ImageSlider() {
                 className="rounded-lg"
               />
 
-              <CardContent className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 text-white p-4">
+              {/* <CardContent className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 text-white p-4">
                 <h2 className="text-2xl font-bold">{slide.title}</h2>
                 <p className="text-sm mb-4">{slide.description}</p>
                 <Button asChild>
                   <a href={slide.buttonLink}>{slide.buttonText}</a>
                 </Button>
-              </CardContent>
+              </CardContent>  */}
             </Card>
           </motion.div>
         ))}

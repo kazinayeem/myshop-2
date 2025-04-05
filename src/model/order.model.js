@@ -46,7 +46,6 @@ const orderSchema = new mongoose.Schema(
     },
     paymentMethod: {
       type: String,
-      enum: ["bkash", "nagad", "cash_on_delivery"],
       required: true,
       default: "cash_on_delivery",
     },
@@ -58,6 +57,11 @@ const orderSchema = new mongoose.Schema(
       type: Date,
       required: false,
     },
+    bankTransactionId: {
+      type: String,
+      required: false,
+    },
+
     number: {
       type: Number,
       required: false,
@@ -69,7 +73,7 @@ const orderSchema = new mongoose.Schema(
       default: "pending",
     },
     paymentStatus: {
-      type: String, 
+      type: String,
       enum: ["paid", "pending", "failed"],
       default: "pending",
     },

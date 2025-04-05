@@ -1,6 +1,14 @@
 import Order from "../model/order.model.js";
 import Product from "../model/product.model.js";
 import User from "../model/user.model.js";
+import mongoose from "mongoose";
+import SSLCommerzPayment from "sslcommerz-lts";
+import "dotenv/config";
+const store_id = process.env.STORE_ID || "kazi67f0c67596ef9";
+const store_passwd = process.env.STORE_PASSWORD || "kazi67f0c67596ef9@ssl";
+const is_live = false;
+const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+const serverUrl = process.env.SERVER_URL || "http://localhost:4000";
 // order controller
 
 //  create order
@@ -54,10 +62,53 @@ export const createOrder = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.status(201).json({
-      message: "Order created successfully",
-      order: savedOrder,
-    });
+    // if cash on delivery, return order details
+    if (req.body.paymentMethod === "cash_on_delivery") {
+      return res.status(200).json(savedOrder);
+    }
+
+    const data = {
+      total_amount: savedOrder.totalPrice,
+      currency: "BDT",
+      tran_id: savedOrder._id.toString(),
+      success_url: `${serverUrl}/success?tran_id=${savedOrder._id}`,
+      fail_url: `${serverUrl}/fail`,
+      cancel_url: `${serverUrl}/cancel`,
+      ipn_url: `${serverUrl}/ipn?tran_id=${savedOrder._id}`,
+      shipping_method: "Courier",
+      product_name: "Order Payment",
+      product_category: "General",
+      product_profile: "general",
+      cus_name: updatedUser.username || "Customer Name",
+      cus_email: updatedUser.email || "customer@example.com",
+      cus_add1: "Dhaka",
+      cus_add2: "Dhaka",
+      cus_city: "Dhaka",
+      cus_state: "Dhaka",
+      cus_postcode: "1000",
+      cus_country: "Bangladesh",
+      cus_phone: updatedUser.phone || "01711111111",
+      cus_fax: updatedUser.phone || "01711111111",
+      ship_name: updatedUser.name || "Customer Name",
+      ship_add1: "Dhaka",
+      ship_add2: "Dhaka",
+      ship_city: "Dhaka",
+      ship_state: "Dhaka",
+      ship_postcode: 1000,
+      ship_country: "Bangladesh",
+    };
+    const sslcz = new SSLCommerzPayment(store_id, store_passwd, is_live);
+    const apiResponse = await sslcz.init(data);
+
+    let GatewayPageURL = apiResponse.GatewayPageURL;
+    if (apiResponse) {
+      res.status(200).json({
+        message: "Payment initiated",
+        GatewayPageURL: GatewayPageURL,
+      });
+    } else {
+      res.status(400).json({ message: "Payment initiation failed" });
+    }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -83,7 +134,10 @@ export const getAllOrders = async (req, res) => {
       if (mongoose.Types.ObjectId.isValid(orderId)) {
         filter._id = orderId;
       } else {
-        filter._id = { $regex: orderId, $options: "i" };
+        filter.$or = [
+          { "userId.username": { $regex: new RegExp(orderId, "i") } },
+          { "userId.email": { $regex: new RegExp(orderId, "i") } },
+        ];
       }
     }
 
@@ -97,7 +151,7 @@ export const getAllOrders = async (req, res) => {
       .populate("address");
 
     // Count total matching orders
-    const totalOrders = await Order.countDocuments();
+    const totalOrders = await Order.countDocuments(filter);
 
     res.status(200).json({ orders, totalOrders });
   } catch (error) {
