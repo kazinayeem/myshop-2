@@ -8,9 +8,9 @@ const store_id = process.env.STORE_ID || "kazi67f0c67596ef9";
 const store_passwd = process.env.STORE_PASSWORD || "kazi67f0c67596ef9@ssl";
 const is_live = false;
 const frontendUrl =
-  process.env.FRONTEND_URL || "https://myshop-2-x9hr.vercel.app/";
+  process.env.FRONTEND_URL || "https://myshop-2-x9hr.vercel.app";
 const serverUrl =
-  process.env.SERVER_URL || "https://myshop-2-production.up.railway.app/";
+  process.env.SERVER_URL || "https://myshop-2-production.up.railway.app";
 // order controller
 
 //  create order
