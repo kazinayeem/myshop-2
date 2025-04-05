@@ -105,12 +105,43 @@ app.post("/success", async (req, res) => {
   }
 });
 
-app.post("/fail", (req, res) => {
-  res.redirect(`${frontendUrl}/fail`);
+app.post("/fail", async (req, res) => {
+  try {
+    const paymentData = req.query;
+    await Order.findOneAndUpdate(
+      { _id: paymentData.tran_id },
+      {
+        transactionId: paymentData.tran_id,
+        transactionStatus: "failed",
+        paymentStatus: "failed",
+        status: "failed",
+      }
+    );
+
+    res.redirect(`${frontendUrl}/fail`);
+  } catch (error) {
+    console.error("Error in fail route:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
-app.post("/cancel", (req, res) => {
-  res.redirect(`${frontendUrl}/fail`);
+app.post("/cancel", async (req, res) => {
+  try {
+    const paymentData = req.query;
+    await Order.findOneAndUpdate(
+      { _id: paymentData.tran_id },
+      {
+        transactionId: paymentData.tran_id,
+        transactionStatus: "failed",
+        paymentStatus: "failed",
+        status: "failed",
+      }
+    );
+    res.redirect(`${frontendUrl}/cancel`);
+  } catch (error) {
+    console.error("Error in cancel route:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
 app.post("/ipn", async (req, res) => {
