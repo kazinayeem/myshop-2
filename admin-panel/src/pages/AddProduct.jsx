@@ -2,10 +2,13 @@ import { Button, Checkbox, Label, Select, TextInput } from "flowbite-react";
 import React, { useState } from "react";
 import Reactquill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
+import "quill-better-table/dist/quill-better-table.css";
+import QuillBetterTable from "quill-better-table";
 import Swal from "sweetalert2";
 import { useGetCategoriesQuery } from "../redux/Api/categoryApi";
 import { useAddProductMutation } from "../redux/Api/porductApi";
 import { useGetSubCategoriesQuery } from "../redux/Api/subcategoryApi";
+
 const AddProduct = () => {
   const [addProduct, { isLoading, isError, isSuccess }] =
     useAddProductMutation();
@@ -148,6 +151,79 @@ const AddProduct = () => {
       });
     }
   };
+  const modules = {
+    toolbar: [
+      [{ header: [1, 2, false] }],
+      ["bold", "italic", "underline", "strike", "blockquote"],
+      [
+        { list: "ordered" },
+        { list: "bullet" },
+        { indent: "-1" },
+        { indent: "+1" },
+      ],
+      ["link", "image"],
+      ["clean"],
+      ["table"],
+      ["color"],
+      ["align"],
+      ["direction"],
+      ["clipboard"],
+      ["code-block"],
+      ["formula"],
+      ["emoji"],
+      ["video"],
+      ["clear"],
+      ["undo"],
+      ["redo"],
+      ["fullscreen"],
+      ["code"],
+      ["print"],
+    ],
+    "better-table": {
+      operationMenu: {
+        items: {
+          unmergeCells: {
+            text: "Unmerge",
+          },
+        },
+      },
+    },
+    keyboard: {
+      bindings: QuillBetterTable.keyboardBindings,
+    },
+  };
+
+  const formats = [
+    "header",
+    "font",
+    "size",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "blockquote",
+    "list",
+    "bullet",
+    "indent",
+    "link",
+    "image",
+    "color",
+    "table",
+    "align",
+    "direction",
+    "clipboard",
+    "code-block",
+    "formula",
+    "emoji",
+    "video",
+    "clear",
+    "undo",
+    "redo",
+    "fullscreen",
+    "code",
+    "print",
+    "better-table",
+  ];
 
   if (isError) {
     return <p className="text-red-500">Failed to add product.</p>;
@@ -179,36 +255,8 @@ const AddProduct = () => {
             theme="snow"
             value={product.description}
             onChange={(value) => setProduct({ ...product, description: value })}
-            modules={{
-              toolbar: [
-                [{ header: [1, 2, false] }],
-                ["bold", "italic", "underline", "strike", "blockquote"],
-                [
-                  { list: "ordered" },
-                  { list: "bullet" },
-                  { indent: "-1" },
-                  { indent: "+1" },
-                ],
-                ["link", "image"],
-                ["clean"],
-              ],
-            }}
-            formats={[
-              "header",
-              "font",
-              "size",
-              "bold",
-              "italic",
-              "underline",
-              "strike",
-              "blockquote",
-              "list",
-              "bullet",
-              "indent",
-              "link",
-              "image",
-              "color",
-            ]}
+            modules={modules}
+            formats={formats}
           />
         </div>
 

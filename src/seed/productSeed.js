@@ -42,10 +42,10 @@ const generateVariant = () => {
     name: preset.name,
     value: faker.helpers.arrayElement(preset.values),
     price: Number(
-      faker.number.float({ min: 100, max: 10000, fractionDigits: 2 })
+      faker.number.float({ min: 100, max: 10000, fractionDigits: 0 })
     ),
     buyingPrice: Number(
-      faker.number.float({ min: 100, max: 9000, fractionDigits: 2 })
+      faker.number.float({ min: 100, max: 9000, fractionDigits: 0 })
     ),
     stock: faker.number.int({ min: 1, max: 100 }),
     image: faker.image.urlPicsumPhotos(),
@@ -64,7 +64,62 @@ const createProduct = (withVariant = false, withColor = false) => {
 
   return {
     name: faker.commerce.productName(),
-    description: faker.commerce.productDescription(),
+    description: `
+  <div class="product-description">
+    <h2>Luxora™ Smart Aroma Diffuser & Humidifier</h2>
+
+    <img src="https://picsum.photos/seed/aroma1/800/400" alt="Aroma Diffuser Front View" style="width:100%;max-width:800px;margin:20px 0;" />
+    
+    <p>Bring a wave of calm into your home with the <strong>Luxora™ Smart Aroma Diffuser</strong>. This elegantly designed 2-in-1 humidifier and diffuser is more than just a wellness tool — it's a modern decor statement that fits perfectly in bedrooms, offices, or meditation spaces.</p>
+
+    <p>With smart features, customizable lighting, and ultrasonic mist technology, Luxora enhances air quality, mood, and aesthetic in one beautiful package. Choose your favorite essential oils, set the timer, and let the diffuser do the rest.</p>
+
+    <img src="https://picsum.photos/seed/aroma2/800/400" alt="Aroma Diffuser Glowing Light" style="width:100%;max-width:800px;margin:20px 0;" />
+
+    <h3>✨ Product Highlights</h3>
+    <ul>
+      <li>💧 <strong>300ml Water Tank</strong> – Ideal for small to medium rooms.</li>
+      <li>🌈 <strong>7-Color LED Light Modes</strong> – Customize your ambiance.</li>
+      <li>🕒 <strong>Smart Timer Function</strong> – Auto shutoff at 1H / 3H / 6H / Continuous.</li>
+      <li>🔇 <strong>Quiet Operation</strong> – Less than 30dB noise level.</li>
+      <li>🧼 <strong>BPA-Free & Easy to Clean</strong> – Safe for family and pets.</li>
+    </ul>
+
+    <img src="https://picsum.photos/seed/aroma3/800/400" alt="Aroma Diffuser Side View" style="width:100%;max-width:800px;margin:20px 0;" />
+
+    <h3>📺 See It In Action</h3>
+    <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;margin-bottom:20px;">
+      <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Luxora Diffuser Demo" frameborder="0" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>
+    </div>
+
+    <img src="https://picsum.photos/seed/aroma4/800/400" alt="Luxora Diffuser in Living Room" style="width:100%;max-width:800px;margin:20px 0;" />
+
+    <h3>📐 Specifications</h3>
+    <table style="width:100%;border-collapse:collapse;">
+      <tr><td style="padding:8px;border:1px solid #ddd;">Capacity</td><td style="padding:8px;border:1px solid #ddd;">300ml</td></tr>
+      <tr><td style="padding:8px;border:1px solid #ddd;">Dimensions</td><td style="padding:8px;border:1px solid #ddd;">168mm x 121mm</td></tr>
+      <tr><td style="padding:8px;border:1px solid #ddd;">Run Time</td><td style="padding:8px;border:1px solid #ddd;">Up to 10 hours</td></tr>
+      <tr><td style="padding:8px;border:1px solid #ddd;">Power Source</td><td style="padding:8px;border:1px solid #ddd;">USB (Cable Included)</td></tr>
+      <tr><td style="padding:8px;border:1px solid #ddd;">Weight</td><td style="padding:8px;border:1px solid #ddd;">540g</td></tr>
+      <tr><td style="padding:8px;border:1px solid #ddd;">Material</td><td style="padding:8px;border:1px solid #ddd;">ABS + PP (BPA-Free)</td></tr>
+    </table>
+
+    <h3>🧡 Customer Reviews</h3>
+    <blockquote>
+      "This diffuser changed my nightly routine! The lights are gorgeous, and it runs silently through the night." <br />
+      <cite>– Alex M.</cite>
+    </blockquote>
+
+    <blockquote>
+      "Bought this for my office. Clients always compliment how relaxing the space feels now. Highly recommend!" <br />
+      <cite>– Priya R.</cite>
+    </blockquote>
+
+    <p><strong>Rating:</strong> ⭐ 4.9/5 based on 3,842 reviews</p>
+
+    <p><em>✔️ Free worldwide shipping | 🔁 30-day returns | 🔒 100% Secure checkout</em></p>
+  </div>
+`,
     section: [faker.commerce.department()],
     buyingPrice: Number(
       faker.number.float({ min: 100, max: 9000, fractionDigits: 0 })
@@ -134,9 +189,9 @@ const seed = async () => {
     console.log("🧹 Ready to insert products...");
 
     const allProducts = [
-      ...Array.from({ length: 67 }, () => createProduct(true, false)),
-      ...Array.from({ length: 67 }, () => createProduct(true, true)),
-      ...Array.from({ length: 66 }, () => createProduct(false, false)),
+      ...Array.from({ length: 20 }, () => createProduct(true, false)),
+      ...Array.from({ length: 20 }, () => createProduct(true, true)),
+      ...Array.from({ length: 20 }, () => createProduct(false, false)),
     ];
 
     for (const productData of allProducts) {
