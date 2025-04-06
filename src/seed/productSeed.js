@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import Category from "../model/category.model.js";
 import Product from "../model/product.model.js";
+import Order from "../model/order.model.js";
 dotenv.config();
 
 const MONGO_URI =
@@ -129,6 +130,7 @@ const seed = async () => {
     console.log("✅ Connected to MongoDB");
 
     await Product.deleteMany({});
+    await Order.deleteMany({});
     console.log("🧹 Ready to insert products...");
 
     const allProducts = [
