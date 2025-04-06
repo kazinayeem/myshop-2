@@ -62,16 +62,14 @@ export default async function page({
             className="overflow-hidden h-full group relative"
           >
             <CardHeader className="p-0 relative w-full h-full">
-              <Image
-                loading="lazy"
-                layout="responsive"
-                width={400}
-                objectFit="cover"
-                height={300}
-                src={product?.image?.[0] || "https://via.placeholder.com/200"}
-                alt={product?.name || "Placeholder Image"}
-                className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300 ease-in-out"
-              />
+              <div className="relative w-full h-48">
+                <Image
+                  src={product?.image?.[0] || "https://via.placeholder.com/200"}
+                  alt={product?.name || "Placeholder Image"}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-300 ease-in-out"
+                />
+              </div>
             </CardHeader>
             <CardContent className="flex px-4 flex-col h-full justify-between">
               <div>

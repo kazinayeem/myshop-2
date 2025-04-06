@@ -57,13 +57,14 @@ export default function ProductPriceVariant({
 
             <div className="flex flex-col items-center">
               {d.image ? (
-                <Image
-                  src={d.image}
-                  alt={d.name}
-                  width={60}
-                  height={60}
-                  className="rounded-lg object-cover"
-                />
+                <div className="w-16 h-16 relative rounded-lg overflow-hidden">
+                  <Image
+                    src={d.image}
+                    alt={d.name}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
               ) : (
                 <ImageIcon className="w-16 h-16 text-gray-400" />
               )}

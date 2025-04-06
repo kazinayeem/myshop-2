@@ -65,7 +65,6 @@ const orderSchema = new mongoose.Schema(
     number: {
       type: Number,
       required: false,
-      default: +880000000000,
     },
     transactionStatus: {
       type: String,
