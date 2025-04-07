@@ -5,6 +5,77 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../model/user.model.js";
+
+// login google without password if user is not registered then register user or else login user
+
+export const googleRegisterandlogin = async (req, res) => {
+  try {
+    const { email, username, profilePic } = req.body;
+    if (!email || !username) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+    // check if user exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      const token = jwt.sign(
+        { id: existingUser._id },
+        process.env.JWT_SECRET || "3433erwrewrwr",
+        {
+          expiresIn: "30d",
+        }
+      );
+      // set cookie
+      res.cookie("token", token, {
+        httpOnly: true,
+        sameSite: "strict",
+      });
+      return res.status(200).json({
+        message: "Login successful",
+        user: {
+          id: existingUser._id,
+          username: existingUser.username,
+          email: existingUser.email,
+          picture: existingUser.picture,
+        },
+        token,
+      });
+    } else {
+      const newUser = new User({
+        username,
+        email,
+        profilePic,
+      });
+      await newUser.save();
+      // create token
+      const token = jwt.sign(
+        { id: newUser._id },
+        process.env.JWT_SECRET || "3433erwrewrwr",
+        {
+          expiresIn: "30d",
+        }
+      );
+      // set cookie
+      res.cookie("token", token, {
+        httpOnly: true,
+        sameSite: "strict",
+      });
+      return res.status(201).json({
+        message: "Register successful",
+        user: {
+          id: newUser._id,
+          username: newUser.username,
+          email: newUser.email,
+          picture: newUser.picture,
+        },
+        token,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 // register user
 export const register = async (req, res) => {
   try {
@@ -29,6 +100,8 @@ export const register = async (req, res) => {
     await newUser.save();
     return res.status(201).json(newUser);
   } catch (error) {
+    console.log(error);
+
     return res.status(500).json({ message: error.message });
   }
 };

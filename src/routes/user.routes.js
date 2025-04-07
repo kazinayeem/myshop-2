@@ -1,14 +1,14 @@
 // user routes
 import express from "express";
 import {
-  register,
-  login,
-  getUsers,
-  getUserById,
   adminLogin,
+  getUserById,
+  getUsers,
+  googleRegisterandlogin,
+  login,
+  register,
   updateUser,
 } from "../controller/user.controller.js";
-import checkAdmin from "../middleware/checkAdmin.js";
 
 const router = express.Router();
 
@@ -21,5 +21,7 @@ router.get("/", getUsers);
 router.get("/:id", getUserById);
 // update user by id
 router.put("/:id", updateUser);
+// google login
+router.post("/google/login", googleRegisterandlogin);
 
 export default router;
