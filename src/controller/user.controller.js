@@ -9,7 +9,7 @@ import User from "../model/user.model.js";
 export const register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
-    // const existingUser = await User.findOne({ email: email });
+    const existingUser = await User.findOne({ email: email });
 
     // const checkusernameisexit = await User.findOne({
     //   username: username,
