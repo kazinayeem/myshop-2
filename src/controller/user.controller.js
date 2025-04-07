@@ -14,9 +14,9 @@ export const register = async (req, res) => {
     // const checkusernameisexit = await User.findOne({
     //   username: username,
     // });
-    if (checkusernameisexit) {
-      return res.status(400).json({ message: "Username already exists" });
-    }
+    // if (checkusernameisexit) {
+    //   return res.status(400).json({ message: "Username already exists" });
+    // }
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
