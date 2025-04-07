@@ -35,7 +35,7 @@ export const googleRegisterandlogin = async (req, res) => {
           id: existingUser._id,
           username: existingUser.username,
           email: existingUser.email,
-          picture: existingUser.picture,
+          profilePic: existingUser.profilePic,
         },
         token,
       });
@@ -65,7 +65,7 @@ export const googleRegisterandlogin = async (req, res) => {
           id: newUser._id,
           username: newUser.username,
           email: newUser.email,
-          picture: newUser.picture,
+          profilePic: newUser.profilePic,
         },
         token,
       });
