@@ -27,7 +27,21 @@ This is a basic e-commerce project that allows users to browse products, add the
 - Browse and order products
 - Add items to cart
 - View all past orders
-
+- user can payment use **`sslcommerz`** including all payment optiuon (bkash,nagod,bank, card , and others)
+- also user can payment use **`cash on delivery`** option
+- View product details
+- Search products
+- Filter products by category
+- Filter products by brand
+- Filter products by subcategory
+- Filter products by price
+- show all order history
+- show all order details
+- add address max 5
+- edit address
+- delete address
+- edit profile 
+- 
 ## Technologies Used
 
 - Node.js
