@@ -1,14 +1,12 @@
 import { Button, Checkbox, Label, Select, TextInput } from "flowbite-react";
 import React, { useState } from "react";
-import Reactquill from "react-quill-new";
-import "react-quill-new/dist/quill.snow.css";
-import "quill-better-table/dist/quill-better-table.css";
-import QuillBetterTable from "quill-better-table";
-import Swal from "sweetalert2";
+import InputText from "../components/InputText";
+import ProductImageUpload from "../components/ProductImageUpload";
+import RichTextEditor from "../components/RichTextEditor";
 import { useGetCategoriesQuery } from "../redux/Api/categoryApi";
 import { useAddProductMutation } from "../redux/Api/porductApi";
 import { useGetSubCategoriesQuery } from "../redux/Api/subcategoryApi";
-
+import Swal from "sweetalert2";
 const AddProduct = () => {
   const [addProduct, { isLoading, isError, isSuccess }] =
     useAddProductMutation();
@@ -19,8 +17,8 @@ const AddProduct = () => {
   const [isVariant, setIsVariant] = useState(false);
   const [iscolor, setIsColor] = useState(false);
   const [product, setProduct] = useState({
-    name: "",
-    description: "",
+    name: "demo-add",
+    description: "<p>demo</p>",
     section: [],
     buyingPrice: 0,
     price: 0,
@@ -35,7 +33,6 @@ const AddProduct = () => {
     bulkOrder: { minQuantity: "", discount: "" },
     stock: 0,
     brand: "",
-    rating: 0,
     isFeatured: false,
     color: [],
     warranty: "",
@@ -44,20 +41,11 @@ const AddProduct = () => {
     cod: false,
   });
 
-  // Handle input change
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setProduct({
       ...product,
       [name]: type === "checkbox" ? checked : value,
-    });
-  };
-
-  // Handle image input (comma-separated)
-  const handleImageChange = (e) => {
-    setProduct({
-      ...product,
-      image: e.target.value.split(","),
     });
   };
 
@@ -106,8 +94,38 @@ const AddProduct = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    formData.append("name", product.name);
+    formData.append("description", product.description);
+    formData.append("section", product.section);
+    formData.append("buyingPrice", product.buyingPrice);
+    formData.append("price", product.price);
+    formData.append("discountedPrice", product.discountedPrice);
+    formData.append("discountPercent", product.discountPercent);
+    formData.append("category", product.category);
+    formData.append("subcategory", product.subcategory);
+    formData.append("stock", product.stock);
+    formData.append("brand", product.brand);
+    formData.append("isFeatured", product.isFeatured);
+    formData.append("warranty", product.warranty);
+    formData.append("returnable", product.returnable);
+    formData.append("returnableDays", product.returnableDays);
+    formData.append("cod", product.cod);
+    formData.append("video", product.video);
+    formData.append("color", product.color);
+    formData.append("bulkOrder", product.bulkOrder);
+    product.image.forEach((image) => {
+      formData.append("image", image);
+    });
+
+    formData.append("priceByVariant", JSON.stringify(product.priceByVariant));
+
+    product.color.forEach((color) => {
+      formData.append("color", color);
+    });
     try {
-      const response = await addProduct(product).unwrap();
+      const response = await addProduct(formData).unwrap();
+      console.log("Product added:", response);
 
       if (response) {
         Swal.fire({
@@ -115,115 +133,16 @@ const AddProduct = () => {
           text: "Product added successfully!",
           icon: "success",
         });
-        setProduct({
-          name: "",
-          description: "",
-          buyingPrice: 0,
-          price: 0,
-          discountedPrice: 0,
-          discountPercent: 0,
-          priceByVariant: [],
-          image: [],
-          video: "",
-          category: "",
-          subcategory: "",
-          tags: [],
-          bulkOrder: { minQuantity: "", discount: "" },
-          stock: 0,
-          brand: "",
-          rating: 0,
-          isFeatured: false,
-          color: [],
-          warranty: "",
-          returnable: false,
-          returnableDays: "",
-          cod: false,
-        });
-        setIsVariant(false);
-        setIsColor(false);
       }
     } catch (error) {
       console.error("Failed to add product:", error);
-      Swal.fire({
-        title: "Error",
-        text: "Failed to add product.",
-        icon: "error",
-      });
+      // Swal.fire({
+      //   title: "Error",
+      //   text: "Failed to add product.",
+      //   icon: "error",
+      // });
     }
   };
-  const modules = {
-    toolbar: [
-      [{ header: [1, 2, false] }],
-      ["bold", "italic", "underline", "strike", "blockquote"],
-      [
-        { list: "ordered" },
-        { list: "bullet" },
-        { indent: "-1" },
-        { indent: "+1" },
-      ],
-      ["link", "image"],
-      ["clean"],
-      ["table"],
-      ["color"],
-      ["align"],
-      ["direction"],
-      ["clipboard"],
-      ["code-block"],
-      ["formula"],
-      ["emoji"],
-      ["video"],
-      ["clear"],
-      ["undo"],
-      ["redo"],
-      ["fullscreen"],
-      ["code"],
-      ["print"],
-    ],
-    "better-table": {
-      operationMenu: {
-        items: {
-          unmergeCells: {
-            text: "Unmerge",
-          },
-        },
-      },
-    },
-    keyboard: {
-      bindings: QuillBetterTable.keyboardBindings,
-    },
-  };
-
-  const formats = [
-    "header",
-    "font",
-    "size",
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "blockquote",
-    "list",
-    "bullet",
-    "indent",
-    "link",
-    "image",
-    "color",
-    "table",
-    "align",
-    "direction",
-    "clipboard",
-    "code-block",
-    "formula",
-    "emoji",
-    "video",
-    "clear",
-    "undo",
-    "redo",
-    "fullscreen",
-    "code",
-    "print",
-    "better-table",
-  ];
 
   if (isError) {
     return <p className="text-red-500">Failed to add product.</p>;
@@ -235,28 +154,32 @@ const AddProduct = () => {
         <p className="text-green-500 mb-4">Product added successfully!</p>
       )}
       <h2 className="text-2xl font-bold mb-4">Add Product</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4"
+        encType="multipart/form-data"
+      >
         {/* Name */}
         <div>
-          <Label className="block text-sm font-medium">Product Name</Label>
-          <TextInput
+          <InputText
+            label={"Product Name"}
             type="text"
             name="name"
             value={product.name}
             onChange={handleChange}
-            required
+            required={true}
+            placeholder={"Product Name"}
           />
         </div>
 
         {/* Description */}
         <div>
           <Label className="block text-sm font-medium">Description</Label>
-          <Reactquill
-            theme="snow"
+          <RichTextEditor
             value={product.description}
-            onChange={(value) => setProduct({ ...product, description: value })}
-            modules={modules}
-            formats={formats}
+            onChange={(value) => {
+              setProduct({ ...product, description: value });
+            }}
           />
         </div>
 
@@ -275,51 +198,51 @@ const AddProduct = () => {
         {!isVariant && (
           <React.Fragment>
             <div>
-              <Label className="block text-sm font-medium">Stock</Label>
               <TextInput
                 type="number"
                 name="stock"
                 value={product.stock}
                 onChange={handleChange}
+                placeholder="Stock"
               />
             </div>
 
             <div>
-              <Label className="block text-sm font-medium">Buying Price</Label>
-              <TextInput
+              <InputText
                 type="number"
                 name="buyingPrice"
                 value={product.buyingPrice}
                 onChange={handleChange}
+                placeholder="Buying Price"
+                label={"Buying Price"}
               />
             </div>
 
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <Label className="block text-sm font-medium">Price</Label>
-                <TextInput
+                <InputText
                   type="number"
                   name="price"
                   value={product.price}
                   onChange={handleChange}
+                  label={"Price"}
+                  placeholder={"Price"}
                 />
               </div>
               <div>
-                <Label className="block text-sm font-medium">
-                  Discounted Price
-                </Label>
-                <TextInput
+                <InputText
+                  label={"Discounted Price"}
                   type="number"
                   name="discountedPrice"
                   value={product.discountedPrice}
                   onChange={handleChange}
+                  placeholder={"Discounted Price"}
                 />
               </div>
               <div>
-                <Label className="block text-sm font-medium">
-                  Discount Percent
-                </Label>
-                <TextInput
+                <InputText
+                  placeholder={"Discount Percent"}
+                  label={"Discount Percent"}
                   type="number"
                   name="discountPercent"
                   value={product.discountPercent}
@@ -330,24 +253,25 @@ const AddProduct = () => {
           </React.Fragment>
         )}
 
+        {/* ima */}
+        <ProductImageUpload
+          images={product.image}
+          setImages={(images) => {
+            setProduct({ ...product, image: images });
+          }}
+        />
+
         {/* Image */}
         <div>
           <Label className="block text-sm font-medium">
             Image URLs (comma-separated)
           </Label>
-          <TextInput
-            type="text"
-            name="image"
-            value={product.image.join(",")}
-            onChange={handleImageChange}
-            required
-          />
         </div>
 
         {/* video url */}
         <div>
-          <Label className="block text-sm font-medium">Video URL</Label>
-          <TextInput
+          <InputText
+            label={"Video URL"}
             type="text"
             name="video"
             value={product.video}
@@ -358,8 +282,8 @@ const AddProduct = () => {
 
         {/* brand */}
         <div>
-          <Label className="block text-sm font-medium">Brand</Label>
-          <TextInput
+          <InputText
+            label={"Brand"}
             type="text"
             name="brand"
             value={product.brand}
@@ -371,22 +295,20 @@ const AddProduct = () => {
         {/* Variants */}
         {isVariant && (
           <>
-            {" "}
             <div>
-              <Label className="block text-sm font-medium">
-                Price by Variant
-              </Label>
               {product.priceByVariant.map((variant, index) => (
                 <div key={index} className="flex space-x-2 mb-2">
-                  <TextInput
+                  <InputText
                     type="text"
                     name="name"
+                    label={"Variant Name"}
                     value={variant.name}
                     onChange={(e) => handleVariantChange(index, e)}
                     placeholder="Variant Name"
                     required
                   />
-                  <TextInput
+                  <InputText
+                    label={"Value"}
                     type="text"
                     name="value"
                     value={variant.value}
@@ -394,7 +316,8 @@ const AddProduct = () => {
                     placeholder="Value"
                     required
                   />
-                  <TextInput
+                  <InputText
+                    label={"Price"}
                     type="number"
                     name="price"
                     value={variant.price}
@@ -402,7 +325,8 @@ const AddProduct = () => {
                     placeholder="Price"
                     required
                   />
-                  <TextInput
+                  <InputText
+                    label={"Buying Price"}
                     type="number"
                     name="buyingPrice"
                     value={variant.buyingPrice}
@@ -410,20 +334,23 @@ const AddProduct = () => {
                     placeholder="Buying Price"
                     required
                   />
-                  <TextInput
-                    type="text"
-                    name="image"
-                    value={variant.image}
-                    onChange={(e) => handleVariantChange(index, e)}
-                    placeholder="Image URL"
-                    required
-                  />
-                  <TextInput
+
+                  <InputText
+                    label={"Stock"}
                     type="number"
                     name="stock"
                     value={variant.stock}
                     onChange={(e) => handleVariantChange(index, e)}
                     placeholder="Stock"
+                    required
+                  />
+                  <InputText
+                    label={"Image"}
+                    type="text"
+                    name="image"
+                    value={variant.image}
+                    onChange={(e) => handleVariantChange(index, e)}
+                    placeholder="Image URL"
                     required
                   />
                   <Button type="button" onClick={() => removeVariant(index)}>

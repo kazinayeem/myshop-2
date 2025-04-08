@@ -1,15 +1,14 @@
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
+import express from "express";
+import fileUpload from "express-fileupload";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import hpp from "hpp";
-import xssClean from "xss-clean";
-import SSLCommerzPayment from "sslcommerz-lts";
-dotenv.config();
-
-import cookieParser from "cookie-parser";
-import express from "express";
 import morgan from "morgan";
+import SSLCommerzPayment from "sslcommerz-lts";
+import xssClean from "xss-clean";
 import Order from "./model/order.model.js";
 import addressRoutes from "./routes/address.routes.js";
 import Brand from "./routes/brand.routes.js";
@@ -19,6 +18,7 @@ import productRoutes from "./routes/product.routes.js";
 import SliderRoutes from "./routes/slider.routes.js";
 import SubCategoryRoutes from "./routes/subcategory.routes.js";
 import userRoutes from "./routes/user.routes.js";
+dotenv.config();
 
 const store_id = process.env.STORE_ID || "kazi67f0c67596ef9";
 const store_passwd = process.env.STORE_PASSWORD || "kazi67f0c67596ef9@ssl";
@@ -26,7 +26,11 @@ const is_live = false;
 const frontendUrl =
   process.env.FRONTEND_URL || "https://myshop-2-x9hr.vercel.app";
 // initialize express
+
 const app = express();
+
+app.use(express.json({ limit: "100mb" }));
+app.use(express.urlencoded({ extended: true, limit: "100mb" }));
 app.use(helmet());
 app.use(
   cors({
@@ -37,20 +41,19 @@ app.use(
 app.use(rateLimit({ windowMs: 30 * 60 * 1000, max: 100 }));
 app.use(xssClean());
 app.use(hpp());
+app.use(
+  fileUpload({
+    useTempFiles: true,
+    tempFileDir: "./tmp",
+    limits: { fileSize: 100 * 1024 * 1024 }, // 100 MB
+    abortOnLimit: true,
+    createParentPath: true,
+  })
+);
 
-// middlewares
 app.use(cookieParser());
 app.use(cors());
 app.use(morgan("dev"));
-// app.use(
-//   morgan("combined", {
-//     stream: {
-//       write: (message) => logger.info(message.trim()),
-//     },
-//   })
-// );
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 app.get("/", (req, res) => {

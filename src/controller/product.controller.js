@@ -4,15 +4,45 @@ import slugify from "slugify";
 import Category from "../model/category.model.js";
 import Product from "../model/product.model.js";
 import SubCategory from "../model/subcategory.model.js";
-
+import path from "path";
+import { fileURLToPath } from "url";
 // Add a new product
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 export const AddProduct = async (req, res) => {
+  if (typeof req.body.priceByVariant === "string") {
+    req.body.priceByVariant = JSON.parse(req.body.priceByVariant);
+  }
+
   try {
     const categoryid = req.body.category;
     const subcategoryid = req.body.subcategory;
+    const imageUrl = [];
+
+    // If no file uploaded, return empty
+    if (!req.files || !req.files.image) {
+      return imageUrl;
+    }
+
+    // Normalize to array
+    const images = Array.isArray(req.files.image)
+      ? req.files.image
+      : [req.files.image];
+
+    for (const image of images) {
+      const timestamp = Date.now();
+      const safeName = image.name.replace(/\s+/g, "_");
+      const newName = `${timestamp}_${safeName}`;
+      const uploadPath = path.join(__dirname, newName);
+
+      await image.mv(uploadPath);
+      imageUrl.push(`/uploads/${newName}`);
+    }
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
     const newproduct = new Product({
       ...req.body,
-      slug: slugify(req.body.name, { lower: true }),
+      image: imageUrl,
+      slug: slugify(req.body.name + Math.random() * 323232, { lower: true }),
     });
     await newproduct.save();
     await Category.findByIdAndUpdate(
@@ -106,7 +136,6 @@ export const UpdateProduct = async (req, res) => {
   }
 };
 
-
 export const GetAllProducts = async (req, res) => {
   // Pagination
   const page = parseInt(req.query.page) || 1;
@@ -120,11 +149,9 @@ export const GetAllProducts = async (req, res) => {
     const query = {};
 
     if (search) {
-      query.$or = [
-        { name: { $regex: search, $options: "i" } },
-      ];
+      query.$or = [{ name: { $regex: search, $options: "i" } }];
       if (mongoose.Types.ObjectId.isValid(search)) {
-        query.$or.push({ _id: search }); 
+        query.$or.push({ _id: search });
       }
     }
 
@@ -166,7 +193,6 @@ export const GetAllProducts = async (req, res) => {
     return res.status(500).json({ message: "Server Error" });
   }
 };
-
 
 // export const GetAllProducts = async (req, res) => {
 //   // pagination

@@ -4,8 +4,7 @@ const productApi = createApi({
   reducerPath: "productApi",
   baseQuery: fetchBaseQuery({
     baseUrl: import.meta.env.VITE_API_URL,
-    credentials: "same-origin",
-    headers: { "Content-Type": "application/json" },
+  
     prepareHeaders: (headers) => {
       const token = localStorage.getItem("token");
       if (token) {
