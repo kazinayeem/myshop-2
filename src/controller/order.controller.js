@@ -11,9 +11,8 @@ const is_live = process.env.IS_LIVE === "true" ? true : false;
 
 const serverUrl =
   process.env.NODE_ENV === "production"
-    ? process.env.SERVER_URL_PROD ||
-      "https://myshop-2-production.up.railway.app"
-    : process.env.SERVER_URL_DEV || "http://localhost:4000";
+    ? "https://myshop-2-production.up.railway.app"
+    : "http://localhost:4000";
 
 //  create order
 export const createOrder = async (req, res) => {
