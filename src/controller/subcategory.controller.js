@@ -32,13 +32,9 @@ cloudinary.config({
 export const createSubCategory = async (req, res) => {
   try {
     const { name, categoryid } = req.body;
-    const { image } = req.files;
-    if (!name || !image) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
-    // Upload image to Cloudinary
+    const { imageUrl } = req.files;
     const uploadResponse = await cloudinary.uploader.upload(
-      image.tempFilePath,
+      imageUrl.tempFilePath,
       {
         folder: "subcategories",
       }
