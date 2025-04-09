@@ -2,18 +2,45 @@
 
 import Category from "../model/category.model.js";
 
+import extractPublicId from "../lib/extractPublicid.js";
+import cloudinary from "cloudinary";
+
+cloudinary.config({
+  cloud_name: "daq7v0wmf",
+  api_key: "286238383573198",
+  api_secret: "F25Rkv7b6fVQSgU0LXXzQe5KAe8",
+});
 //  post a category
 
 export const createCategory = async (req, res) => {
   try {
-    const { name, imageUrl } = req.body;
+    const { name } = req.body;
+    const { imageUrl } = req.files;
+
+    if (!name || !imageUrl) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const uploadResponse = await cloudinary.uploader.upload(
+      imageUrl.tempFilePath,
+      {
+        folder: "categories",
+      }
+    );
+
+    if (!uploadResponse) {
+      return res.status(400).json({ message: "Image upload failed" });
+    }
+
     const category = new Category({
-      name: name,
-      image: imageUrl,
+      name,
+      image: uploadResponse.secure_url,
     });
+
     await category.save();
     return res.status(201).json(category);
   } catch (error) {
+    console.error("Error in createCategory:", error);
     return res.status(500).json({ message: "Server Error" });
   }
 };
@@ -65,7 +92,7 @@ export const updateCategory = async (req, res) => {
     return res.status(200).json(category);
   } catch (error) {
     console.log(error);
-    
+
     return res.status(500).json({ message: "Server Error" });
   }
 };
