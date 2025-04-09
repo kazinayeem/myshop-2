@@ -1,15 +1,17 @@
+import dotenv from "dotenv";
+dotenv.config();
+import mongoose from "mongoose";
+import SSLCommerzPayment from "sslcommerz-lts";
 import Order from "../model/order.model.js";
 import Product from "../model/product.model.js";
 import User from "../model/user.model.js";
-import mongoose from "mongoose";
-import SSLCommerzPayment from "sslcommerz-lts";
-import "dotenv/config";
 
 const store_id = process.env.STORE_ID || "kazi67f0c67596ef9";
 const store_passwd = process.env.STORE_PASSWORD || "kazi67f0c67596ef9@ssl";
 const is_live = false;
 
 const serverUrl = "https://myshop-2-production.up.railway.app";
+//const serverUrl = "http://localhost:4000";
 
 //  create order
 export const createOrder = async (req, res) => {
