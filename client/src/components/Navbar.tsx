@@ -131,7 +131,7 @@ export default function Navbar() {
             </DropdownMenuContent>
           </DropdownMenu>
         ) : (
-          <Link href="/auth">
+          <Link href="/auth/login">
             <CiLogin className="text-xl text-gray-700 cursor-pointer" />
           </Link>
         )}

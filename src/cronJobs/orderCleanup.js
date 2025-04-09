@@ -32,9 +32,10 @@ const cleanupFailedPayments = async () => {
 };
 
 // Schedule a cron job to run every 2 minutes
-cron.schedule("*/10 * * * *", async () => {
+cron.schedule("*/50 * * * *", async () => {
   console.log("Running daily cleanup: removing failed payment orders...");
 
   await cleanupFailedPayments();
   console.log("Daily cleanup completed.");
 });
+ 
