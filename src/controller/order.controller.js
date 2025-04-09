@@ -14,10 +14,6 @@ const serverUrl =
     ? process.env.SERVER_URL_PROD ||
       "https://myshop-2-production.up.railway.app"
     : process.env.SERVER_URL_DEV || "http://localhost:4000";
-console.log("serverUrl", serverUrl);
-console.log(process.env.NODE_ENV, process.env.SERVER_URL_PROD);
-
-// order controller
 
 //  create order
 export const createOrder = async (req, res) => {
