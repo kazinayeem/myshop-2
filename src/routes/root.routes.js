@@ -4,13 +4,10 @@ import dotenv from "dotenv";
 import Order from "../model/order.model.js";
 dotenv.config();
 
-const store_id = process.env.STORE_ID;
-const store_passwd = process.env.STORE_PASSWORD;
-const is_live = process.env.IS_LIVE === "true" ? true : false;
-const frontendUrl =
-  process.env.NODE_ENV === "production"
-    ? process.env.FRONTEND_URL_PROD || "https://myshop-2-x9hr.vercel.app"
-    : "http://localhost:3000" || process.env.FRONTEND_URL_DEV;
+const store_id = process.env.STORE_ID || "kazi67f0c67596ef9";
+const store_passwd = process.env.STORE_PASSWORD || "kazi67f0c67596ef9@ssl";
+const is_live = false; //true for live, false for sandbox
+const frontendUrl = "https://myshop-2-x9hr.vercel.app/";
 
 const router = express.Router();
 router.get("/transaction-query-by-transaction-id", (req, res) => {
