@@ -2,7 +2,7 @@ import app from "./index.js";
 import connectDB from "./config/db.js";
 const PORT = process.env.PORT || 4000;
 import dotenv from "dotenv";
-
+import "./cronJobs/orderCleanup.js";
 
 dotenv.config();
 app.listen(PORT, () => {
@@ -11,5 +11,4 @@ app.listen(PORT, () => {
     //   url
     console.log(`http://localhost:${PORT}`);
   });
-
 });
