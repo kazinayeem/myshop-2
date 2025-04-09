@@ -16,16 +16,15 @@ const cleanupFailedPayments = async () => {
         console.log(`No user found for order with ID ${order._id}`);
         continue;
       }
-      const updatedUser = await User.findByIdAndUpdate(
-        user._id,
-        { $pull: { orderhistory: order._id } },
-        { new: true }
-      );
+      await User.findByIdAndUpdate(user._id, {
+        $pull: { orderhistory: order._id },
+      });
+
+      await Order.findByIdAndDelete(order._id);
 
       console.log(
         `Order with ID ${order._id} removed from user's orderhistory.`
       );
-      console.log("Updated User:", updatedUser);
     }
   } catch (error) {
     console.error("Error during cleanup of failed payment orders:", error);
@@ -33,7 +32,7 @@ const cleanupFailedPayments = async () => {
 };
 
 // Schedule a cron job to run every 2 minutes
-cron.schedule("*/1 * * * *", async () => {
+cron.schedule("*/10 * * * *", async () => {
   console.log("Running daily cleanup: removing failed payment orders...");
 
   await cleanupFailedPayments();
