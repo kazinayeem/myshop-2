@@ -5,9 +5,9 @@ import mongoose from "mongoose";
 import SSLCommerzPayment from "sslcommerz-lts";
 import "dotenv/config";
 
-const store_id = process.env.STORE_ID;
-const store_passwd = process.env.STORE_PASSWORD;
-const is_live = process.env.IS_LIVE === "true" ? true : false;
+const store_id = process.env.STORE_ID || "kazi67f0c67596ef9";
+const store_passwd = process.env.STORE_PASSWORD || "kazi67f0c67596ef9@ssl";
+const is_live = false;
 
 const serverUrl = "https://myshop-2-production.up.railway.app";
 
