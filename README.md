@@ -28,7 +28,7 @@ Welcome to **MyShop 2.0** – a simple yet powerful e-commerce platform for smal
 
 ### 👤 User Panel Features | ইউজার ফিচারসমূহ
 
-- 📝 User Registration & Login
+- 📝 User Registration & Login & Login With Google 
 - 🧾 View and Manage Orders
 - 🛒 Add Products to Cart
 - 📦 Place Orders Easily
