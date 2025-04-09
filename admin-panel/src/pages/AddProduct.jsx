@@ -7,39 +7,42 @@ import { useGetCategoriesQuery } from "../redux/Api/categoryApi";
 import { useAddProductMutation } from "../redux/Api/porductApi";
 import { useGetSubCategoriesQuery } from "../redux/Api/subcategoryApi";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router";
+
+const initialProductState = {
+  name: "",
+  description: "",
+  section: [],
+  buyingPrice: 0,
+  price: 0,
+  discountedPrice: 0,
+  discountPercent: 0,
+  priceByVariant: [],
+  image: [],
+  video: "",
+  category: "",
+  subcategory: "",
+  tags: [],
+  bulkOrder: { minQuantity: "", discount: "" },
+  stock: 0,
+  brand: "",
+  isFeatured: false,
+  color: [],
+  warranty: "",
+  returnable: false,
+  returnableDays: "",
+  cod: false,
+};
 const AddProduct = () => {
-  const [addProduct, { isLoading, isError, isSuccess }] =
-    useAddProductMutation();
+  const [addProduct, { isError, isSuccess }] = useAddProductMutation();
   const { data: categories, isLoading: isCategoriesLoading } =
     useGetCategoriesQuery();
   const { data: subcategories, isLoading: isSubCategoriesLoading } =
     useGetSubCategoriesQuery();
   const [isVariant, setIsVariant] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [iscolor, setIsColor] = useState(false);
-  const [product, setProduct] = useState({
-    name: "demo-add",
-    description: "<p>demo</p>",
-    section: [],
-    buyingPrice: 0,
-    price: 0,
-    discountedPrice: 0,
-    discountPercent: 0,
-    priceByVariant: [],
-    image: [],
-    video: "",
-    category: "",
-    subcategory: "",
-    tags: [],
-    bulkOrder: { minQuantity: "", discount: "" },
-    stock: 0,
-    brand: "",
-    isFeatured: false,
-    color: [],
-    warranty: "",
-    returnable: false,
-    returnableDays: "",
-    cod: false,
-  });
+  const [product, setProduct] = useState(initialProductState);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -69,7 +72,7 @@ const AddProduct = () => {
           price: "",
           buyingPrice: "",
           stock: "",
-          image: "",
+          image: null,
         },
       ],
     });
@@ -91,9 +94,28 @@ const AddProduct = () => {
     });
   };
 
+  const navigate = useNavigate();
+
+  const handleVariantFileChange = (index, file) => {
+    const updatedVariants = [...product.priceByVariant];
+    updatedVariants[index].image = file;
+    setProduct({ ...product, priceByVariant: updatedVariants });
+  };
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
+    // Show loading modal before API call
+    Swal.fire({
+      title: "Adding Product",
+      text: "Please wait...",
+      icon: "info",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
     const formData = new FormData();
     formData.append("name", product.name);
     formData.append("description", product.description);
@@ -112,35 +134,51 @@ const AddProduct = () => {
     formData.append("returnableDays", product.returnableDays);
     formData.append("cod", product.cod);
     formData.append("video", product.video);
-    formData.append("color", product.color);
     formData.append("bulkOrder", product.bulkOrder);
     product.image.forEach((image) => {
       formData.append("image", image);
     });
 
-    formData.append("priceByVariant", JSON.stringify(product.priceByVariant));
+    const cleanVariants = product.priceByVariant.map((variant, idx) => {
+      if (variant.image instanceof File) {
+        formData.append(`variantImages`, variant.image);
+        return {
+          ...variant,
+          image: `variant_${idx}`,
+        };
+      }
+      return variant;
+    });
+
+    formData.append("priceByVariant", JSON.stringify(cleanVariants));
 
     product.color.forEach((color) => {
       formData.append("color", color);
     });
     try {
-      const response = await addProduct(formData).unwrap();
-      console.log("Product added:", response);
-
-      if (response) {
+      const res = await addProduct(formData).unwrap();
+      Swal.close();
+      if (res) {
         Swal.fire({
           title: "Success",
           text: "Product added successfully!",
           icon: "success",
         });
+        navigate("/dashboard/show-product");
       }
+      setProduct(initialProductState);
+      setIsVariant(false);
+      setIsColor(false);
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
+      Swal.close();
       console.error("Failed to add product:", error);
-      // Swal.fire({
-      //   title: "Error",
-      //   text: "Failed to add product.",
-      //   icon: "error",
-      // });
+      Swal.fire({
+        title: "Error",
+        text: "Failed to add product.",
+        icon: "error",
+      });
     }
   };
 
@@ -344,15 +382,17 @@ const AddProduct = () => {
                     placeholder="Stock"
                     required
                   />
-                  <InputText
-                    label={"Image"}
-                    type="text"
-                    name="image"
-                    value={variant.image}
-                    onChange={(e) => handleVariantChange(index, e)}
-                    placeholder="Image URL"
-                    required
-                  />
+                  <div>
+                    <Label className="text-sm font-medium">Image</Label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) =>
+                        handleVariantFileChange(index, e.target.files[0])
+                      }
+                      required
+                    />
+                  </div>
                   <Button type="button" onClick={() => removeVariant(index)}>
                     X
                   </Button>
@@ -494,8 +534,8 @@ const AddProduct = () => {
         </div>
 
         {/* Submit Button */}
-        <Button disabled={isLoading} type="submit">
-          {isLoading ? "Adding..." : "Add Product"}
+        <Button disabled={loading} type="submit">
+          {loading ? "Adding..." : "Add Product"}
         </Button>
       </form>
     </div>

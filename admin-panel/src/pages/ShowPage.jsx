@@ -3,7 +3,7 @@ import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router";
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
-
+import Swal from "sweetalert2";
 // Register all Community features
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -54,6 +54,7 @@ function ActionRenderer(props) {
 
 export default function ProductTable() {
   const navigate = useNavigate();
+
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(30);
   const [search, setSearch] = useState("");
@@ -67,8 +68,35 @@ export default function ProductTable() {
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
-      await deleteProduct(id).unwrap();
-      toast.success("Product deleted successfully!");
+      Swal.fire({
+        title: "Deleting Product",
+        text: "Please wait...",
+        icon: "info",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+      try {
+        const res = await deleteProduct(id).unwrap();
+        Swal.close();
+        if (res) {
+          Swal.fire({
+            title: "Success",
+            text: "Product Delete successfully!",
+            icon: "success",
+          });
+          toast.success("Product deleted successfully!");
+        }
+      } catch {
+        Swal.close();
+        Swal.fire({
+          title: "Error",
+          text: "Failed to delete product",
+          icon: "error",
+        });
+        toast.error("Error deleting product");
+      }
     }
   };
 

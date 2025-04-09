@@ -6,6 +6,14 @@ import Product from "../model/product.model.js";
 import SubCategory from "../model/subcategory.model.js";
 import path from "path";
 import { fileURLToPath } from "url";
+import cloudinary from "cloudinary";
+import extractPublicId from "../lib/extractPublicid.js";
+
+cloudinary.config({
+  cloud_name: "daq7v0wmf",
+  api_key: "286238383573198",
+  api_secret: "F25Rkv7b6fVQSgU0LXXzQe5KAe8",
+});
 // Add a new product
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,32 +21,57 @@ export const AddProduct = async (req, res) => {
   if (typeof req.body.priceByVariant === "string") {
     req.body.priceByVariant = JSON.parse(req.body.priceByVariant);
   }
-
   try {
     const categoryid = req.body.category;
     const subcategoryid = req.body.subcategory;
     const imageUrl = [];
-
-    // If no file uploaded, return empty
-    if (!req.files || !req.files.image) {
-      return imageUrl;
-    }
-
-    // Normalize to array
+    // // Normalize to array
     const images = Array.isArray(req.files.image)
       ? req.files.image
       : [req.files.image];
+    const variantImages = req.files?.variantImages
+      ? Array.isArray(req.files.variantImages)
+        ? req.files.variantImages
+        : [req.files.variantImages]
+      : [];
 
+    // for (const image of images) {
+    //   const timestamp = Date.now();
+    //   const safeName = image.name.replace(/\s+/g, "_");
+    //   const newName = `${timestamp}_${safeName}`;
+    //   // const uploadPath = path.join(__dirname, newName);
+    //   const uploadPath = path.join(__dirname, "../../uploads", newName);
+    //   await image.mv(uploadPath);
+    //   imageUrl.push(`/uploads/${newName}`);
+    // }
+    // const baseUrl = `${req.protocol}://${req.get("host")}`;
     for (const image of images) {
-      const timestamp = Date.now();
-      const safeName = image.name.replace(/\s+/g, "_");
-      const newName = `${timestamp}_${safeName}`;
-      const uploadPath = path.join(__dirname, newName);
-
-      await image.mv(uploadPath);
-      imageUrl.push(`/uploads/${newName}`);
+      const result = await cloudinary.v2.uploader.upload(
+        image.tempFilePath || image.tempFilePath,
+        {
+          folder: "ecommerce",
+        }
+      );
+      imageUrl.push(result.secure_url);
     }
-    const baseUrl = `${req.protocol}://${req.get("host")}`;
+    for (let i = 0; i < req.body.priceByVariant.length; i++) {
+      const variant = req.body.priceByVariant[i];
+      const imageFile = variantImages[i];
+
+      if (imageFile) {
+        const result = await cloudinary.v2.uploader.upload(
+          imageFile.tempFilePath || imageFile.tempFilePath,
+          {
+            folder: "ecommerce/variants",
+          }
+        );
+
+        variant.image = result.secure_url;
+      } else {
+        variant.image = "";
+      }
+    }
+
     const newproduct = new Product({
       ...req.body,
       image: imageUrl,
@@ -66,6 +99,8 @@ export const AddProduct = async (req, res) => {
   }
 };
 
+// Helper function to extract public_id from secure_url
+
 // delete product
 export const DeleteProduct = async (req, res) => {
   try {
@@ -73,6 +108,25 @@ export const DeleteProduct = async (req, res) => {
     const product = await Product.findByIdAndDelete(id);
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
+    }
+
+    if (product.image && product.image.length > 0) {
+      for (const img of product.image) {
+        if (img) {
+          const publicId = extractPublicId(img);
+          await cloudinary.v2.uploader.destroy(publicId);
+        }
+      }
+    }
+
+    // Delete variant images from Cloudinary
+    if (product.priceByVariant && product.priceByVariant.length > 0) {
+      for (const variant of product.priceByVariant) {
+        if (variant.image) {
+          const publicId = extractPublicId(variant.image);
+          await cloudinary.v2.uploader.destroy(publicId);
+        }
+      }
     }
     // Remove product from category and subcategory
     await Category.findByIdAndUpdate(product.category, {
