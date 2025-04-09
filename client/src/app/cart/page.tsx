@@ -1,11 +1,5 @@
 "use client";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,7 +8,6 @@ import { RootState } from "@/lib/store";
 import {
   removeItem,
   setDiscountPrice,
-  setShippingPrice,
   updateItemQuantity,
 } from "@/reducer/cartReducer";
 import { Minus, Plus } from "lucide-react";
@@ -26,7 +19,7 @@ import { CiSquareRemove } from "react-icons/ci";
 
 export default function Page() {
   const [copun, setCopun] = useState<string>("");
-  const [Shipping, setShipping] = useState<number>(0);
+  
 
   const {
     items: cartItems,
@@ -72,10 +65,7 @@ export default function Page() {
       );
       return;
     }
-    if (Shipping === 0) {
-      alert("Please select a shipping option.");
-      return;
-    }
+  
     router.push("/cart/checkout");
   };
   return (
@@ -213,7 +203,7 @@ export default function Page() {
               )}
 
             {/* select shipping fees option if dhaka 60 and outside dhaak 120 */}
-            <Select
+            {/* <Select
               defaultValue="0"
               onValueChange={(value) => {
                 setShipping(Number(value));
@@ -230,7 +220,7 @@ export default function Page() {
               </SelectContent>
             </Select>
 
-            <p className="text-lg font-semibold mt-2">Shipping: {Shipping}</p>
+            <p className="text-lg font-semibold mt-2">Shipping: {Shipping}</p>  */}
 
             <p className="text-xl font-bold">
               Total:{" "}
@@ -241,20 +231,11 @@ export default function Page() {
                 : totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
             </p>
             {/* price with shipping charge */}
-            <p className="text-lg font-semibold mt-2">
-              Total with Shipping:{" "}
-              {afterDiscountPrice
-                ? (afterDiscountPrice + Shipping)
-                    .toString()
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                : (totalPrice + Shipping)
-                    .toString()
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-            </p>
+           
 
             <Button
               onClick={processToCheckout}
-              disabled={cartItems.length === 0 || Shipping === 0}
+              disabled={cartItems.length === 0 }
               className="bg-red-500 text-white w-full md:w-auto mt-2"
             >
               Process to checkout

@@ -15,7 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { RootState } from "@/lib/store";
-import { clearCart } from "@/reducer/cartReducer";
+import { clearCart, setShippingPrice } from "@/reducer/cartReducer";
 import Image from "next/legacy/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -36,6 +36,7 @@ export default function CheckoutPage() {
   const [isOpen, setIsOpen] = useState(false);
   const [selectAddress, setSelectAddress] = useState<string>("");
   const [paymentMethod, setPaymentMethod] = useState<string>("");
+
   const dispatch = useAppDispatch();
   const router = useRouter();
   const {
@@ -45,10 +46,12 @@ export default function CheckoutPage() {
     shippingPrice,
   } = useAppSelector((state: RootState) => state.cart);
   const user = useAppSelector((state) => state.auth.user);
+
   const { isLoading, isError } = useGetUserByIdQuery(user?.id);
   const { data: addresses } = useGetAddressQuery(user?.id);
   //  useAddordersMutation
   const [addorders, { isLoading: isAdding }] = useAddordersMutation();
+
   const submitOrder = async () => {
     try {
       const oderData = {
@@ -91,6 +94,7 @@ export default function CheckoutPage() {
       });
     }
   };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -192,7 +196,18 @@ export default function CheckoutPage() {
             <select
               id="address"
               className="w-full p-2 border border-gray-300 rounded-md"
-              onChange={(e) => setSelectAddress(e.target.value)}
+              onChange={(e) => {
+                setSelectAddress(e.target.value);
+
+                const selected = addresses?.find(
+                  (addr: Address) => addr._id === e.target.value
+                );
+                console.log(selected);
+
+                dispatch(
+                  setShippingPrice(selected?.division === "Dhaka" ? 60 : 120)
+                );
+              }}
             >
               <option value="">Select Address</option>
               {addresses.map((address: Address) => (
@@ -251,7 +266,10 @@ export default function CheckoutPage() {
                 .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
             </p>
             <Button
-              disabled={!selectAddress && addresses?.length === 0}
+              disabled={
+                (!selectAddress && addresses?.length === 0) ||
+                cartItems.length === 0
+              }
               onClick={() => setIsOpen(true)}
               className="bg-green-500 text-white w-full md:w-auto mt-2"
             >
