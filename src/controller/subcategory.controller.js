@@ -1,5 +1,13 @@
 import Category from "../model/category.model.js";
 import SubCategory from "../model/subcategory.model.js";
+import extractPublicId from "../lib/extractPublicid.js";
+import cloudinary from "cloudinary";
+
+cloudinary.config({
+  cloud_name: "daq7v0wmf",
+  api_key: "286238383573198",
+  api_secret: "F25Rkv7b6fVQSgU0LXXzQe5KAe8",
+});
 // create subcategory
 // export const createSubCategory = async (req, res) => {
 //   try {
@@ -23,12 +31,26 @@ import SubCategory from "../model/subcategory.model.js";
 // };
 export const createSubCategory = async (req, res) => {
   try {
-    const { name, image, categoryid } = req.body;
+    const { name, categoryid } = req.body;
+    const { image } = req.files;
+    if (!name || !image) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+    // Upload image to Cloudinary
+    const uploadResponse = await cloudinary.uploader.upload(
+      image.tempFilePath,
+      {
+        folder: "subcategories",
+      }
+    );
+    if (!uploadResponse) {
+      return res.status(400).json({ message: "Image upload failed" });
+    }
 
     // Create a new subcategory instance
     const newsubcategory = new SubCategory({
       category: categoryid,
-      image,
+      image: uploadResponse.secure_url,
       name,
     });
     await newsubcategory.save();
@@ -96,6 +118,11 @@ export const deleteSubCategory = async (req, res) => {
     const subcategory = await SubCategory.findByIdAndDelete(req.params.id);
     if (!subcategory) {
       return res.status(404).json({ message: "SubCategory not found" });
+    }
+    // delete image from cloudinary
+    const publicId = extractPublicId(subcategory.image);
+    if (publicId) {
+      await cloudinary.uploader.destroy(publicId, { resource_type: "image" });
     }
     // remove subcategory from category
     await Category.findByIdAndUpdate(

@@ -104,6 +104,12 @@ export const deleteCategory = async (req, res) => {
     if (!category) {
       return res.status(404).json({ message: "Category not found" });
     }
+    // Delete the image from Cloudinary if it exists
+    const publicId = extractPublicId(category.image);
+    if (publicId) {
+      await cloudinary.uploader.destroy(publicId, { resource_type: "image" });
+    }
+
     return res.status(200).json({ message: "Category deleted successfully" });
   } catch (error) {
     return res.status(500).json({ message: "Server Error" });
