@@ -9,10 +9,7 @@ const store_id = process.env.STORE_ID;
 const store_passwd = process.env.STORE_PASSWORD;
 const is_live = process.env.IS_LIVE === "true" ? true : false;
 
-const serverUrl =
-  process.env.NODE_ENV === "production"
-    ? "https://myshop-2-production.up.railway.app"
-    : "http://localhost:4000";
+const serverUrl = "https://myshop-2-production.up.railway.app";
 
 //  create order
 export const createOrder = async (req, res) => {
