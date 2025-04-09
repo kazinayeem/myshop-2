@@ -1,8 +1,6 @@
 import cron from "node-cron";
 import Order from "../model/order.model.js";
-
-import User from "../model/user.model.js"; // Import User model
-import Order from "../model/order.model.js"; // Import Order model
+import User from "../model/user.model.js";
 
 const cleanupFailedPayments = async () => {
   try {
@@ -38,6 +36,6 @@ const cleanupFailedPayments = async () => {
 cron.schedule("*/1 * * * *", async () => {
   console.log("Running daily cleanup: removing failed payment orders...");
 
-  await cleanupUserOrders();
+  await cleanupFailedPayments();
   console.log("Daily cleanup completed.");
 });
