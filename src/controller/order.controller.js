@@ -4,13 +4,19 @@ import User from "../model/user.model.js";
 import mongoose from "mongoose";
 import SSLCommerzPayment from "sslcommerz-lts";
 import "dotenv/config";
-const store_id = process.env.STORE_ID || "kazi67f0c67596ef9";
-const store_passwd = process.env.STORE_PASSWORD || "kazi67f0c67596ef9@ssl";
-const is_live = false;
-const frontendUrl =
-  process.env.FRONTEND_URL || "https://myshop-2-x9hr.vercel.app";
+
+const store_id = process.env.STORE_ID;
+const store_passwd = process.env.STORE_PASSWORD;
+const is_live = process.env.IS_LIVE === "true" ? true : false;
+
 const serverUrl =
-  process.env.SERVER_URL || "https://myshop-2-production.up.railway.app";
+  process.env.NODE_ENV === "production"
+    ? process.env.SERVER_URL_PROD ||
+      "https://myshop-2-production.up.railway.app"
+    : process.env.SERVER_URL_DEV || "http://localhost:4000";
+console.log("serverUrl", serverUrl);
+console.log(process.env.NODE_ENV, process.env.SERVER_URL_PROD);
+
 // order controller
 
 //  create order

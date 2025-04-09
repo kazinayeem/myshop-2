@@ -2,33 +2,15 @@ import Category from "../model/category.model.js";
 import SubCategory from "../model/subcategory.model.js";
 import extractPublicId from "../lib/extractPublicid.js";
 import cloudinary from "cloudinary";
-
+import dotenv from "dotenv";
+dotenv.config();
 cloudinary.config({
-  cloud_name: "daq7v0wmf",
-  api_key: "286238383573198",
-  api_secret: "F25Rkv7b6fVQSgU0LXXzQe5KAe8",
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
+
 // create subcategory
-// export const createSubCategory = async (req, res) => {
-//   try {
-//     const { name, image, categoryid } = req.body;
-//     const newsubcategory = new SubCategory({
-//       category: categoryid,
-//       image,
-//       name,
-//     });
-//     await newsubcategory.save();
-//     await Category.findByIdAndUpdate(
-//       categoryid,
-//       { $push: { subcategory: newsubcategory._id } },
-//       { new: true }
-//     );
-//     return res.status(201).json(subcategory);
-//   } catch (error) {
-//     console.error(error);
-//     return res.status(500).json({ message: "Server Error" });
-//   }
-// };
 export const createSubCategory = async (req, res) => {
   try {
     const { name, categoryid } = req.body;

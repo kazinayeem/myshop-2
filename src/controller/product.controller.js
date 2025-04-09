@@ -8,11 +8,12 @@ import path from "path";
 import { fileURLToPath } from "url";
 import cloudinary from "cloudinary";
 import extractPublicId from "../lib/extractPublicid.js";
-
+import dotenv from "dotenv";
+dotenv.config();
 cloudinary.config({
-  cloud_name: "daq7v0wmf",
-  api_key: "286238383573198",
-  api_secret: "F25Rkv7b6fVQSgU0LXXzQe5KAe8",
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 // Add a new product
 const __filename = fileURLToPath(import.meta.url);

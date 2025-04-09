@@ -7,9 +7,7 @@ import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import hpp from "hpp";
 import morgan from "morgan";
-import SSLCommerzPayment from "sslcommerz-lts";
 import xssClean from "xss-clean";
-import Order from "./model/order.model.js";
 import addressRoutes from "./routes/address.routes.js";
 import Brand from "./routes/brand.routes.js";
 import CategoryRoutes from "./routes/category.routes.js";
@@ -18,14 +16,8 @@ import productRoutes from "./routes/product.routes.js";
 import SliderRoutes from "./routes/slider.routes.js";
 import SubCategoryRoutes from "./routes/subcategory.routes.js";
 import userRoutes from "./routes/user.routes.js";
+import RootRoutes from "./routes/root.routes.js";
 dotenv.config();
-
-const store_id = process.env.STORE_ID || "kazi67f0c67596ef9";
-const store_passwd = process.env.STORE_PASSWORD || "kazi67f0c67596ef9@ssl";
-const is_live = false;
-const frontendUrl =
-  process.env.FRONTEND_URL || "https://myshop-2-x9hr.vercel.app";
-// initialize express
 
 const app = express();
 
@@ -44,8 +36,7 @@ app.use(hpp());
 app.use(
   fileUpload({
     useTempFiles: true,
-    tempFileDir: "./tmp",
-    limits: { fileSize: 100 * 1024 * 1024 }, // 100 MB
+    limits: { fileSize: 100 * 1024 * 1024 }, 
     abortOnLimit: true,
     createParentPath: true,
   })
@@ -65,93 +56,9 @@ app.get("/health", (req, res) => {
   res.status(200).json({ message: "OK" });
 });
 
-app.get("/transaction-query-by-transaction-id", (req, res) => {
-  const data = {
-    tran_id: req.query.tran_id,
-  };
-  const sslcz = new SSLCommerzPayment(store_id, store_passwd, is_live);
-  sslcz.transactionQueryByTransactionId(data).then((data) => {
-    res.json(data);
-  });
-});
-app.post("/success", async (req, res) => {
-  try {
-    const paymentData = req.query;
-    const sslcz = new SSLCommerzPayment(store_id, store_passwd, is_live);
-    const data = {
-      tran_id: paymentData.tran_id,
-    };
+// root route
+app.use("/", RootRoutes);
 
-    const paymentinfo = await sslcz.transactionQueryByTransactionId(data);
-
-    if (paymentinfo.no_of_trans_found > 0 && paymentinfo.element.length > 0) {
-      await Order.findOneAndUpdate(
-        { _id: paymentData.tran_id },
-        {
-          transactionId: paymentData.tran_id,
-          transactionStatus: "success",
-          paymentStatus: "paid",
-          paymentMethod: paymentinfo.element[0].card_type,
-          bankTransactionId: paymentinfo.element[0].bank_tran_id,
-          transactionDate: paymentinfo.element[0].tran_date,
-          paidAmount: paymentinfo.element[0].amount,
-          dueAmount: 0,
-        }
-      );
-      res.redirect(`${frontendUrl}/success?tran_id=${paymentData.tran_id}`);
-    } else {
-      res.redirect(`${frontendUrl}/fail?tran_id=${paymentData.tran_id}`);
-    }
-  } catch (error) {
-    console.error("Error in success route:", error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-});
-
-app.post("/fail", async (req, res) => {
-  try {
-    const paymentData = req.query;
-    await Order.findOneAndUpdate(
-      { _id: paymentData.tran_id },
-      {
-        transactionId: paymentData.tran_id,
-        transactionStatus: "failed",
-        paymentStatus: "failed",
-        status: "failed",
-      }
-    );
-
-    res.redirect(`${frontendUrl}/fail`);
-  } catch (error) {
-    console.error("Error in fail route:", error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-});
-
-app.post("/cancel", async (req, res) => {
-  try {
-    const paymentData = req.query;
-    await Order.findOneAndUpdate(
-      { _id: paymentData.tran_id },
-      {
-        transactionId: paymentData.tran_id,
-        transactionStatus: "failed",
-        paymentStatus: "failed",
-        status: "failed",
-      }
-    );
-    res.redirect(`${frontendUrl}/cancel`);
-  } catch (error) {
-    console.error("Error in cancel route:", error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-});
-
-app.post("/ipn", async (req, res) => {
-  res.status(200).json({ message: "IPN received successfully" });
-});
-
-// products
 app.use("/api/products", productRoutes);
 // categories
 app.use("/api/categories", CategoryRoutes);
