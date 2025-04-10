@@ -3,7 +3,7 @@ import { create } from "@/app/actions";
 import { auth, provider } from "@/lib/firebase";
 import { useAppDispatch } from "@/lib/hooks";
 import { loginSuccess } from "@/reducer/authReducer";
-import { signInWithPopup } from "firebase/auth";
+import { signInWithRedirect } from "firebase/auth";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
@@ -15,7 +15,7 @@ export default function LogInWithGoogle() {
   const navigation = useRouter();
   const handleGoogleLogin = async () => {
     try {
-      const result = await signInWithPopup(auth, provider);
+      const result = await signInWithRedirect(auth, provider);
 
       const user: {
         email?: string;
