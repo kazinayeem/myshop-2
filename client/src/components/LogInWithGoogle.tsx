@@ -3,7 +3,7 @@ import { create } from "@/app/actions";
 import { auth, provider } from "@/lib/firebase";
 import { useAppDispatch } from "@/lib/hooks";
 import { loginSuccess } from "@/reducer/authReducer";
-import { signInWithRedirect } from "firebase/auth";
+import { getRedirectResult, signInWithRedirect } from "firebase/auth";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
@@ -15,8 +15,16 @@ export default function LogInWithGoogle() {
   const navigation = useRouter();
   const handleGoogleLogin = async () => {
     try {
-      const result = await signInWithRedirect(auth, provider);
-
+      await signInWithRedirect(auth, provider);
+      const result = await getRedirectResult(auth);
+      if (!result || !result.user) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Invalid email or password",
+        });
+        return;
+      }
       const user: {
         email?: string;
         username?: string;
