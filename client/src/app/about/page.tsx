@@ -20,7 +20,7 @@ export default function AboutPage() {
       {/* Company Story */}
       <div className="grid md:grid-cols-2 gap-8 items-center mb-16">
         <Image
-          src="/about-us.jpg"
+          src="https://cdn.pixabay.com/photo/2014/08/15/06/16/imprint-418594_640.jpg"
           alt="Our Story"
           width={600}
           height={400}
@@ -51,7 +51,7 @@ export default function AboutPage() {
         <div className="grid md:grid-cols-3 gap-6 text-center">
           <div className="p-4">
             <Image
-              src="/icons/quality.png"
+              src="/quality.png"
               alt="Quality"
               width={60}
               height={60}
@@ -65,7 +65,7 @@ export default function AboutPage() {
           </div>
           <div className="p-4">
             <Image
-              src="/icons/support.png"
+              src="/support.png"
               alt="Support"
               width={60}
               height={60}
@@ -81,7 +81,7 @@ export default function AboutPage() {
           </div>
           <div className="p-4">
             <Image
-              src="/icons/fast-delivery.png"
+              src="/fast-delivery.png"
               alt="Delivery"
               width={60}
               height={60}

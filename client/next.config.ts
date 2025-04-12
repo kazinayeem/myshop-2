@@ -21,6 +21,7 @@ const nextConfig: NextConfig = {
       "www.freepik.com",
       "www.freepik.es",
       "www.cloudinary.com",
+      "cdn.pixabay.com",
     ],
   },
 };

@@ -38,8 +38,10 @@ export default function Navbar() {
     setMenuOpen(false);
     router.push("/product");
   };
+
   return (
-    <nav className="flex justify-between items-center px-10 py-4 shadow-md bg-white relative">
+    <nav className="flex justify-between items-center px-6 py-4 shadow-md bg-white relative">
+      {/* Left Section: Logo and Brand Name */}
       <div className="flex items-center space-x-2">
         <Link href="/">
           {isLoading ? (
@@ -61,6 +63,7 @@ export default function Navbar() {
         </Link>
       </div>
 
+      {/* Mobile Menu Button */}
       <button
         className="md:hidden text-xl"
         onClick={() => setMenuOpen(!menuOpen)}
@@ -71,10 +74,12 @@ export default function Navbar() {
       {/* Navigation Links */}
       <ul
         className={`md:flex space-x-6 text-gray-700 absolute md:static bg-white w-full md:w-auto md:flex-row flex-col md:space-y-0 space-y-4 md:items-center left-0 top-16 transition-all duration-300 ease-in-out ${
-          menuOpen ? "flex" : "hidden"
+          menuOpen ? "flex left-0" : "hidden left-[-100%] "
         }`}
       >
-        <li className="hover:text-black cursor-pointer px-6 md:px-0">Home</li>
+        <Link href="/">
+          <li className="hover:text-black cursor-pointer px-6 md:px-0">Home</li>
+        </Link>
         <Link href="/product">
           <li className="hover:text-black cursor-pointer px-6 md:px-0">
             All Products
