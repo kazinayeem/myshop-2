@@ -3,7 +3,7 @@ import { create } from "@/app/actions";
 import { auth, provider } from "@/lib/firebase";
 import { useAppDispatch } from "@/lib/hooks";
 import { loginSuccess } from "@/reducer/authReducer";
-import { getRedirectResult, signInWithRedirect } from "firebase/auth";
+import { signInWithPopup } from "firebase/auth";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
@@ -15,8 +15,8 @@ export default function LogInWithGoogle() {
   const navigation = useRouter();
   const handleGoogleLogin = async () => {
     try {
-      await signInWithRedirect(auth, provider);
-      const result = await getRedirectResult(auth);
+      const result = await signInWithPopup(auth, provider);
+
       if (!result || !result.user) {
         Swal.fire({
           icon: "error",
