@@ -1,23 +1,23 @@
 "use client";
-import { Search } from "lucide-react";
-import { FaHeart, FaShoppingCart, FaBars } from "react-icons/fa";
-import { CiLogin } from "react-icons/ci";
-import { useState } from "react";
-import Link from "next/link";
-import Image from "next/legacy/image";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { logout } from "@/reducer/authReducer";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Search } from "lucide-react";
+import Image from "next/legacy/image";
+import Link from "next/link";
+import { useState } from "react";
+import { CiLogin } from "react-icons/ci";
+import { FaBars, FaHeart, FaShoppingCart } from "react-icons/fa";
 
+import { useGetBrandsQuery } from "@/api/BrandApi";
+import { remove } from "@/app/actions";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { remove } from "@/app/actions";
 import { useRouter } from "next/navigation";
-import { useGetBrandsQuery } from "@/api/BrandApi";
 
 export default function Navbar() {
   const router = useRouter();
@@ -80,7 +80,11 @@ export default function Navbar() {
             All Products
           </li>
         </Link>
-        <li className="hover:text-black cursor-pointer px-6 md:px-0">About</li>
+        <Link href="/about">
+          <li className="hover:text-black cursor-pointer px-6 md:px-0">
+            About Us
+          </li>
+        </Link>
         <li className="hover:text-black cursor-pointer px-6 md:px-0">
           Hot Deals
         </li>

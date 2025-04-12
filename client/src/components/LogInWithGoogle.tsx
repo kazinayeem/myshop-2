@@ -54,7 +54,7 @@ export default function LogInWithGoogle() {
           title: "Success",
           text: "Login successful",
         });
-        navigation.push("/");
+        navigation.back();
       } else {
         Swal.fire({
           icon: "error",

@@ -1,4 +1,5 @@
 import { Facebook, Github, Instagram, Twitter } from "lucide-react";
+import Image from "next/image";
 
 export default function Footer() {
   return (
@@ -11,7 +12,7 @@ export default function Footer() {
         </div>
 
         {/* Navigation Links */}
-        <nav className="flex flex-wrap justify-center md:justify-start gap-4">
+        <nav className="flex flex-wrap justify-center md:justify-start gap-4 mt-6 md:mt-0">
           <a href="#" className="hover:text-white">
             Home
           </a>
@@ -27,7 +28,7 @@ export default function Footer() {
         </nav>
 
         {/* Social Icons */}
-        <div className="flex gap-4">
+        <div className="flex gap-6 mt-6 md:mt-0">
           <a href="#" className="hover:text-white">
             <Facebook size={20} />
           </a>
@@ -40,6 +41,34 @@ export default function Footer() {
           <a href="#" className="hover:text-white">
             <Github size={20} />
           </a>
+        </div>
+      </div>
+
+      {/* Payment Methods Section */}
+      <div className="container mx-auto px-4 mt-6">
+        <div className="flex justify-center gap-8">
+          <Image
+            src="/Bkash-Logo-removebg-preview.png"
+            alt="bKash"
+            className="h-10"
+            width={100}
+            height={100}
+          />
+          <Image
+            src="/Nagad-Logo.wine-removebg-preview.png"
+            alt="Nagad"
+            className="h-10"
+            width={100}
+            height={100}
+          />
+
+          <Image
+            src="/logo-removebg-preview.png"
+            alt="SSLCommerz"
+            className="h-10"
+            width={100}
+            height={100}
+          />
         </div>
       </div>
 

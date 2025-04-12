@@ -15,7 +15,12 @@ const nextConfig: NextConfig = {
       "cdn-icons-png.flaticon.com",
       "via.placeholder.com",
       "www.techlandbd.com",
-      "www.startech.com.bd"
+      "www.startech.com.bd",
+      "www.res.cloudinary.com",
+      "www.google.com",
+      "www.freepik.com",
+      "www.freepik.es",
+      "www.cloudinary.com",
     ],
   },
 };

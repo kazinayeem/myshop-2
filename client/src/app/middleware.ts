@@ -6,7 +6,7 @@ export function middleware(req: NextRequest) {
   const user = req.cookies.get("user")?.value || localStorage.getItem("user");
 
   if (!token && user && req.nextUrl.pathname.startsWith("/dashboard")) {
-    return NextResponse.redirect(new URL("/auth", req.url));
+    return NextResponse.redirect(new URL("/auth/login", req.url));
   }
 
   return NextResponse.next();
