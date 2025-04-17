@@ -135,7 +135,15 @@ export default function Page() {
                 {isLoading ? "Creating..." : "Create Account"}
               </Button>
               <LogInWithGoogle />
-
+              <p className="text-center text-sm text-muted-foreground mt-2">
+                Forgot your password?{" "}
+                <Link
+                  href="/auth/reset-password"
+                  className="underline text-blue-500"
+                >
+                  Reset here
+                </Link>
+              </p>
               <p className="text-center text-sm text-muted-foreground">
                 Already have an account?{" "}
                 <Link href="/auth/login" className="underline">

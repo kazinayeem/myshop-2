@@ -19,6 +19,14 @@ export const userApi = createApi({
         body: userData,
       }),
     }),
+    // reset password
+    resetPassword: builder.mutation({
+      query: (userData) => ({
+        url: "/users/reset-password",
+        method: "POST",
+        body: userData,
+      }),
+    }),
     loginwithGoogle: builder.mutation({
       query: (userData) => ({
         url: "/users/google/login",
@@ -49,6 +57,7 @@ export const {
   useLoginMutation,
   useRegisterMutation,
   useLoginwithGoogleMutation,
+  useResetPasswordMutation,
 } = userApi;
 
 export default userApi;

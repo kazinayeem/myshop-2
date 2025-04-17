@@ -7,6 +7,7 @@ import {
   googleRegisterandlogin,
   login,
   register,
+  resetPassword,
   updateUser,
 } from "../controller/user.controller.js";
 
@@ -23,5 +24,7 @@ router.get("/:id", getUserById);
 router.put("/:id", updateUser);
 // google login
 router.post("/google/login", googleRegisterandlogin);
+// reset password
+router.post("/reset-password", resetPassword);
 
 export default router;

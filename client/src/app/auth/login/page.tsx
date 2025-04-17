@@ -137,6 +137,15 @@ export default function Page() {
               </Button>
 
               <LogInWithGoogle />
+              <p className="text-center text-sm text-muted-foreground mt-2">
+                Forgot your password?{" "}
+                <Link
+                  href="/auth/reset-password"
+                  className="underline text-blue-500"
+                >
+                  Reset here
+                </Link>
+              </p>
 
               <p className="text-center text-sm text-muted-foreground">
                 Don&apos;t have an account?{" "}

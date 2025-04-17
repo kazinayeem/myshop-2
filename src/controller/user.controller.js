@@ -261,3 +261,47 @@ export const updateUser = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
+// delete user
+export const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await User.findByIdAndDelete(id);
+    return res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+// reset password
+export const resetPassword = async (req, res) => {
+  try {
+    const { email, oldpassword, password } = req.body;
+    console.log(email, oldpassword, password);
+
+    if (!email || !oldpassword || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+    // check if user exists
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "user not found" });
+    }
+    // check if password is correct
+    const isMatch = await bcrypt.compare(oldpassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Old Password no match" });
+    }
+    // hash new password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    // update password
+    const updatedUser = await User.findByIdAndUpdate(
+      user._id,
+      { password: hashedPassword },
+      { new: true }
+    );
+    return res.status(200).json(updatedUser);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
