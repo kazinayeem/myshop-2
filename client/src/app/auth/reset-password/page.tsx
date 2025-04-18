@@ -1,14 +1,13 @@
 "use client";
-import { useState, useEffect } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-import { Input } from "@/components/ui/input";
+import { useResetPasswordMutation } from "@/api/userApi";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 import Swal from "sweetalert2";
-import Link from "next/link";
-import { useResetPasswordMutation } from "@/api/userApi";
 
 interface ResetPasswordFormValues {
   email: string;
@@ -44,7 +43,7 @@ export default function ResetPasswordPage() {
         text: "You can now log in with your new password.",
         confirmButtonText: "OK",
       }).then(() => {
-        router.push("/auth/login");
+        router.push("/user/profile");
       });
     }
   }, [isSuccess, router]);
@@ -164,13 +163,6 @@ export default function ResetPasswordPage() {
               >
                 Reset Password
               </Button>
-
-              <p className="text-center text-sm text-muted-foreground mt-2">
-                Remembered your password?{" "}
-                <Link href="/auth/login" className="underline">
-                  Log in
-                </Link>
-              </p>
             </form>
           </CardContent>
         </Card>

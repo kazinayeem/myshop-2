@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
   const user = useAppSelector((state) => state.auth.user);
@@ -26,7 +27,7 @@ export default function ProfilePage() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
+  const navigation = useRouter();
   const handleSave = async () => {
     await updateUser({ id: user?.id, ...formData });
     setEditMode(false);
@@ -169,6 +170,15 @@ export default function ProfilePage() {
                 Edit Profile
               </Button>
             )}
+          </div>
+          {/* change password */}
+          <div className="flex justify-end p-4">
+            <Button
+              onClick={() => navigation.push("/auth/reset-password")}
+              variant="outline"
+            >
+              Change Password
+            </Button>
           </div>
         </Card>
       )}

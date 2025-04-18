@@ -138,7 +138,7 @@ export default function Page() {
               <p className="text-center text-sm text-muted-foreground mt-2">
                 Forgot your password?{" "}
                 <Link
-                  href="/auth/reset-password"
+                  href="/auth/otp"
                   className="underline text-blue-500"
                 >
                   Reset here

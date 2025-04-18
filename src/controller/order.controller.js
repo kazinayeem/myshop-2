@@ -5,13 +5,12 @@ import SSLCommerzPayment from "sslcommerz-lts";
 import Order from "../model/order.model.js";
 import Product from "../model/product.model.js";
 import User from "../model/user.model.js";
+import { envData } from "../config/envdata.js";
 
-const store_id = process.env.STORE_ID || "kazi67f0c67596ef9";
-const store_passwd = process.env.STORE_PASSWORD || "kazi67f0c67596ef9@ssl";
-const is_live = false;
-
-const serverUrl = "https://myshop-2-production.up.railway.app";
-//const serverUrl = "http://localhost:4000";
+const store_id = envData.storeid;
+const store_passwd = envData.storepassword;
+const is_live = envData.islive;
+const serverUrl = envData.serverUrl;
 
 //  create order
 export const createOrder = async (req, res) => {

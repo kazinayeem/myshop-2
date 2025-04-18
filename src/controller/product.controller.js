@@ -8,12 +8,12 @@ import path from "path";
 import { fileURLToPath } from "url";
 import cloudinary from "cloudinary";
 import extractPublicId from "../lib/extractPublicid.js";
+import { envData } from "../config/envdata.js";
 
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || "daq7v0wmf",
-  api_key: process.env.CLOUDINARY_API_KEY || "286238383573198",
-  api_secret:
-    process.env.CLOUDINARY_API_SECRET || "F25Rkv7b6fVQSgU0LXXzQe5KAe8",
+  cloud_name: envData.cloud_name,
+  api_key: envData.api_key,
+  api_secret: envData.api_secret,
 });
 // Add a new product
 const __filename = fileURLToPath(import.meta.url);

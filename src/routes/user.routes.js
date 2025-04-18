@@ -2,12 +2,15 @@
 import express from "express";
 import {
   adminLogin,
+  changePasswordController,
+  CheckOtpController,
   getUserById,
   getUsers,
   googleRegisterandlogin,
   login,
   register,
   resetPassword,
+  SendOtpController,
   updateUser,
 } from "../controller/user.controller.js";
 
@@ -26,5 +29,10 @@ router.put("/:id", updateUser);
 router.post("/google/login", googleRegisterandlogin);
 // reset password
 router.post("/reset-password", resetPassword);
-
+// send otp
+router.post("/send-otp", SendOtpController);
+// verify otp
+router.post("/verify-otp", CheckOtpController);
+//change password
+router.post("/change-password", changePasswordController);
 export default router;

@@ -5,6 +5,8 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../model/user.model.js";
+import { otpGen } from "../lib/otpGenerator.js";
+import { sendMailConfig } from "../lib/sendMail.js";
 
 // login google without password if user is not registered then register user or else login user
 
@@ -303,5 +305,103 @@ export const resetPassword = async (req, res) => {
     return res.status(200).json(updatedUser);
   } catch (error) {
     return res.status(500).json({ message: error.message });
+  }
+};
+// send otp
+export const SendOtpController = async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      return res.status(400).json({
+        message: "user not found",
+      });
+    }
+    const otp = otpGen();
+    const password_expiry = Date.now() + 60 * 60 * 1000;
+    await User.findOneAndUpdate(
+      { email: req.body.email },
+      {
+        otp: otp,
+        otpExpire: new Date(password_expiry).toISOString(),
+      }
+    );
+
+    await sendMailConfig({
+      email: req.body.email,
+      name: user.username,
+      otp: otp,
+    });
+    return res.status(200).json({
+      message: "OTP send successfull check your mail",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "server error",
+    });
+  }
+};
+// check otp
+export const CheckOtpController = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+    if (!email || !otp) {
+      return res.status(400).json({
+        message: "All fields are required",
+      });
+    }
+    const user = await User.findOne({ email: req.body.email });
+
+    if (!user) {
+      return res.status(400).json({
+        message: "user not found",
+      });
+    }
+
+    const current_time = new Date().toISOString();
+    if (user.otpExpire < current_time) {
+      return res.status(400).json({
+        message: "otp expired",
+      });
+    }
+
+    if (user.otp === req.body.otp) {
+      return res.status(200).json({
+        message: "otp match",
+      });
+    }
+
+    return res.status(400).json({
+      message: "otp not match",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "server error",
+    });
+  }
+};
+
+// password reset
+export const changePasswordController = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      return res.status(400).json({
+        message: "user not found",
+      });
+    }
+    const salt = await bcrypt.genSalt(10);
+    const hash_password = await bcrypt.hash(req.body.password, salt);
+    await User.findOneAndUpdate({ email: email }, { password: hash_password });
+    return res.status(200).json({
+      message: "password change successfull",
+    });
+  } catch (error) {
+    console.log(error);
+
+    return res.status(500).json({
+      message: "server error",
+    });
   }
 };

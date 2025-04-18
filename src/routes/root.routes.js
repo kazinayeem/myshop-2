@@ -2,13 +2,13 @@ import express from "express";
 import SSLCommerzPayment from "sslcommerz-lts";
 import dotenv from "dotenv";
 import Order from "../model/order.model.js";
+import { envData } from "../config/envdata.js";
 dotenv.config();
 
-const store_id = process.env.STORE_ID || "kazi67f0c67596ef9";
-const store_passwd = process.env.STORE_PASSWORD || "kazi67f0c67596ef9@ssl";
-const is_live = false; //true for live, false for sandbox
-const frontendUrl = "https://myshop-2-x9hr.vercel.app/";
-//const frontendUrl = "http://localhost:3000/";
+const store_id = envData.storeid;
+const store_passwd = envData.storepassword;
+const is_live = envData.islive;
+const frontendUrl = envData.frontendUrl;
 
 const router = express.Router();
 router.get("/transaction-query-by-transaction-id", (req, res) => {
