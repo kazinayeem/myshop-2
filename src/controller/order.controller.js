@@ -6,6 +6,8 @@ import Order from "../model/order.model.js";
 import Product from "../model/product.model.js";
 import User from "../model/user.model.js";
 import { envData } from "../config/envdata.js";
+import { sendOrderConfirmationMail } from "../lib/createOrderMail.js";
+import { sendDeliveryConfirmationMail } from "../lib/deliveredMailer.js";
 
 const store_id = envData.storeid;
 const store_passwd = envData.storepassword;
@@ -65,6 +67,21 @@ export const createOrder = async (req, res) => {
 
     // if cash on delivery, return order details
     if (req.body.paymentMethod === "cash_on_delivery") {
+      const order = await Order.findById(savedOrder._id)
+        .populate("userId", "email username")
+        .populate("products.productId", "name");
+
+      await sendOrderConfirmationMail({
+        email: order.userId.email,
+        name: order.userId.username,
+        orderId: order._id,
+        items: order.products.map((p) => ({
+          name: p.productId.name,
+          quantity: p.quantity,
+          price: p.price,
+        })),
+        totalAmount: order.totalPrice,
+      });
       return res.status(200).json(savedOrder);
     }
 
@@ -179,13 +196,36 @@ export const getOrderByUserId = async (req, res) => {
 // update order
 export const updateOrder = async (req, res) => {
   try {
+    const existingOrder = await Order.findById(req.params.id).populate(
+      "userId",
+      "email username"
+    );
+
+    if (!existingOrder) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    const prevStatus = existingOrder.status;
+
     const updatedOrder = await Order.findByIdAndUpdate(
       req.params.id,
       req.body,
       { new: true }
-    );
+    ).populate("userId", "email username");
+
+    // If the status changed to 'Delivered', send mail
+    if (prevStatus !== "delivered" && updatedOrder.status === "delivered") {
+      await sendDeliveryConfirmationMail({
+        email: updatedOrder.userId.email,
+        name: updatedOrder.userId.username,
+        orderId: updatedOrder._id,
+      });
+    }
+
     return res.status(200).json(updatedOrder);
   } catch (error) {
+    console.log(error);
+
     return res.status(500).json({ message: error.message });
   }
 };

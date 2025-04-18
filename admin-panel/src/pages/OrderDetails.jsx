@@ -9,7 +9,7 @@ import {
 import { takaSign } from "../utils/Currency";
 import { generateInvoicePDF } from "../utils/invoiceGenerator";
 import { useGetbrandsQuery } from "../redux/Api/brandApi";
-
+import Swal from "sweetalert2";
 const OrderDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -48,6 +48,15 @@ const OrderDetails = () => {
   }, [order]);
 
   const handleUpdateOrder = async () => {
+    // loading swal
+    Swal.fire({
+      title: "Updating Order...",
+      text: "Please wait.",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
     try {
       await updateOrder({
         id,
@@ -61,6 +70,13 @@ const OrderDetails = () => {
         deliveryCharge,
         number,
       }).unwrap();
+      Swal.close();
+      Swal.fire({
+        icon: "success",
+        title: "Order Updated",
+        text: "Order details updated successfully.",
+        confirmButtonText: "OK",
+      });
       setIsModalOpen(false);
     } catch (error) {
       console.error("Failed to update order details", error);
