@@ -50,6 +50,8 @@ router.post("/success", async (req, res) => {
         "userId",
         "email name"
       );
+      console.log("Order details:", order);
+      
       await sendOrderConfirmationMail({
         email: order.userId.email,
         name: order.userId.name,
