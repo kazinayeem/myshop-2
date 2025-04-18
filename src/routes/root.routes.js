@@ -3,6 +3,7 @@ import SSLCommerzPayment from "sslcommerz-lts";
 import dotenv from "dotenv";
 import Order from "../model/order.model.js";
 import { envData } from "../config/envdata.js";
+import { sendOrderConfirmationMail } from "../lib/createOrderMail.js";
 dotenv.config();
 
 const store_id = envData.storeid;
@@ -44,6 +45,18 @@ router.post("/success", async (req, res) => {
           dueAmount: 0,
         }
       );
+      // send confirmation email
+      const order = await Order.findById(paymentData.tran_id).populate(
+        "userId",
+        "email name"
+      );
+      await sendOrderConfirmationMail({
+        email: order.userId.email,
+        name: order.userId.name,
+        orderId: order._id,
+        items: order.products,
+        totalAmount: order.totalPrice,
+      });
       res.redirect(`${frontendUrl}/success?tran_id=${paymentData.tran_id}`);
     } else {
       res.redirect(`${frontendUrl}/fail?tran_id=${paymentData.tran_id}`);
