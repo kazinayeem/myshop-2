@@ -8,6 +8,8 @@ const transporter = nodemailer.createTransport({
     pass: envData.pass,
   },
 });
+
+// Order Confirmation Email HTML Template
 export const orderConfirmationTemplate = ({
   name,
   orderId,
@@ -17,11 +19,12 @@ export const orderConfirmationTemplate = ({
   const itemRows = items
     .map(
       (item) => `
-      <tr>
-        <td style="padding: 8px 0;">${item.name}</td>
-        <td style="padding: 8px 0;">${item.quantity}</td>
-        <td style="padding: 8px 0;">${item.price}</td>
-      </tr>`
+    <tr>
+      <td style="padding: 8px 0;">${item.name}</td>
+      <td style="padding: 8px 0;">${item.quantity}</td>
+      <td style="padding: 8px 0;">${item.price}</td>
+    </tr>
+  `
     )
     .join("");
 
@@ -116,7 +119,7 @@ export const orderConfirmationTemplate = ({
   `;
 };
 
-// Function to send order confirmation email
+// Send Order Confirmation Email
 export async function sendOrderConfirmationMail({
   email,
   name,
@@ -125,13 +128,22 @@ export async function sendOrderConfirmationMail({
   totalAmount,
 }) {
   try {
+    const formattedItems = items.map((item) => ({
+      name: item.name,
+      quantity: item.quantity,
+      price: `$${parseFloat(item.price).toFixed(2)}`,
+    }));
+
     const htmlContent = orderConfirmationTemplate({
       name,
       orderId,
-      items,
-      totalAmount,
+      items: formattedItems,
+      totalAmount: `$${parseFloat(totalAmount).toFixed(2)}`,
     });
-    const textContent = `Hi ${name}, your order #${orderId} has been confirmed. Total amount: ${totalAmount}.`;
+
+    const textContent = `Hi ${name}, your order #${orderId} has been confirmed. Total: $${parseFloat(
+      totalAmount
+    ).toFixed(2)}.`;
 
     const info = await transporter.sendMail({
       from: '"Nayeem Shop" <kazinayeem55085@gmail.com>',

@@ -46,19 +46,22 @@ router.post("/success", async (req, res) => {
         }
       );
       // send confirmation email
-      const order = await Order.findById(paymentData.tran_id).populate(
-        "userId",
-        "email name"
-      );
-      console.log("Order details:", order);
-      
+      const order = await Order.findById(paymentData.tran_id)
+        .populate("userId", "email username")
+        .populate("products.productId", "name");
+
       await sendOrderConfirmationMail({
         email: order.userId.email,
-        name: order.userId.name,
+        name: order.userId.username,
         orderId: order._id,
-        items: order.products,
+        items: order.products.map((p) => ({
+          name: p.productId.name,
+          quantity: p.quantity,
+          price: p.price,
+        })),
         totalAmount: order.totalPrice,
       });
+
       res.redirect(`${frontendUrl}/success?tran_id=${paymentData.tran_id}`);
     } else {
       res.redirect(`${frontendUrl}/fail?tran_id=${paymentData.tran_id}`);
