@@ -13,6 +13,9 @@ Welcome to **MyShop 2.0** – a simple yet powerful e-commerce platform for smal
 ### 👨‍💼 Admin Panel Features | অ্যাডমিন ফিচারসমূহ
 
 - 🔐 **Admin Login** – No registration required
+- 🔑 **Admin Dashboard** – Overview of all activities
+- 📊 **POS Order system** – admin can order for offline shop or pos
+- 🛒 **Product Management** – Add, edit, delete, and view products
 - ➕ **Add New Product** – Quickly add products with all necessary details
 - ✏️ **Edit and Update Products** – Modify existing product data easily
 - 🔍 **Search Products** – By name or product ID
