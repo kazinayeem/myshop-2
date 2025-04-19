@@ -5,7 +5,7 @@ const orderSchema = new mongoose.Schema(
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      required: false,
     },
     products: [
       {
@@ -43,6 +43,7 @@ const orderSchema = new mongoose.Schema(
     dueAmount: {
       type: Number,
       required: false,
+      default: 0,
     },
     paymentMethod: {
       type: String,
@@ -79,11 +80,12 @@ const orderSchema = new mongoose.Schema(
     deliveryCharge: {
       type: Number,
       required: false,
+      default: 0,
     },
     address: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Address",
-      required: true,
+      required: false,
     },
     status: {
       type: String,
@@ -99,6 +101,10 @@ const orderSchema = new mongoose.Schema(
         "processing",
       ],
       default: "pending",
+      posOrder: {
+        type: Boolean,
+        default: false,
+      },
     },
   },
   { timestamps: true }

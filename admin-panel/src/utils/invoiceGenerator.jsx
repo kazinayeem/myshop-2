@@ -36,12 +36,18 @@ export const generateInvoicePDF = ({
 
   // User & Order Details
   doc.setFontSize(10);
-  doc.text(`Customer: ${name} | ${email} | ${userPhone}`, 14, 50);
-  doc.text(
-    `Address: ${address?.addressLine1}, ${address?.division} - ${address?.district} - ${address?.upazilla} - ${address?.union} - ${address?.zipCode} - ${address?.country} - ${address?.phoneNumber}`,
-    14,
-    55
-  );
+  console.log(name);
+
+  if (!name === "N/A") {
+    doc.text(`Customer: ${name} | ${email} | ${userPhone}`, 14, 50);
+  }
+  if (address?.addressLine1) {
+    doc.text(
+      `Address: ${address?.addressLine1}, ${address?.division} - ${address?.district} - ${address?.upazilla} - ${address?.union} - ${address?.zipCode} - ${address?.country} - ${address?.phoneNumber}`,
+      14,
+      55
+    );
+  }
   doc.text(
     `Transaction ID: ${transactionId} | Payment: ${paymentMethod} | Paid: ${takaSign()} ${paidAmount}`,
     14,

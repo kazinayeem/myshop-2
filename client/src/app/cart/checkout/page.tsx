@@ -46,10 +46,8 @@ export default function CheckoutPage() {
     shippingPrice,
   } = useAppSelector((state: RootState) => state.cart);
   const user = useAppSelector((state) => state.auth.user);
-
   const { isLoading, isError } = useGetUserByIdQuery(user?.id);
   const { data: addresses } = useGetAddressQuery(user?.id);
-  //  useAddordersMutation
   const [addorders, { isLoading: isAdding }] = useAddordersMutation();
 
   const submitOrder = async () => {

@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "../slice/authSclice";
+import cartReducer from "../slice/cartSlice";
 import productApi from "../Api/porductApi";
 import categoryApi from "../Api/categoryApi";
 import subCategoryApi from "../Api/subcategoryApi";
@@ -11,6 +12,7 @@ import brandsApi from "../Api/brandApi";
 const store = configureStore({
   reducer: {
     auth: authReducer,
+    cart: cartReducer,
     [productApi.reducerPath]: productApi.reducer,
     [categoryApi.reducerPath]: categoryApi.reducer,
     [subCategoryApi.reducerPath]: subCategoryApi.reducer,

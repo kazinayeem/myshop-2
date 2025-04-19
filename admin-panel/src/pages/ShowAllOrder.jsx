@@ -119,22 +119,32 @@ export default function ShowAllOrders() {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3 }}
               >
-                <td className="p-3">
-                  {new Date(order.createdAt).toLocaleDateString()}
+                <td className="p-3 text-sm">
+                  {new Date(order.createdAt).toLocaleString("en-GB", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true,
+                  })}
                 </td>
-                <td className="p-3">{order._id}</td>
-                <td className="p-3">{order.userId?.username}</td>
-                <td className="p-3">
+                <td className="p-2 text-sm">{order._id}</td>
+                <td className="p-2">
+                  {order.userId?.username.slice(0, 10) || "POS"}
+                </td>
+                <td className="p-2">
                   {order.products.map((product) => (
                     <div key={product._id}>
-                      {product.productId?.name.slice(0,25)}.. ({product.quantity})
+                      {product.productId?.name.slice(0, 20)}.. (
+                      {product.quantity})
                     </div>
                   ))}
                 </td>
-                <td className="p-3">{order.totalPrice.toFixed(2)}</td>
-                <td className="p-3 text-blue-600">{order.status}</td>
-                <td className="p-3 text-green-600">{order.paymentStatus}</td>
-                <td className="p-3">
+                <td className="p-2">{order.totalPrice.toFixed(2)}</td>
+                <td className="p-2 text-sm text-blue-600">{order.status}</td>
+                <td className="p-2 text-green-600">{order.paymentStatus}</td>
+                <td className="p-2">
                   <motion.button
                     onClick={() => navigate(`/dashboard/orders/${order._id}`)}
                     className="bg-green-500 text-white px-3 py-2 rounded-lg shadow-md hover:bg-green-600 transition ml-2"

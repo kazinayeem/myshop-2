@@ -2,22 +2,21 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router";
 
 import {
-  Menu,
-  X,
+  Box,
   ChevronDown,
   ChevronUp,
-  Box,
-  Plus,
   Eye,
-  Users,
-  List,
-  UserPlus,
   Image,
-  Tag,
-  PackageCheck,
+  List,
   LogOut,
+  Menu,
+  PackageCheck,
+  Plus,
   ShoppingBag,
+  Tag,
+  Users,
   Workflow,
+  X,
 } from "lucide-react";
 
 export default function SideBar() {
@@ -31,7 +30,7 @@ export default function SideBar() {
   }, [isCollapsed]);
 
   const toggleDropdown = (menu) => {
-    setOpenDropdown((prev) => (prev === menu ? null : menu)); // Close previous if new one is clicked
+    setOpenDropdown((prev) => (prev === menu ? null : menu));
   };
 
   return (
@@ -185,15 +184,6 @@ export default function SideBar() {
 
         <li className="mb-2">
           <Link
-            to="/dashboard/add-user"
-            className="hover:text-gray-400 flex items-center"
-          >
-            <UserPlus size={18} className="mr-2" /> {!isCollapsed && "Add User"}
-          </Link>
-        </li>
-
-        <li className="mb-2">
-          <Link
             to="/dashboard/slider"
             className="hover:text-gray-400 flex items-center"
           >
@@ -207,6 +197,15 @@ export default function SideBar() {
             className="hover:text-gray-400 flex items-center"
           >
             <Tag size={18} className="mr-2" /> {!isCollapsed && "Add Discount"}
+          </Link>
+        </li>
+        {/* export all user email */}
+        <li className="mb-2">
+          <Link
+            to="/dashboard/export-email"
+            className="hover:text-gray-400 flex items-center"
+          >
+            <Tag size={18} className="mr-2" /> {!isCollapsed && "Export Email"}
           </Link>
         </li>
 

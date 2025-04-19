@@ -131,6 +131,62 @@ export const createOrder = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// pos order
+export const posOrder = async (req, res) => {
+  try {
+    const { products } = req.body;
+    for (const product of products) {
+      const { productId, quantity, variant } = product;
+      if (!mongoose.Types.ObjectId.isValid(productId)) {
+        console.log("Invalid productId:", productId);
+        return res.status(400).json({ message: "Invalid productId" });
+      }
+
+      const checkStock = await Product.findById(productId).select(
+        "stock priceByVariant"
+      );
+
+      if (!checkStock) {
+        console.log("Product not found in DB:", productId);
+        return res
+          .status(404)
+          .json({ message: `Product not found: ${productId}` });
+      }
+
+      if (checkStock.priceByVariant && checkStock.priceByVariant.length > 0) {
+        const variantData = checkStock.priceByVariant.find(
+          (v) => v.value === variant
+        );
+
+        if (!variantData) {
+          return res.status(400).json({ message: "Variant not found" });
+        }
+
+        if (variantData.stock < quantity) {
+          return res
+            .status(400)
+            .json({ message: `Insufficient stock for variant: ${variant}` });
+        }
+        variantData.stock -= quantity;
+      } else {
+        if (checkStock.stock < quantity) {
+          return res.status(400).json({ message: "Insufficient stock" });
+        }
+        checkStock.stock -= quantity;
+      }
+      await checkStock.save();
+    }
+
+    const newOrder = new Order(req.body);
+    const savedOrder = await newOrder.save();
+
+    return res.status(200).json(savedOrder);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: error.message });
+  }
+};
 // get all orders
 export const getAllOrders = async (req, res) => {
   try {

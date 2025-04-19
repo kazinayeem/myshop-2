@@ -6,7 +6,6 @@ export const sliderApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: import.meta.env.VITE_API_URL,
     credentials: "same-origin",
-    headers: { "Content-Type": "application/json" },
     prepareHeaders: (headers) => {
       const token = localStorage.getItem("token");
       if (token) {
@@ -18,7 +17,7 @@ export const sliderApi = createApi({
   tagTypes: ["Sliders"],
   endpoints: (builder) => ({
     getSliders: builder.query({
-      query: () => "/sliders",
+      query: () => "/sliders?show=all",
       providesTags: ["Sliders"],
     }),
     getSliderById: builder.query({

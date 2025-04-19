@@ -48,7 +48,7 @@ export default function ProductsPage() {
   const { data, isLoading, isError } = useGetProductsQuery({
     limit,
     page,
-    search,
+    search, 
   });
 
   const { products, totalProducts } = data || {};

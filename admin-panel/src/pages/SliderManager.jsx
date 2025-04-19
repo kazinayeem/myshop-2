@@ -5,7 +5,7 @@ import {
   useGetSlidersQuery,
   useUpdateSliderMutation,
 } from "../redux/Api/sliderApi";
-
+import Swal from "sweetalert2";
 export default function SliderManager() {
   const {
     data: sliders,
@@ -15,223 +15,283 @@ export default function SliderManager() {
     error,
   } = useGetSlidersQuery();
   const [addSlider] = useAddSliderMutation();
-  const [updateSlider] = useUpdateSliderMutation();
   const [deleteSlider] = useDeleteSliderMutation();
+  const [updateSlider] = useUpdateSliderMutation();
 
-  // Form State
   const [form, setForm] = useState({
-    id: null,
     title: "",
     description: "",
-    image: "",
+    image: null,
     buttonText: "",
     buttonLink: "",
     status: "active",
   });
 
-  // Handle Input Change
+  const [editingStatus, setEditingStatus] = useState(null);
+
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value, files } = e.target;
+    if (files) {
+      setForm({ ...form, image: files[0] });
+    } else {
+      setForm({ ...form, [name]: value });
+    }
   };
 
-  // Handle Form Submit (Add / Update)
   const handleSubmit = async (e) => {
-    try {
-      e.preventDefault();
-      if (form.id) {
-        await updateSlider(form);
-      } else {
-        await addSlider(form);
-      }
-      refetch();
-      resetForm();
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    }
-  };
-
-  // Handle Edit
-  const handleEdit = (slider) => {
-    setForm({
-      id: slider._id,
-      title: slider.title,
-      description: slider.description,
-      image: slider.image,
-      buttonText: slider.buttonText,
-      buttonLink: slider.buttonLink,
-      status: slider.status,
+    Swal.fire({
+      title: "Adding Slider...",
+      didOpen: () => Swal.showLoading(),
     });
-  };
+    e.preventDefault();
 
-  // Handle Delete
-  const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this slider?")) {
-      await deleteSlider(id);
+    if (!form.image) return alert("Please select an image");
+
+    const formData = new FormData();
+    Object.keys(form).forEach((key) => {
+      formData.append(key, form[key]);
+    });
+
+    try {
+      const newSlider = await addSlider(formData).unwrap();
+      if (newSlider._id) {
+        // After adding the new slider, update the status
+        await updateSlider({ id: newSlider._id, status: form.status });
+        Swal.close();
+        Swal.fire({
+          icon: "success",
+          title: "Slider Added",
+          text: "Slider has been added successfully.",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      }
+
+      resetForm();
       refetch();
+    } catch (err) {
+      Swal.close();
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to add slider.",
+        showConfirmButton: true,
+      });
+      console.error("Failed to add slider:", err);
     }
   };
 
-  // Reset Form
+  const handleDelete = async (id) => {
+    Swal.fire({
+      title: "Deleting Slider...",
+      didOpen: () => Swal.showLoading(),
+    });
+    try {
+      await deleteSlider(id).unwrap();
+      Swal.close();
+      Swal.fire({
+        icon: "success",
+        title: "Slider Deleted",
+        text: "Slider has been deleted successfully.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      refetch();
+    } catch (err) {
+      Swal.close();
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to delete slider.",
+        showConfirmButton: true,
+      });
+      console.error("Failed to delete slider:", err);
+    }
+  };
+
+  const handleStatusChange = async (id, status) => {
+    try {
+      await updateSlider({ id, status });
+      refetch();
+      setEditingStatus(null);
+    } catch (err) {
+      console.error("Failed to update status:", err);
+    }
+  };
+
   const resetForm = () => {
     setForm({
-      id: null,
       title: "",
       description: "",
-      image: "",
+      image: null,
       buttonText: "",
       buttonLink: "",
       status: "active",
     });
   };
 
-  // Handle Status Change
-  const handleStatusChange = async (id, newStatus) => {
-    await updateSlider({ id, status: newStatus });
-    refetch();
-  };
-
   return (
-    <div className="container mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-4">Slider Manager</h2>
+    <div className="container mx-auto p-8">
+      <h2 className="text-3xl font-semibold mb-6 text-center text-gray-800">
+        Slider Manager
+      </h2>
+
+      {/* Error Alert */}
       {isError && (
         <div className="bg-red-100 text-red-700 p-4 rounded mb-4">
-          <p>Error fetching sliders. Please try again later.</p>
-          <p>{error.message}</p>
+          <p>Error: {error.message}</p>
         </div>
       )}
-      {/* Add New Slider Button */}
-      {form.id && (
-        <button
-          type="button"
-          onClick={resetForm}
-          className="bg-green-500 text-white px-4 py-2 rounded mb-4"
-        >
-          Add New Slider
-        </button>
-      )}
 
-      {/* Add / Edit Slider Form */}
+      {/* Add Slider Form */}
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-6 rounded shadow-md space-y-4"
+        className="bg-white shadow-lg rounded-lg p-8 space-y-6 max-w-6xl mx-auto"
+        encType="multipart/form-data"
       >
-        <input
-          type="text"
-          name="title"
-          placeholder="Title"
-          value={form.title}
-          onChange={handleChange}
-          className="w-full p-2 border rounded"
-        />
-        <input
-          type="text"
-          name="description"
-          placeholder="Description"
-          value={form.description}
-          onChange={handleChange}
-          className="w-full p-2 border rounded"
-        />
-        <input
-          type="text"
-          name="image"
-          placeholder="Image URL"
-          value={form.image}
-          onChange={handleChange}
-          className="w-full p-2 border rounded"
-        />
-        <input
-          type="text"
-          name="buttonText"
-          placeholder="Button Text"
-          value={form.buttonText}
-          onChange={handleChange}
-          className="w-full p-2 border rounded"
-        />
-        <input
-          type="text"
-          name="buttonLink"
-          placeholder="Button Link"
-          value={form.buttonLink}
-          onChange={handleChange}
-          className="w-full p-2 border rounded"
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Title Input */}
+          <input
+            type="text"
+            name="title"
+            placeholder="Title"
+            value={form.title}
+            onChange={handleChange}
+            className="p-4 border rounded-lg w-full text-lg"
+            required
+          />
 
-        <select
-          name="status"
-          value={form.status}
-          onChange={handleChange}
-          className="w-full p-2 border rounded"
-        >
-          <option value="active">Active</option>
-          <option value="inactive">Inactive</option>
-        </select>
+          {/* Description Input */}
+          <input
+            type="text"
+            name="description"
+            placeholder="Description"
+            value={form.description}
+            onChange={handleChange}
+            className="p-4 border rounded-lg w-full text-lg"
+            required
+          />
 
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-        >
-          {form.id ? "Update Slider" : "Add Slider"}
-        </button>
+          {/* Image Upload */}
+          <input
+            type="file"
+            name="image"
+            accept="image/*"
+            onChange={handleChange}
+            className="p-4 border rounded-lg w-full text-lg"
+            required
+          />
+
+          {/* Button Text Input */}
+          <input
+            type="text"
+            name="buttonText"
+            placeholder="Button Text"
+            value={form.buttonText}
+            onChange={handleChange}
+            className="p-4 border rounded-lg w-full text-lg"
+          />
+
+          {/* Button Link Input */}
+          <input
+            type="text"
+            name="buttonLink"
+            placeholder="Button Link"
+            value={form.buttonLink}
+            onChange={handleChange}
+            className="p-4 border rounded-lg w-full text-lg"
+          />
+
+          {/* Status Dropdown */}
+          <select
+            name="status"
+            value={form.status}
+            onChange={handleChange}
+            className="p-4 border rounded-lg w-full text-lg"
+          >
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
+
+        <div className="flex justify-end">
+          <button
+            type="submit"
+            className="bg-blue-600 text-white py-3 px-8 rounded-lg hover:bg-blue-700 transition duration-300"
+          >
+            Add Slider
+          </button>
+        </div>
       </form>
 
-      {/* Show All Sliders */}
-      {isLoading ? (
-        <p>Loading sliders...</p>
-      ) : (
-        <div className="mt-6 space-y-4">
-          {sliders?.map((slider) => (
+      {/* Sliders List */}
+      <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {isLoading ? (
+          <div className="text-center text-lg text-gray-600">
+            Loading sliders...
+          </div>
+        ) : (
+          sliders?.map((slider) => (
             <div
               key={slider._id}
-              className="bg-gray-100 p-4 rounded shadow-md flex justify-between items-center"
+              className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow"
             >
-              <div>
-                <h3 className="text-xl font-semibold">{slider.title}</h3>
-                <p>{slider.description}</p>
-                <img
-                  src={slider.image}
-                  alt={slider.title}
-                  className="w-24 h-24 object-cover mt-2 rounded"
-                />
-                <a href={slider.buttonLink} className="text-blue-500 underline">
-                  {slider.buttonText}
-                </a>
-
-                {/* Status Dropdown */}
-                <div className="mt-2">
-                  <label className="font-bold">Status: </label>
+              <img
+                src={slider.image}
+                alt={slider.title}
+                className="w-full h-48 object-cover rounded-lg"
+              />
+              <h3 className="text-xl font-semibold mt-4">{slider.title}</h3>
+              <p className="text-gray-600 text-sm">{slider.description}</p>
+              <a
+                href={slider.buttonLink}
+                className="text-blue-500 underline mt-2 block"
+                target="_blank"
+              >
+                {slider.buttonText}
+              </a>
+              <div className="mt-4">
+                {editingStatus === slider._id ? (
                   <select
                     value={slider.status}
                     onChange={(e) =>
                       handleStatusChange(slider._id, e.target.value)
                     }
-                    className={`p-1 border rounded ${
-                      slider.status === "active" ? "bg-green-200" : "bg-red-200"
-                    }`}
+                    className="p-2 border rounded-lg w-full text-lg"
                   >
                     <option value="active">Active</option>
                     <option value="inactive">Inactive</option>
                   </select>
-                </div>
+                ) : (
+                  <span
+                    className={`text-lg font-semibold ${
+                      slider.status === "active"
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {slider.status}
+                  </span>
+                )}
               </div>
-
-              <div className="flex space-x-2">
-                <button
-                  onClick={() => handleEdit(slider)}
-                  className="bg-yellow-500 text-white px-3 py-1 rounded"
-                >
-                  Edit
-                </button>
+              <div className="flex justify-between items-center mt-4">
                 <button
                   onClick={() => handleDelete(slider._id)}
-                  className="bg-red-500 text-white px-3 py-1 rounded"
+                  className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition duration-200"
                 >
                   Delete
                 </button>
+                <button
+                  onClick={() => setEditingStatus(slider._id)}
+                  className="bg-yellow-600 text-white py-2 px-4 rounded-lg hover:bg-yellow-700 transition duration-200"
+                >
+                  Change Status
+                </button>
               </div>
             </div>
-          ))}
-        </div>
-      )}
+          ))
+        )}
+      </div>
     </div>
   );
 }
