@@ -131,17 +131,17 @@ export async function sendOrderConfirmationMail({
     const formattedItems = items.map((item) => ({
       name: item.name,
       quantity: item.quantity,
-      price: `$${parseFloat(item.price).toFixed(2)}`,
+      price: `Tk${parseFloat(item.price).toFixed(2)}`,
     }));
 
     const htmlContent = orderConfirmationTemplate({
       name,
       orderId,
       items: formattedItems,
-      totalAmount: `$${parseFloat(totalAmount).toFixed(2)}`,
+      totalAmount: `Tk${parseFloat(totalAmount).toFixed(2)}`,
     });
 
-    const textContent = `Hi ${name}, your order #${orderId} has been confirmed. Total: $${parseFloat(
+    const textContent = `Hi ${name}, your order #${orderId} has been confirmed. Total: Tk${parseFloat(
       totalAmount
     ).toFixed(2)}.`;
 
