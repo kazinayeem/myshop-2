@@ -1,6 +1,7 @@
 # 🛒 MyShop 2.0 – Basic E-Commerce Platform | বেসিক ই-কমার্স প্ল্যাটফর্ম
+
 <p align="center">
-  <a href="https://youtu.be/Rn2teZcW_Vo"><strong>▶ Click here to watch the video</strong></a>
+  <a href="https://youtu.be/Rn2teZcW_Vo"><strong>▶ Click here to watch the video | ভিডিও দেখতে এখানে ক্লিক করুন</strong></a>
 </p>
 
 <p align="center">
@@ -9,89 +10,101 @@
   </a>
 </p>
 
-
+---
 
 ## 📦 Project Overview | প্রকল্পের সারসংক্ষেপ
 
-Welcome to **MyShop 2.0** – a simple yet powerful e-commerce platform for small businesses and individual sellers. This project supports full e-commerce functionality including product browsing, cart management, order processing, user account management, and admin dashboard.
+**MyShop 2.0** is a complete e-commerce platform for small businesses and individual sellers. It supports product browsing, shopping cart, order management, user profiles, and an advanced admin dashboard.
 
-**MyShop 2.0** একটি সম্পূর্ণ ফিচারসমৃদ্ধ অনলাইন শপিং প্ল্যাটফর্ম যেখানে ইউজাররা প্রোডাক্ট ব্রাউজ করতে, অর্ডার দিতে এবং নিজের অ্যাকাউন্ট ও অর্ডার ম্যানেজ করতে পারবেন। অ্যাডমিনরা প্রোডাক্ট, অর্ডার এবং রিপোর্ট ম্যানেজ করতে পারবেন।
+**MyShop 2.0** একটি সম্পূর্ণ ফিচারসমৃদ্ধ ই-কমার্স প্ল্যাটফর্ম যা ছোট ব্যবসা ও ব্যক্তিগত বিক্রেতাদের জন্য উপযুক্ত। এতে প্রোডাক্ট ব্রাউজিং, শপিং কার্ট, অর্ডার ম্যানেজমেন্ট, ইউজার প্রোফাইল এবং অ্যাডভান্সড অ্যাডমিন ড্যাশবোর্ড রয়েছে।
 
 ---
 
-## ✨ Key Features | প্রধান বৈশিষ্ট্য
+## ✨ Key Features | প্রধান বৈশিষ্ট্যসমূহ
 
 ### 👨‍💼 Admin Panel Features | অ্যাডমিন ফিচারসমূহ
 
-- 🔐 **Admin Login** – No registration required
-- 🔑 **Admin Dashboard** – Overview of all activities
-- 📊 **POS Order system** – admin can order for offline shop or pos
-- 🛒 **Product Management** – Add, edit, delete, and view products
-- ➕ **Add New Product** – Quickly add products with all necessary details
-- ✏️ **Edit and Update Products** – Modify existing product data easily
-- 🔍 **Search Products** – By name or product ID
-- 📁 **Category Management** – Add, edit, delete, and view product categories
-- 🗂️ **Subcategory Management** – Edit, show, and delete subcategories
-- 🏷️ **Brand Management** – Add brand name and logo/image
-- 📊 **Profit & Loss Calculation** – View earnings and expenses in one place
-- 📋 **View All Orders** – Monitor orders and update their status
-- 🧾 **Generate Invoice for Customers** – Print or email invoice upon request
-- 👤 **View All Registered Users** – Manage customer base
-- 📦 **Filter Products by Category** – Quickly find what you're managing
-- 📧 **Send Order Confirmation Email** – User gets a confirmation when an order is placed
-- 📬 **Send Delivery Confirmation Email** – User gets notified when their order is delivered
-
--
-- ⏲️ **Auto Delete Failed Orders after 30 Minutes** ✅
-
-### 👤 User Panel Features | ইউজার ফিচারসমূহ
-
-- 📝 User Registration & Login & Login With Google
-- 🧾 View and Manage Orders
-- 🛒 Add Products to Cart
-- 📦 Place Orders Easily
-- 🔍 Product Search with Filters:
-  - Category
-  - Brand
-  - Subcategory
-  - Price Range
-- 🏠 Address Management:
-  - Add up to 5 Addresses
-  - Edit/Delete Address
-- ⚙️ Edit Profile Information
-- 🔑 Change Password
-- 📧 Order Complete user gets a Email
-- 📬 Order Delivery user gets a Email
-- 📜 View Order History and Details
-- 📄 Product Details Page
-- 💳 Multiple Payment Options via **SSLCommerz**:
-  - bKash
-  - Nagad
-  - Bank
-  - Cards
-  - Others
-- 💵 **Cash on Delivery (COD) Support** ✅
-- 🚚 **Auto Delivery Charge Based on Location** ✅
+- 🔐 **Admin Login** – Secure login, no registration needed  
+  **অ্যাডমিন লগইন** – নিরাপদ লগইন, রেজিস্ট্রেশনের প্রয়োজন নেই
+- 📊 **Admin Dashboard** – Overview of sales, orders, and products  
+  **অ্যাডমিন ড্যাশবোর্ড** – সেলস, অর্ডার ও প্রোডাক্টের সারাংশ
+- 🛒 **POS Order System** – Admin can create orders manually for offline or Facebook/other sources  
+  **POS অর্ডার সিস্টেম** – অ্যাডমিন অফলাইন বা Facebook/অন্যান্য সোর্সের জন্য ম্যানুয়ালি অর্ডার তৈরি করতে পারেন
+- 💼 **Manual Product Card Buy (POS)** – Product search and cart system for offline super shops  
+  **ম্যানুয়াল প্রোডাক্ট কার্ড বায় (POS)** – সুপার শপের জন্য প্রোডাক্ট সার্চ ও কার্ট থেকে অর্ডার তৈরি
+- ➕ **Add New Product** – Add products with images, price, stock, etc.  
+  **নতুন প্রোডাক্ট যুক্ত করুন** – ছবি, দাম, স্টকসহ প্রোডাক্ট যুক্ত করুন
+- ✏️ **Edit Product** – Update any product anytime  
+  **প্রোডাক্ট এডিট** – যেকোনো সময় প্রোডাক্ট আপডেট করুন
+- 🔍 **Search Products** – By name or product ID  
+  **প্রোডাক্ট খোঁজার সুবিধা** – নাম বা আইডি দিয়ে
+- 📁 **Category Management** – Add, edit, delete categories  
+  **ক্যাটাগরি ম্যানেজমেন্ট** – ক্যাটাগরি অ্যাড, এডিট ও ডিলিট
+- 🏷️ **Brand Management** – Manage brand names and logos  
+  **ব্র্যান্ড ম্যানেজমেন্ট** – ব্র্যান্ড নাম ও লোগো পরিচালনা
+- 📋 **Order Management** – View, update, delete, and invoice  
+  **অর্ডার ম্যানেজমেন্ট** – অর্ডার দেখুন, স্ট্যাটাস আপডেট ও ইনভয়েস তৈরি
+- 📧 **Email Notifications** – Order and delivery confirmation emails  
+  **ইমেইল নোটিফিকেশন** – অর্ডার ও ডেলিভারির ইমেইল পাঠানো
+- 📊 **Profit & Loss Report** – Track your earnings and expenses  
+  **প্রফিট ও লস রিপোর্ট** – আয়ের ও ব্যয়ের হিসাব রাখুন
+- ⏲️ **Auto Delete Failed Orders** – After 30 minutes  
+  **ফেইলড অর্ডার অটো ডিলিট** – ৩০ মিনিট পর স্বয়ংক্রিয়ভাবে
 
 ---
 
-## 🧠 Smart System Features | স্মার্ট ফিচারসমূহ
+### 👤 User Panel Features | ইউজার ফিচারসমূহ
 
-- 🕒 **Auto Delete for Failed Orders:**
+- 📝 **User Registration & Login (with Google)**  
+  **ইউজার রেজিস্ট্রেশন ও লগইন (গুগল সহ)**
+- 🔁 **Password Reset Options**  
+  **পাসওয়ার্ড রিসেট অপশন:**
+  - 🔑 Use Old Password  
+    **পুরাতন পাসওয়ার্ড দিয়ে**
+  - ✉️ Receive OTP Email and Reset  
+    **ইমেইলে ওটিপি পেয়ে রিসেট করুন**
+- 🛒 **Cart Management** – Add, remove, update items  
+  **কার্ট ম্যানেজমেন্ট** – প্রোডাক্ট যোগ, মুছা ও আপডেট
+- 📦 **Place Orders Easily**  
+  **সহজে অর্ডার করুন**
+- 📜 **Order History** – View past orders with details  
+  **অর্ডার হিস্টোরি** – আগের সব অর্ডার দেখুন
+- 🏠 **Address Book** – Add up to 5 addresses  
+  **ঠিকানা সংরক্ষণ** – সর্বোচ্চ ৫টি ঠিকানা
+- ⚙️ **Profile Management** – Edit info and change password  
+  **প্রোফাইল ম্যানেজমেন্ট** – তথ্য পরিবর্তন ও পাসওয়ার্ড চেঞ্জ
+- 🔍 **Product Search with Filters** – Category, Brand, Price  
+  **প্রোডাক্ট ফিল্টারসহ সার্চ** – ক্যাটাগরি, ব্র্যান্ড, দাম
+- 💳 **Payment Gateway: SSLCommerz**
+  - bKash, Nagad, Cards, Bank, Others  
+    **পেমেন্ট গেটওয়ে: SSLCommerz**
+- 💵 **Cash on Delivery (COD)** Support  
+  **ক্যাশ অন ডেলিভারি (COD)** সাপোর্ট
+- 🚚 **Auto Delivery Charge Based on Location**
+  - Inside Dhaka: ৳60
+  - Outside Dhaka: ৳120  
+    **লোকেশন অনুযায়ী ডেলিভারি চার্জ**
+- If completed, the order user will receive an email with the order details.  
+  **অর্ডার সম্পন্ন হলে ইউজারকে ইমেইলে অর্ডার ডিটেইলস পাঠানো হবে।**
 
-  - If an order is not completed within 30 minutes, it is auto-deleted to keep the system clean.
-  - ✅ Cron Job or Scheduled Task-based Implementation.
+- 📧 **Email Notifications** – Order and delivery confirmation emails
+  **ইমেইল নোটিফিকেশন** – অর্ডার ও ডেলিভারির ইমেইল পাঠানো হবে
 
-- 🚛 **Auto Delivery Charge Based on Location:**
+---
 
-  - System automatically calculates delivery fee depending on user’s selected address.
-  - Example:
-    - Inside Dhaka: ৳60
-    - Outside Dhaka: ৳120
+## 🧠 Smart Features | স্মার্ট ফিচারসমূহ
 
-- 🔐 Authentication:
-  - JWT Token-based Secure Login
-  - Password Hashing with Bcrypt
+- ⏲️ **Auto Delete Failed Orders** – After 30 minutes  
+  **ফেইল্ড অর্ডার ৩০ মিনিট পর অটো ডিলিট**
+- 🚚 **Auto Delivery Charge Calculation** – Based on user's address  
+  **ইউজারের ঠিকানা অনুযায়ী ডেলিভারি চার্জ নির্ধারণ**
+- 🔐 **JWT Authentication & Password Hashing**  
+  **সিকিউর লগইন ও পাসওয়ার্ড হ্যাশিং**
+- 🔒 **Secure Payment Gateway** – SSLCommerz integration  
+  **নিরাপদ পেমেন্ট গেটওয়ে** – SSLCommerz ইন্টিগ্রেশন
+
+- 📧 **Email Notifications** – Order and delivery confirmation emails
+  **ইমেইল নোটিফিকেশন** – অর্ডার ও ডেলিভারির ইমেইল পাঠানো হবে
 
 ---
 
@@ -99,53 +112,55 @@ Welcome to **MyShop 2.0** – a simple yet powerful e-commerce platform for smal
 
 - **Backend:** Node.js, Express.js
 - **Database:** MongoDB (Mongoose)
-- **Frontend:** HTML, CSS, JavaScript (Vanilla)
+- **Frontend:** React.js, Redux Toolkit, Tailwind CSS, Next.js
+- **State Management:** Redux Toolkit
 - **Authentication:** JWT, bcrypt
+- **Email Service:** Nodemailer
 - **Payment Gateway:** SSLCommerz
-- **Task Scheduling:** node-cron or custom timer logic
-- **Email Service:** Nodemailer (for sending order confirmation and delivery emails)
+- **Task Scheduling:** node-cron/custom timers
+- **Image Upload:** Cloudinary
 - **Version Control:** Git & GitHub
-- **Containerization:** Docker (optional)
-- **Image Uploading:** Cloudinary (for product images)
-- **Environment Variables:** dotenv
+- **Environment:** dotenv
+- **Optional:** Docker Support
 
 ---
 
 ## 🛠 Installation Guide | ইনস্টলেশন নির্দেশিকা
 
-### 📌 Prerequisites | পূর্বশর্ত
+### 📌 Requirements | প্রয়োজনীয়তা
 
 - ✅ Node.js v18 or above
 - ✅ npm v8 or above
-- ✅ MongoDB (local or Atlas)
+- ✅ MongoDB (Local or Atlas)
 
-### 📥 Installation Steps | ইনস্টলেশন ধাপসমূহ
+### 📥 Installation Steps | ইনস্টলেশন ধাপ
 
 ```bash
-# Clone the repository
+# Clone the repository | রিপোজিটরি ক্লোন করুন
 git clone https://github.com/kazinayeem/myshop-2.git
 cd myshop-2
 
-# Install dependencies
+# Install dependencies | ডিপেন্ডেন্সি ইনস্টল করুন
 npm install
 
-# set up environment variables
-# Create a .env file in the root directory and add the following variables:
-# PORT=5000
-# MONGODB_URI=mongodb://localhost:27017/myshop
-# JWT_SECRET=your_jwt_secret
-# SSL_STORE_ID=your_ssl_store_id
-# SSL_STORE_PASSWORD=your_ssl_store_password
-# SSL_STORE_URL=https://sandbox.sslcommerz.com/gwprocess/v4/api.php
-# CLOUDINARY_URL=your_cloudinary_url
-# NODEMAILER_EMAIL=your_email
-# NODEMAILER_PASSWORD=your_email_password
-# NODEMAILER_HOST=smtp.your_email_provider.com
-# NODEMAILER_PORT=587 (or 465 for SSL)
-# NODEMAILER_SECURE=false (or true for SSL)
-# NODEMAILER_SERVICE=your_email_service (like Gmail, Yahoo, etc.)
-# NODEMAILER_FROM=your_email (the same as NODEMAILER_EMAIL)
+# Set up environment variables | পরিবেশ ভেরিয়েবল সেট করুন
+# Create a .env file and add the following:
 
-# Run the server
+PORT=5000
+MONGODB_URI=mongodb://localhost:27017/myshop
+JWT_SECRET=your_jwt_secret
+SSL_STORE_ID=your_ssl_store_id
+SSL_STORE_PASSWORD=your_ssl_store_password
+SSL_STORE_URL=https://sandbox.sslcommerz.com/gwprocess/v4/api.php
+CLOUDINARY_URL=your_cloudinary_url
+NODEMAILER_EMAIL=your_email
+NODEMAILER_PASSWORD=your_email_password
+NODEMAILER_HOST=smtp.your_email_provider.com
+NODEMAILER_PORT=587
+NODEMAILER_SECURE=false
+NODEMAILER_SERVICE=your_email_service
+NODEMAILER_FROM=your_email
+
+# Start the server | সার্ভার চালু করুন
 npm run dev:all
 ```
