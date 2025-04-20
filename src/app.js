@@ -3,9 +3,8 @@ import connectDB from "./config/db.js";
 import dotenv from "dotenv";
 dotenv.config();
 import "./cronJobs/orderCleanup.js";
-import { envData } from "./config/envdata.js";
 
-const PORT = process.env.PORT || envData.PORT || 5000;
+const PORT = 4000;
 
 
 app.listen(PORT, () => {
