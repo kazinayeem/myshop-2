@@ -30,7 +30,7 @@ app.use(
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
 );
-app.use(rateLimit({ windowMs: 30 * 60 * 1000, max: 100 }));
+app.use(rateLimit({ windowMs: 30 * 60 * 1000, max: 100000 }));
 app.use(xssClean());
 app.use(hpp());
 app.use(

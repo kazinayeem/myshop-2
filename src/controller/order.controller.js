@@ -12,7 +12,7 @@ import { sendDeliveryConfirmationMail } from "../lib/deliveredMailer.js";
 const store_id = envData.storeid;
 const store_passwd = envData.storepassword;
 const is_live = envData.islive;
-const serverUrl = "https://myshop-2-production.up.railway.app";
+const serverUrl = envData.serverUrl;
 
 //  create order
 export const createOrder = async (req, res) => {
