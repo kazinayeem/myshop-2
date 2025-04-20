@@ -1,4 +1,15 @@
 # 🛒 MyShop 2.0 – Basic E-Commerce Platform | বেসিক ই-কমার্স প্ল্যাটফর্ম
+<p align="center">
+  <a href="https://youtu.be/Rn2teZcW_Vo"><strong>▶ Click here to watch the video</strong></a>
+</p>
+
+<p align="center">
+  <a href="https://youtu.be/Rn2teZcW_Vo">
+    <img src="https://img.youtube.com/vi/Rn2teZcW_Vo/maxresdefault.jpg" alt="Watch Video" width="600"/>
+  </a>
+</p>
+
+
 
 ## 📦 Project Overview | প্রকল্পের সারসংক্ষেপ
 
@@ -118,6 +129,23 @@ cd myshop-2
 # Install dependencies
 npm install
 
+# set up environment variables
+# Create a .env file in the root directory and add the following variables:
+# PORT=5000
+# MONGODB_URI=mongodb://localhost:27017/myshop
+# JWT_SECRET=your_jwt_secret
+# SSL_STORE_ID=your_ssl_store_id
+# SSL_STORE_PASSWORD=your_ssl_store_password
+# SSL_STORE_URL=https://sandbox.sslcommerz.com/gwprocess/v4/api.php
+# CLOUDINARY_URL=your_cloudinary_url
+# NODEMAILER_EMAIL=your_email
+# NODEMAILER_PASSWORD=your_email_password
+# NODEMAILER_HOST=smtp.your_email_provider.com
+# NODEMAILER_PORT=587 (or 465 for SSL)
+# NODEMAILER_SECURE=false (or true for SSL)
+# NODEMAILER_SERVICE=your_email_service (like Gmail, Yahoo, etc.)
+# NODEMAILER_FROM=your_email (the same as NODEMAILER_EMAIL)
+
 # Run the server
-npm start
+npm run dev:all
 ```
